@@ -16,6 +16,13 @@ export const staffAppearances={
  mizuki:{skin:'natural',hair:'long',hairColor:'#332c31',outfit:'#7c809d',accent:'#e6e8f4'},
  sakura:{skin:'warm',hair:'bob',hairColor:'#825141',outfit:'#bf7188',accent:'#fde4eb'}
 };
+export const customerCategoryAppearances={
+ '若年層':{skin:'light',hair:'pony',hairColor:'#8f604f',outfit:'#dc91a8',accent:'#ffe0e8'},
+ '働く女性':{skin:'natural',hair:'medium',hairColor:'#57413a',outfit:'#8d7f91',accent:'#e8dfe9'},
+ '主婦・子育て層':{skin:'natural',hair:'bob',hairColor:'#765548',outfit:'#a99b7c',accent:'#eee7d8'},
+ 'ミドル層':{skin:'warm',hair:'short',hairColor:'#51403b',outfit:'#9a7483',accent:'#eadce2'},
+ '富裕層':{skin:'light',hair:'wave',hairColor:'#3f3438',outfit:'#6f5a70',accent:'#dfc58d'}
+};
 
 export const rivalAppearances={
  luxe:{skin:'light',hair:'long',hairColor:'#2d2630',outfit:'#5e4c68',accent:'#dcc288'},
@@ -34,4 +41,5 @@ export const newsKinds=[
  {test:/コンテスト|AWARD/i,kind:'CONTEST',icon:'🏆'}
 ];
 
-export const assetSlots={owner:'assets/characters/owner/',staff:'assets/characters/staff/',customers:'assets/characters/customers/',rivals:'assets/characters/rivals/',stores:'assets/stores/',town:'assets/town/',fashion:'assets/fashion/',ui:'assets/ui/'};
+export const avatarLayerOrder=['body','skin','legs','shoes','bottoms','tops','dress','outer','backHair','face','eyes','eyebrows','makeup','mouth','frontHair','earrings','necklace','bag','accessory','effect'];
+export const assetSlots={owner:'assets/characters/owner/',staff:'assets/characters/staff/',customers:'assets/characters/customers/',rivals:'assets/characters/rivals/',stores:'assets/stores/',town:'assets/town/',fashion:'assets/fashion/',beauty:'assets/beauty/',ui:'assets/ui/'};

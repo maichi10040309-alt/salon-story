@@ -4,7 +4,7 @@ import{staff as staffOptions}from'./data/staff.js';
 import{initialCustomerIds,storeRanks,chapters,rivals as rivalTemplates,outfits,machines,extraEquipment,trends,hairstyles,hairColors,skinColors}from'./data/v03.js';
 import{fashionItems,brands,makeupStyles,hairstyles20,townBuildings,trainingCourses,staffProfiles,customerStoryIds,customerStorySteps,storyText,secondStoreAreas,rivalOwners}from'./data/v04.js';
 import{customerAppearances,newsKinds}from'./data/v05.js';
-import{layeredPortrait,customerPortrait,staffPortrait,rivalPortrait}from'./portraits.js';
+import{layeredPortrait as svgPortrait,customerPortrait,staffPortrait as svgStaffPortrait,rivalPortrait,officialPortrait}from'./portraits.js';
 import{selectDailyCustomers,visitReason}from'./visitor-selection.js';
 
 const SAVE_KEY='salon-story-v01',VERSION=5,GAME_VERSION='0.5';
@@ -17,6 +17,8 @@ const thresholds=[0,100,260,480,760,1100];
 const levelUnlocks={2:'バストケア',3:'毛穴洗浄',4:'ヘッドスパ',5:'高級痩身ケア'};
 const rankOrder=['D','C','B','A'];
 const coreShopItems=[['bed','高級施術ベッド',100000,'施術満足度 +5',3],['sofa','高級ソファ',50000,'店舗満足度 +3',2],['plant','観葉植物',15000,'リラックス補正 +2',2],['shelf','商品棚',30000,'商品販売機能解禁',1]];
+function layeredPortrait(args={}){return args.size==='xl'&&!args.preview?officialPortrait('owner','owner',args.label||'オーナー','xl'):svgPortrait(args)}
+function staffPortrait(s,expression='normal',size='md'){return['normal','smile','happy','confident'].includes(expression)?officialPortrait('staff',s.id,s.name,size,s.role):svgStaffPortrait(s,expression,size)}
 
 function createGoals(day,sales){return[
   {id:'sales7',title:'7日以内に売上5万円',type:'sales',target:50000,startValue:sales,deadline:day+6,reward:{money:20000},done:false},

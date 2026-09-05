@@ -1,0 +1,8 @@
+{
+  "version": "0.5-art-1",
+  "referencePalette": {"ivory":"#F8F2EB","dustyPink":"#D9A7AC","mocha":"#A88B7B","darkBrown":"#5B4636"},
+  "owner": {"base":"characters/owner/owner-base.webp","fallback":"svg-layered"},
+  "staff": {"akari":"characters/staff/akari.webp","mizuki":"characters/staff/mizuki.webp","sakura":"characters/staff/sakura.webp"},
+  "avatarLayers": ["body","skin","legs","shoes","bottoms","tops","dress","outer","backHair","face","eyes","eyebrows","makeup","mouth","frontHair","earrings","necklace","bag","accessory","effect"],
+  "fallbacks": {"customers":"category-svg","rivals":"svg","stores":"css","town":"css"}
+}
