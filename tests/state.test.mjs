@@ -10,7 +10,7 @@ Object.defineProperty(globalThis,'navigator',{value:{},configurable:true});
 await import('../src/game-v03.js');
 const api=window.__SALON_STORY_TEST__;
 const fresh=api.freshState();
-assert.equal(fresh.gameVersion,'0.4');
+assert.equal(fresh.gameVersion,'0.5');
 assert.equal(fresh.money,500000);
 assert.equal(fresh.customers.length>=30,true);
 assert.equal(new Set(fresh.customers.map(c=>c.id)).size,fresh.customers.length);
@@ -23,6 +23,8 @@ assert.deepEqual(fresh.encounteredCustomers,[],'新規ゲームは未遭遇か�
 assert.deepEqual(fresh.recentCustomerIds,[],'来店履歴は空で開始');
 assert.equal(fresh.wardrobe.owned.length>=3,true,'初期コーデパーツ');
 assert.equal(fresh.stores.length,1,'本店を保持');
+assert.equal(fresh.ui.preview,null,'試着状態は空で開始');
+assert.equal(typeof fresh.customers.find(c=>c.id==='misaki').appearance,'object','主要顧客の外見データ');
 
 const old={version:2,day:12,money:345678,popularity:456,rating:4.2,salonLevel:3,xp:270,staff:{id:'akari',name:'あかり',tech:50,service:80,sales:60,speed:55,stamina:60,popularity:55,salary:180000,trait:'接客上手',emoji:'👩🏻‍🦰'},customers:[{id:'misaki',trust:77,visits:6,totalSpent:88000}],equipment:{bed:3,sofa:2,plant:1,shelf:1},history:[{day:1,sales:8000,guests:1,avg:80,profit:8000}],cumulativeSales:88000,developedServices:['facial','smallface','slimming'],serviceLevels:{facial:1,smallface:1,slimming:1}};
 const migrated=api.migrate(old);
@@ -31,7 +33,7 @@ assert.equal(migrated.staff.name,'あかり');
 assert.equal(migrated.customers.find(c=>c.id==='misaki').trust,77);
 assert.equal(migrated.equipment.bed,3);
 assert.equal(migrated.history.length,1);
-assert.equal(migrated.gameVersion,'0.4');
+assert.equal(migrated.gameVersion,'0.5');
 assert.equal(migrated.customers.length>=30,true);
 assert.equal(migrated.encounteredCustomers.includes('misaki'),true);
 assert.equal(migrated.money,old.money,'Ver.0.3の所持金を維持');
@@ -65,4 +67,4 @@ const bonusState=api.freshState();bonusState.player.outfit='trend';bonusState.fa
 assert.equal(api.outfitBonus({category:'若年層',personality:'流行好き',concern:'小顔'},{matches:['小顔']}).bonus,8);
 bonusState.machines.poreMachine={owned:true,level:1};
 assert.equal(api.machineBonus({concern:'毛穴'}),10);
-console.log('Salon Story Ver.0.4 state tests: OK');
+console.log('Salon Story Ver.0.5 state tests: OK');
