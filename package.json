@@ -1,1 +1,1 @@
-{"name":"salon-story","private":true,"version":"0.1.0","type":"module","scripts":{"dev":"vite","build":"vite build","preview":"vite preview"},"devDependencies":{"vite":"^7.1.4"}}
+{"name":"salon-story","private":true,"version":"0.4.0","type":"module","scripts":{"dev":"vite","build":"vite build","preview":"vite preview","test":"node tests/state.test.mjs && node tests/visitor-selection.test.mjs && node tests/v04-systems.test.mjs"},"devDependencies":{"vite":"^7.1.4"}}
