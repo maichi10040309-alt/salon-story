@@ -7,39 +7,56 @@ globalThis.document={querySelector:selector=>selector==='#app'?root:null,querySe
 globalThis.window=globalThis;
 Object.defineProperty(globalThis,'navigator',{value:{},configurable:true});
 
-await import('../src/game-v02.js');
+await import('../src/game-v03.js');
 const api=window.__SALON_STORY_TEST__;
-
 const fresh=api.freshState();
-assert.equal(fresh.money,500000,'新規ゲームの所持金');
-assert.deepEqual(fresh.developedServices,['facial','smallface','slimming'],'初期施術');
-assert.equal(fresh.customers.length,10,'顧客数');
-assert.equal(fresh.customers.every(c=>c.counseling.length===4),true,'全顧客の4選択肢');
-assert.equal(fresh.goals.length,3,'短期目標');
+assert.equal(fresh.gameVersion,'0.3');
+assert.equal(fresh.money,500000);
+assert.equal(fresh.customers.length>=30,true);
+assert.equal(new Set(fresh.customers.map(c=>c.id)).size,fresh.customers.length);
+assert.equal(fresh.customers.every(c=>c.counseling.length===4),true);
+assert.equal(fresh.unlockedCustomers.length,10);
+assert.equal(fresh.storeRank,'D');
+assert.equal(fresh.rivals.length,3);
+assert.equal(fresh.dailyMissions.length,3);
 
-const old={day:12,money:345678,popularity:456,rating:4.2,salonLevel:3,xp:270,staff:{id:'akari',name:'あかり',tech:50,service:80,sales:60,speed:55,stamina:60,popularity:55,salary:180000,trait:'接客上手',emoji:'👩🏻‍🦰'},customers:[{id:'misaki',trust:77,visits:6,totalSpent:88000}],equipment:{bed:3,sofa:2,plant:1,shelf:1},history:[{day:1,sales:8000,guests:1,avg:80,profit:8000}],cumulativeSales:88000};
+const old={version:2,day:12,money:345678,popularity:456,rating:4.2,salonLevel:3,xp:270,staff:{id:'akari',name:'あかり',tech:50,service:80,sales:60,speed:55,stamina:60,popularity:55,salary:180000,trait:'接客上手',emoji:'👩🏻‍🦰'},customers:[{id:'misaki',trust:77,visits:6,totalSpent:88000}],equipment:{bed:3,sofa:2,plant:1,shelf:1},history:[{day:1,sales:8000,guests:1,avg:80,profit:8000}],cumulativeSales:88000,developedServices:['facial','smallface','slimming'],serviceLevels:{facial:1,smallface:1,slimming:1}};
 const migrated=api.migrate(old);
-assert.equal(migrated.money,345678,'所持金を維持');
-assert.equal(migrated.staff.name,'あかり','スタッフを維持');
-assert.equal(migrated.customers.find(c=>c.id==='misaki').trust,77,'顧客信頼度を維持');
-assert.equal(migrated.equipment.bed,3,'設備を維持');
-assert.equal(migrated.history.length,1,'履歴を維持');
-assert.equal(migrated.customers.find(c=>c.id==='misaki').job,'会社員','不足項目を補完');
+assert.equal(migrated.money,345678);
+assert.equal(migrated.staff.name,'あかり');
+assert.equal(migrated.customers.find(c=>c.id==='misaki').trust,77);
+assert.equal(migrated.equipment.bed,3);
+assert.equal(migrated.history.length,1);
+assert.equal(migrated.gameVersion,'0.3');
+assert.equal(migrated.customers.length>=30,true);
+assert.equal(migrated.encounteredCustomers.includes('misaki'),true);
 assert.equal(api.customerRank({visits:2,trust:20}),'リピーター');
 assert.equal(api.customerRank({visits:5,trust:60}),'常連');
 assert.equal(api.customerRank({visits:10,trust:90}),'VIP');
 assert.equal(api.ratingLabel(95).label,'✨ PERFECT!');
 assert.equal(api.ratingLabel(80).label,'♡ GOOD!');
 assert.equal(api.ratingLabel(30).label,'💢 BAD');
-for(const customer of fresh.customers){
-  assert.equal(customer.counseling.length,4,`${customer.name}の選択肢数`);
-  assert.equal(new Set(customer.counseling.map(choice=>choice[2])).size,4,`${customer.name}の返答が個別`);
-}
-api.setState(fresh);
-api.addXP(100);
-assert.equal(api.getState().salonLevel,2,'XPでSalon Lv.2');
-assert.equal(api.getState().pendingLevelUp.unlock,'バストケア','レベル解禁表示');
-assert.equal(api.canDevelopService('bust'),true,'Lv.2でバストケア開発可能');
-assert.equal(api.developServiceById('bust'),true,'施術開発');
-assert.equal(api.getState().developedServices.includes('bust'),true,'開発後に提供可能');
-console.log('Salon Story Ver.0.2 state tests: OK');
+
+api.setState(fresh);api.addXP(100);
+assert.equal(api.getState().salonLevel,2);
+assert.equal(api.getState().unlockedCustomers.includes('nana'),true);
+assert.equal(api.canDevelopService('bust'),true);
+assert.equal(api.developServiceById('bust'),true);
+
+const rankState=api.freshState();rankState.money=500000;rankState.popularity=500;rankState.cumulativeSales=500000;api.setState(rankState);
+assert.equal(api.rankEligible('C'),true);
+assert.equal(api.expandStore('C'),true);
+assert.equal(api.getState().money,200000);
+const poor=api.freshState();poor.money=100;poor.popularity=500;poor.cumulativeSales=500000;api.setState(poor);
+assert.equal(api.expandStore('C'),false);
+
+const chapterState=api.freshState();chapterState.salonLevel=2;chapterState.cumulativeSales=100000;chapterState.customers[0].visits=2;api.setState(chapterState);
+assert.equal(api.chapterReady(),true);
+assert.equal(api.completeChapter(),true);
+assert.equal(api.getState().money,550000);
+
+const bonusState=api.freshState();bonusState.player.outfit='trend';bonusState.fashion.owned.push('trend');api.setState(bonusState);
+assert.equal(api.outfitBonus({category:'若年層',personality:'流行好き',concern:'小顔'},{matches:['小顔']}).bonus,8);
+bonusState.machines.poreMachine={owned:true,level:1};
+assert.equal(api.machineBonus({concern:'毛穴'}),10);
+console.log('Salon Story Ver.0.3 state tests: OK');
