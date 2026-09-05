@@ -1,4 +1,5 @@
 import assert from'node:assert/strict';
+import{readFile}from'node:fs/promises';
 import{layeredPortrait,customerPortrait,staffPortrait,rivalPortrait,officialPortrait,avatarLayerOrder}from'../src/portraits.js';
 import{customerAppearances,customerCategoryAppearances,staffAppearances,rivalAppearances,assetSlots}from'../src/data/v05.js';
 const wardrobe={equipped:{tops:'tops-lace',bottoms:'bottoms-flare',dresses:null,shoes:'shoes-pumps',bags:null,accessories:'accessories-pearl'},makeup:'feminine'};
@@ -8,4 +9,6 @@ assert.equal(Object.keys(customerAppearances).length,10,'主要顧客10名');ass
 assert.equal(Object.keys(customerCategoryAppearances).length,5,'汎用顧客カテゴリ');assert.equal(avatarLayerOrder.length,20,'主人公20レイヤー');
 assert.match(customerPortrait({id:'misaki',name:'美咲',appearance:customerAppearances.misaki},'joy'),/美咲/);assert.match(staffPortrait({id:'akari',name:'あかり',role:'店長'},'confident'),/role-店長/);assert.match(rivalPortrait('luxe','神崎レイナ'),/神崎レイナ/);assert.equal(assetSlots.stores,'assets/stores/');
 assert.match(officialPortrait('owner','owner','オーナー'),/owner-base\.webp/);assert.match(officialPortrait('staff','akari','あかり'),/staff\/akari\.webp/);
+assert.match(officialPortrait('customer','misaki','美咲','lg','', 'joy'),/customers\/misaki\/normal\.webp/);assert.match(officialPortrait('customer','hikari','ひかり'),/customers\/hikari\/normal\.webp/);
+const gameSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');assert.match(gameSource,/stores\/rank-\$\{rank\.toLowerCase\(\)\}\/background\.webp/);assert.match(gameSource,/town\/map\/background\.webp/);assert.match(gameSource,/townAssetNames/);
 console.log('Salon Story Ver.0.5 visual tests: OK');

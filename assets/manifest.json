@@ -1,8 +1,11 @@
 {
-  "version": "0.5-art-1",
+  "version": "0.5-art-2",
   "referencePalette": {"ivory":"#F8F2EB","dustyPink":"#D9A7AC","mocha":"#A88B7B","darkBrown":"#5B4636"},
   "owner": {"base":"characters/owner/owner-base.webp","fallback":"svg-layered"},
   "staff": {"akari":"characters/staff/akari.webp","mizuki":"characters/staff/mizuki.webp","sakura":"characters/staff/sakura.webp"},
+  "majorCustomers": {"misaki":"characters/customers/misaki/normal.webp","saori":"characters/customers/saori/normal.webp","ai":"characters/customers/ai/normal.webp","yumi":"characters/customers/yumi/normal.webp","megumi":"characters/customers/megumi/normal.webp","aoi":"characters/customers/aoi/normal.webp","kaori":"characters/customers/kaori/normal.webp","rena":"characters/customers/rena/normal.webp","mayu":"characters/customers/mayu/normal.webp","hikari":"characters/customers/hikari/normal.webp"},
+  "stores": {"D":"stores/rank-d/background.webp","C":"stores/rank-c/background.webp","B":"stores/rank-b/background.webp","A":"stores/rank-a/background.webp"},
+  "town": {"background":"town/map/background.webp","salon":"town/salon/building.webp","fashionShop":"town/fashion/building.webp","beautyShop":"town/beauty/building.webp","cafe":"town/cafe/building.webp","school":"town/school/building.webp"},
   "avatarLayers": ["body","skin","legs","shoes","bottoms","tops","dress","outer","backHair","face","eyes","eyebrows","makeup","mouth","frontHair","earrings","necklace","bag","accessory","effect"],
-  "fallbacks": {"customers":"category-svg","rivals":"svg","stores":"css","town":"css"}
+  "fallbacks": {"customerExpressions":"styled-base-portrait","otherCustomers":"category-svg","rivals":"svg","stores":"css","town":"css"}
 }
