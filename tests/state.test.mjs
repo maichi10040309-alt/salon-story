@@ -31,4 +31,15 @@ assert.equal(api.customerRank({visits:10,trust:90}),'VIP');
 assert.equal(api.ratingLabel(95).label,'✨ PERFECT!');
 assert.equal(api.ratingLabel(80).label,'♡ GOOD!');
 assert.equal(api.ratingLabel(30).label,'💢 BAD');
+for(const customer of fresh.customers){
+  assert.equal(customer.counseling.length,4,`${customer.name}の選択肢数`);
+  assert.equal(new Set(customer.counseling.map(choice=>choice[2])).size,4,`${customer.name}の返答が個別`);
+}
+api.setState(fresh);
+api.addXP(100);
+assert.equal(api.getState().salonLevel,2,'XPでSalon Lv.2');
+assert.equal(api.getState().pendingLevelUp.unlock,'バストケア','レベル解禁表示');
+assert.equal(api.canDevelopService('bust'),true,'Lv.2でバストケア開発可能');
+assert.equal(api.developServiceById('bust'),true,'施術開発');
+assert.equal(api.getState().developedServices.includes('bust'),true,'開発後に提供可能');
 console.log('Salon Story Ver.0.2 state tests: OK');
