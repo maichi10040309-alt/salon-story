@@ -40,6 +40,8 @@ function customerRank(customer){if(customer.visits>=10&&customer.trust>=90)retur
 function ratingLabel(score){if(score>=90)return{label:'✨ PERFECT!',className:'perfect'};if(score>=75)return{label:'♡ GOOD!',className:'good'};if(score>=60)return{label:'OK',className:'ok'};if(score>=40)return{label:'△ NOT BAD',className:'notbad'};return{label:'💢 BAD',className:'bad-result'}}
 function serviceData(service){const level=state.serviceLevels[service.id]||1;return{...service,level,price:service.price+(level-1)*(service.id==='slimming'?1000:750),base:service.base+(level-1)*(service.id==='slimming'?5:4)}}
 function availableServices(){return services.filter(service=>state.developedServices.includes(service.id)).map(serviceData)}
+function canDevelopService(id){const service=services.find(item=>item.id===id);return Boolean(service&&state.salonLevel>=service.requiredLevel&&!state.developedServices.includes(id)&&state.money>=service.developmentCost)}
+function developServiceById(id){const service=services.find(item=>item.id===id);if(!canDevelopService(id))return false;state.money-=service.developmentCost;state.developedServices.push(id);state.serviceLevels[id]=1;return true}
 function nextLevelProgress(){if(state.salonLevel>=5)return{current:1,label:'MAX'};const start=levelThresholds[state.salonLevel-1],end=levelThresholds[state.salonLevel];return{current:clamp((state.xp-start)/(end-start),0,1),label:`${state.xp-start} / ${end-start} XP`}}
 function addXP(amount){state.xp+=amount;let before=state.salonLevel;while(state.salonLevel<5&&state.xp>=levelThresholds[state.salonLevel])state.salonLevel++;if(state.salonLevel>before)state.pendingLevelUp={from:before,to:state.salonLevel,unlock:levelUnlocks[state.salonLevel]}}
 function goalProgress(goal){if(goal.type==='sales')return state.cumulativeSales-goal.startValue;if(goal.type==='rating')return state.rating;if(goal.type==='repeaters')return state.customers.filter(c=>customerRank(c)!=='初回来店').length;return 0}
@@ -111,7 +113,7 @@ function bind(){
   document.querySelectorAll('[data-train]').forEach(button=>button.onclick=()=>{if(spend(Number(button.dataset.cost))){const key=button.dataset.train,before=state.staff[key],gain=3+Math.floor(Math.random()*3);state.staff[key]=clamp(before+gain,0,100);save();notify(`${key==='service'?'接客':key==='tech'?'技術':key==='sales'?'営業':'速度'} ${before} → ${state.staff[key]}`)}});
   document.querySelectorAll('[data-ad]').forEach(button=>button.onclick=()=>{const ad=adsData.find(item=>item[0]===button.dataset.ad);if(spend(ad[2])){state.ads.push({id:ad[0],min:ad[4],max:ad[5]});save();notify(`${ad[1]}を設定しました！`)}});
   document.querySelectorAll('[data-buy]').forEach(button=>button.onclick=()=>{const item=shopItems.find(x=>x[0]===button.dataset.buy);if(spend(item[2])){state.equipment[item[0]]=item[4];save();notify(`${item[1]}を購入しました！`)}});
-  document.querySelectorAll('[data-develop]').forEach(button=>button.onclick=()=>{const service=services.find(s=>s.id===button.dataset.develop);if(spend(service.developmentCost)){state.developedServices.push(service.id);state.serviceLevels[service.id]=1;save();notify(`新メニュー「${service.name}」を開発しました！`)}});
+  document.querySelectorAll('[data-develop]').forEach(button=>button.onclick=()=>{const service=services.find(s=>s.id===button.dataset.develop);if(developServiceById(service.id)){save();notify(`新メニュー「${service.name}」を開発しました！`)}else notify('開発条件または所持金を確認してください')});
   document.querySelectorAll('[data-upgrade]').forEach(button=>button.onclick=()=>{const id=button.dataset.upgrade,current=state.serviceLevels[id]||1,cost=20000+current*20000;if(spend(cost)){state.serviceLevels[id]=current+1;save();notify(`${services.find(s=>s.id===id).name} Lv.${current} → Lv.${current+1}`)}});
   document.querySelectorAll('[data-chart]').forEach(button=>button.onclick=()=>{state.selectedCustomer=button.dataset.chart;state.screen='customerChart';render()});
   document.querySelectorAll('[data-counsel]').forEach(button=>button.onclick=()=>chooseCounsel(Number(button.dataset.counsel)));
@@ -124,7 +126,7 @@ function bind(){
   document.querySelector('[data-action="reset"]')?.addEventListener('click',()=>{if(confirm('すべてのセーブデータを削除しますか？')){localStorage.removeItem(SAVE_KEY);state=freshState();render()}})
 }
 
-window.__SALON_STORY_TEST__={freshState,migrate,customerRank,ratingLabel,serviceData,getState:()=>state,setState:value=>{state=value}};
+window.__SALON_STORY_TEST__={freshState,migrate,customerRank,ratingLabel,serviceData,addXP,canDevelopService,developServiceById,getState:()=>state,setState:value=>{state=value}};
 render();
 if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(items=>items.forEach(item=>item.unregister())).catch(()=>{});
 if('caches'in window)caches.keys().then(keys=>keys.filter(key=>key.startsWith('salon-story')).forEach(key=>caches.delete(key))).catch(()=>{});
