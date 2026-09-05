@@ -1,4 +1,4 @@
-import './style.css';import{customers as baseCustomers}from'./data/customers.js';import{services}from'./data/services.js';import{staff as staffOptions}from'./data/staff.js';
+import{customers as baseCustomers}from'./data/customers.js';import{services}from'./data/services.js';import{staff as staffOptions}from'./data/staff.js';
 const KEY='salon-story-v01';const copy=x=>JSON.parse(JSON.stringify(x));
 const initial=()=>({day:1,money:500000,popularity:100,rating:3,salonLevel:1,xp:0,todaySales:0,staff:null,customers:copy(baseCustomers),equipment:{bed:1,sofa:1,plant:1,shelf:0},ads:[],history:[],cumulativeSales:0,screen:'home',session:null});
 let state=(()=>{try{return Object.assign(initial(),JSON.parse(localStorage.getItem(KEY))||{})}catch{return initial()}})();let toast='';
