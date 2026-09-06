@@ -1,0 +1,108 @@
+import assert from'node:assert/strict';
+import{readFile}from'node:fs/promises';
+import{dailyPolicies,weatherTypes,customerConditions,businessEvents,treatmentEvents}from'../src/data/v06.js';
+import{applyEventEffects,conditionServiceBonus,createDailyWeather,dailyGuestAdjustment,dayAtmosphere,effectiveBudget,nextDayPreview,pickCustomerCondition,seasonForDay,selectBusinessEvents}from'../src/v06-systems.js';
+import{staff as staffTemplates}from'../src/data/staff.js';
+
+assert.equal(dailyPolicies.length,6,'営業方針は6種類');
+assert.equal(weatherTypes.length,6,'天気は6種類');
+assert.equal(customerConditions.length,20,'日替わりコンディションは20種類');
+assert.equal(businessEvents.length>=50,true,'営業イベントは50種類以上');
+assert.equal(businessEvents.every(event=>event.choices.length===3),true,'営業イベントは全て3択');
+assert.equal(treatmentEvents.length>=8,true,'施術中イベントを用意');
+assert.equal(seasonForDay(1),'春');
+assert.equal(seasonForDay(31),'夏');
+assert.equal(createDailyWeather(1,()=>0).id,'sunny');
+assert.equal(createDailyWeather(31,()=>.99).id,'hot');
+assert.match(dayAtmosphere(27,'金曜日'),/給料日後/);
+assert.equal(dailyGuestAdjustment({weekday:'月曜日',weather:{guest:-1},policy:{effects:{guest:1}}}),-1);
+assert.equal(dailyGuestAdjustment({weekday:'土曜日',weather:{guest:0},policy:{effects:{guest:1}}}),2);
+
+const customer={id:'test',concern:'小顔',budget:10000};
+const dateCondition=customerConditions.find(x=>x.id==='before-date');
+assert.equal(effectiveBudget(customer,dateCondition),12000,'コンディションで予算が変動');
+assert.equal(conditionServiceBonus(dateCondition,{matches:['小顔']},customer),10,'対象施術へ補正');
+assert.equal(conditionServiceBonus(dateCondition,{matches:['体型改善']},customer),3,'非対象時は基礎補正');
+assert.equal(typeof pickCustomerCondition(customer,()=>0).line,'string','来店時会話を保持');
+
+const selected=selectBusinessEvents({day:12,rng:()=>.99,max:3});
+assert.equal(selected.length,3,'1日最大3イベント');
+assert.equal(new Set(selected.map(x=>x.id)).size,3,'同じ営業イベントを重複させない');
+assert.equal(selected.every(x=>x.day===12),true);
+const eventState={money:1000,popularity:10,staff:{energy:50}};
+const applied=applyEventEffects(eventState,{money:-2000,popularity:3,energy:80,satisfaction:2});
+assert.equal(eventState.money,0,'イベント支出で所持金を負にしない');
+assert.equal(eventState.popularity,13);
+assert.equal(eventState.staff.energy,100,'Energyを0〜100に収める');
+assert.equal(applied.satisfaction,2);
+assert.match(nextDayPreview({day:5,reservations:[{time:'10:00'}]}),/10:00/);
+assert.match(nextDayPreview({day:6}),/日曜日/);
+
+const storage=new Map();
+globalThis.localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
+const root={innerHTML:''};
+globalThis.document={querySelector:selector=>selector==='#app'?root:null,querySelectorAll:()=>[]};
+globalThis.window=globalThis;
+Object.defineProperty(globalThis,'navigator',{value:{},configurable:true});
+await import('../src/game-v03.js?v06-tests');
+const api=window.__SALON_STORY_TEST__;
+
+const legacy=api.freshState();
+legacy.gameVersion='0.5';legacy.version=5;legacy.money=321000;legacy.day=19;legacy.storeRank='C';
+delete legacy.dailyPolicy;delete legacy.dailyWeather;delete legacy.customerConditions;delete legacy.eventHistory;delete legacy.autoServiceSettings;
+const migrated=api.migrate(legacy);
+assert.equal(migrated.gameVersion,'0.6');
+assert.equal(migrated.money,321000,'v0.5の所持金を維持');
+assert.equal(migrated.day,19,'v0.5の日数を維持');
+assert.equal(migrated.storeRank,'C','v0.5の店舗Rankを維持');
+assert.equal(migrated.dailyPolicy,null);
+assert.equal(typeof migrated.dailyWeather.id,'string');
+assert.deepEqual(migrated.customerConditions,{});
+assert.deepEqual(migrated.eventHistory,[]);
+assert.equal(migrated.autoServiceSettings.enabled,true);
+
+const play=api.freshState();
+play.staff={...staffTemplates[0],level:1,xp:0,energy:100,bond:0,role:'スタッフ',management:20,treatments:0,skills:[],nominations:0,monthlySales:0,monthlyPerfect:0};
+play.dailyPolicy=dailyPolicies.find(x=>x.id==='reviews');
+api.setState(play);
+api.startDay();
+const started=api.getState();
+assert.equal(started.screen,'play');
+assert.equal(started.session.queue.length>0,true,'営業日の顧客を選出');
+assert.equal(started.session.eventQueue.length>=1,true,'毎日最低1つの出来事');
+assert.equal(started.session.eventQueue.length<=3,true);
+assert.equal(started.session.queue.every(id=>started.customerConditions[id]),true,'来店客ごとにコンディションを設定');
+assert.equal(started.session.policyId,'reviews');
+
+const normal=started.customers.find(c=>c.id===started.session.queue[0]);
+started.encounteredCustomers.push(normal.id);normal.visits=1;
+const ordinary={id:'ordinary-test',visits:1,trust:30,concern:'肩こり',job:'会社員'};
+started.encounteredCustomers.push(ordinary.id);
+assert.equal(api.manualServiceRequired(ordinary),false,'通常の既存客はおまかせ可能');
+started.session.phase='treatment';
+api.prepareAutoService();
+started.session.phase='treatment';
+const autoResult=api.autoServeCurrent(true);
+assert.equal(autoResult.auto,true,'スタッフおまかせ結果として記録');
+assert.equal(started.session.results.length,1);
+
+const eventBefore=started.eventHistory.length,moneyBefore=started.money;
+started.session.eventCursor=0;started.session.afterEvent='batch';started.session.eventQueue=[businessEvents.find(x=>x.category==='lucky')];
+api.resolveBusinessEvent(2);
+assert.equal(started.eventHistory.length,eventBefore+1,'イベント選択を履歴へ保存');
+assert.notEqual(started.money,moneyBefore,'イベント効果を即時反映');
+
+const source=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+const css=await readFile(new URL('../src/v06.css',import.meta.url),'utf8');
+const baseCss=await readFile(new URL('../src/v05.css',import.meta.url),'utf8');
+assert.match(source,/function todayPageV6/,'TODAY画面');
+assert.match(source,/function policyPageV6/,'営業方針画面');
+assert.match(source,/function autoServeRemaining/,'残りをまとめて任せる');
+assert.match(source,/function treatmentDecisionPageV6/,'施術中判断');
+assert.match(source,/function dayResultPageV6/,'営業結果演出');
+for(const stage of ['arrival','waiting','treatment','checkout','exit'])assert.match(css,new RegExp(`stage-${stage}`),`${stage}移動スタイル`);
+assert.match(css,/@media\(max-width:720px\)/,'iPhone向けレイアウト');
+assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'動きを減らす設定');
+assert.match(baseCss,/overflow-x:clip/,'横スクロールを防止');
+
+console.log(`Salon Story Ver.0.6 systems tests: OK (${businessEvents.length} events)`);

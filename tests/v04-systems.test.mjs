@@ -36,5 +36,5 @@ assert.equal(api.styleScores().luxury>0,true,'パーツとメイクからSTYLE�
 
 const legacy={version:3,gameVersion:'0.3',day:22,money:765432,popularity:900,rating:4.4,salonLevel:4,xp:600,customers:[{id:'misaki',trust:88,visits:7,totalSpent:120000,visitHistory:[{day:21,service:'痩身ケア',score:90,sales:8000}]}],equipment:{bed:3},history:[{day:21,sales:8000}],staff:{id:'akari',name:'あかり',level:5,service:82,tech:60,sales:65,speed:60,popularity:70}};
 const migrated=api.migrate(legacy);
-assert.equal(migrated.gameVersion,'0.5');assert.equal(migrated.money,765432);assert.equal(migrated.day,22);assert.equal(migrated.customers.find(c=>c.id==='misaki').trust,88);assert.equal(migrated.customers.find(c=>c.id==='misaki').lastVisitDay,21);assert.equal(migrated.staff.level,5);assert.equal(migrated.staff.bond,0);assert.equal(migrated.wardrobe.owned.length>=3,true);assert.equal(migrated.stores.length,1);
+assert.equal(migrated.gameVersion,'0.6');assert.equal(migrated.money,765432);assert.equal(migrated.day,22);assert.equal(migrated.customers.find(c=>c.id==='misaki').trust,88);assert.equal(migrated.customers.find(c=>c.id==='misaki').lastVisitDay,21);assert.equal(migrated.staff.level,5);assert.equal(migrated.staff.bond,0);assert.equal(migrated.wardrobe.owned.length>=3,true);assert.equal(migrated.stores.length,1);
 console.log('Salon Story Ver.0.5 systems tests: OK');
