@@ -58,7 +58,7 @@ assert.equal(api.getState().money,200000);
 const poor=api.freshState();poor.money=100;poor.popularity=500;poor.cumulativeSales=500000;api.setState(poor);
 assert.equal(api.expandStore('C'),false);
 
-const chapterState=api.freshState();chapterState.salonLevel=2;chapterState.cumulativeSales=100000;chapterState.customers[0].visits=2;api.setState(chapterState);
+const chapterState=api.freshState();chapterState.salonLevel=2;chapterState.cumulativeSales=100000;chapterState.customers[0].visits=2;chapterState.encounteredCustomers.push(chapterState.customers[0].id);api.setState(chapterState);
 assert.equal(api.chapterReady(),true);
 assert.equal(api.completeChapter(),true);
 assert.equal(api.getState().money,550000);
