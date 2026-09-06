@@ -31,7 +31,7 @@ assert.equal(api.nextCustomerStory(misaki).step,1,'顧客Story 1解禁');
 const chain=api.freshState();chain.storeRank='A';chain.completedChapters=[1,2,3,4,5];api.setState(chain);
 assert.equal(api.secondStoreUnlocked(),true,'Rank A＋Chapter 5で2号店解禁');
 
-const style=api.freshState();style.wardrobe.owned.push('tops-silk','bottoms-slacks');style.wardrobe.equipped={tops:'tops-silk',bottoms:'bottoms-slacks',dresses:null,shoes:null,bags:null,accessories:null};style.wardrobe.makeup='mode';style.wardrobe.makeupOwned.push('mode');api.setState(style);
+const style=api.freshState();style.wardrobe.owned.push('tops-silk','bottoms-slacks');style.wardrobe.equipped={tops:'tops-silk',bottoms:'bottoms-slacks',dresses:null,shoes:null,bags:null,accessories:null};style.wardrobe.makeup='mode';style.wardrobe.makeupOwned.push('mode');style.ownerAppearance={...style.ownerAppearance,tops:'tops-silk',bottoms:'bottoms-slacks',dress:null,shoes:null,bag:null,accessories:null,makeup:'mode'};api.setState(style);
 assert.equal(api.styleScores().luxury>0,true,'パーツとメイクからSTYLE計算');
 
 const legacy={version:3,gameVersion:'0.3',day:22,money:765432,popularity:900,rating:4.4,salonLevel:4,xp:600,customers:[{id:'misaki',trust:88,visits:7,totalSpent:120000,visitHistory:[{day:21,service:'痩身ケア',score:90,sales:8000}]}],equipment:{bed:3},history:[{day:21,sales:8000}],staff:{id:'akari',name:'あかり',level:5,service:82,tech:60,sales:65,speed:60,popularity:70}};

@@ -17,7 +17,7 @@ for(const asset of ['salon\/salon-exterior','fashion\/fashion-exterior','beauty\
 assert.match(gameSource,/town-map-point/,'街は背景上の軽量タップポイントを使用');
 assert.doesNotMatch(gameSource,/class="building-art"/,'街マップ上で施設外観カードを重ねない');
 assert.match(gameSource,/has-official-art/,'正式画像のロード成功状態を明示する');
-assert.match(gameSource,/customers\/\$\{c\.id\}\/\$\{expression\}\.webp\?v=60/,'全顧客の表情別正式画像を自動探索');
+assert.match(gameSource,/customers\/\$\{c\.id\}\/\$\{expression\}\.webp\?v=61/,'全顧客の表情別正式画像を自動探索');
 assert.match(gameSource,/fallbackCustomerAppearance/,'未制作顧客は年代別・ID別SVG差分を使用');
 assert.match(gameSource,/function homeV56\(/,'v56ホームを使用');
 assert.match(gameSource,/home-game-hud/,'経営数値を小型HUDへ集約');
