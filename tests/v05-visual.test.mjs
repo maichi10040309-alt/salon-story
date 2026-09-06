@@ -14,4 +14,10 @@ const gameSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'u
 for(const rank of ['d','c','b','a'])assert.match(gameSource,new RegExp(`stores/rank-${rank}/store-rank-${rank}\\.webp`));
 assert.match(gameSource,/town\/town-main\.webp/);
 for(const asset of ['salon\/salon-exterior','fashion\/fashion-exterior','beauty\/beauty-exterior','cafe\/cafe-exterior','school\/school-exterior'])assert.match(gameSource,new RegExp(`town/${asset}\\.webp`));
+assert.match(gameSource,/town-map-point/,'街は背景上の軽量タップポイントを使用');
+assert.doesNotMatch(gameSource,/class="building-art"/,'街マップ上で施設外観カードを重ねない');
+assert.match(gameSource,/has-official-art/,'正式画像のロード成功状態を明示する');
+const visualCss=await readFile(new URL('../src/v05.css',import.meta.url),'utf8');
+assert.match(visualCss,/\.v5-salon\.has-official-art[^}]*\.scene-object/,'正式店舗背景では旧設備を非表示');
+assert.match(visualCss,/aspect-ratio:16\/10/,'スマートフォン用の街比率');
 console.log('Salon Story Ver.0.5 visual tests: OK');
