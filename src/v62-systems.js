@@ -52,9 +52,25 @@ export function eventResultSummary(event,choice,effects,state){
   return{title:positive?'良い判断になりました':'少し注意が必要です',message:`「${choice.label}」を選び、${event.title}に対応しました。`,reaction:positive?'落ち着いて対応してもらえて安心しました。':'次はもう少し余裕があるとうれしいです。',changes,positive,staffName:state.staff?.name||'スタッフ'};
 }
 
+export function beautyResultTier(score){return score>=90?'perfect':score>=75?'good':score>=40?'notbad':'bad'}
+
+export function beautyTreatmentType(serviceId){
+  if(serviceId==='smallface')return'smallface';
+  if(serviceId==='facial'||serviceId==='pore')return'facial';
+  if(serviceId==='slimming'||serviceId==='luxurySlimming')return'slimming';
+  if(serviceId==='bust')return'bust';
+  return'relax';
+}
+
+export function createBeautyVisualProfile(serviceId,score){
+  const treatment=beautyTreatmentType(serviceId),tier=beautyResultTier(score),intensity={perfect:1,good:.76,notbad:.42,bad:.2}[tier];
+  const labels={smallface:'輪郭・むくみ',facial:'肌ツヤ・明るさ',slimming:'姿勢・ボディライン',bust:'姿勢・デコルテ',relax:'疲労感・表情'};
+  return{treatment,tier,intensity,type:labels[treatment],before:{expression:treatment==='relax'?'worried':'normal',effect:`before-${treatment}`},after:{expression:tier==='perfect'?'joy':tier==='good'?'happy':tier==='bad'?'confused':'smile',effect:`after-${treatment}`}};
+}
+
 export function createBeforeAfterRecord({day,customer,service,plan,score,staff}){
-  const type=service.id==='smallface'?'輪郭・むくみ':service.id==='facial'||service.id==='pore'?'肌ツヤ・明るさ':service.id==='slimming'||service.id==='luxurySlimming'?'姿勢・ボディライン':service.id==='bust'?'姿勢・デコルテ':'疲労感・表情';
-  return{id:`beauty-${day}-${customer.id}-${Date.now()}`,day,customerId:customer.id,customerName:customer.name,serviceId:service.id,service:`${service.name} ${plan.name}`,plan:plan.id,price:plan.price,score,staff,type,beforeExpression:score<60?'worried':'normal',afterExpression:score>=90?'joy':score>=75?'happy':score<40?'confused':'smile'};
+  const visual=createBeautyVisualProfile(service.id,score);
+  return{id:`beauty-${day}-${customer.id}-${Date.now()}`,day,customerId:customer.id,customerName:customer.name,serviceId:service.id,service:`${service.name} ${plan.name}`,plan:plan.id,price:plan.price,score,staff,type:visual.type,resultTier:visual.tier,beforeExpression:visual.before.expression,afterExpression:visual.after.expression,beforeVisual:visual.before,afterVisual:visual.after,visualIntensity:visual.intensity};
 }
 
 export function inferCustomerMemory(customer){return{lastService:customer.lastService||null,lastPlan:customer.lastPlan||null,lastPrice:Number(customer.lastPrice||0),lastStaff:customer.lastStaff||null,lastScore:Number(customer.lastScore||0),lastReview:customer.lastReview||null,lastWaitTime:Number(customer.lastWaitTime||0),lastEvent:customer.lastEvent||null}}

@@ -1,5 +1,5 @@
 import assert from'node:assert/strict';
-import{LUMIERE_CITY,calculateDailyVisitorCount,canPauseBusiness,createBeforeAfterRecord,createMonthlyGoals,createTreatmentPlans,eventResultSummary,resumableSession,treatmentAffinity,visitorForecast}from'../src/v62-systems.js';
+import{LUMIERE_CITY,beautyResultTier,beautyTreatmentType,calculateDailyVisitorCount,canPauseBusiness,createBeforeAfterRecord,createBeautyVisualProfile,createMonthlyGoals,createTreatmentPlans,eventResultSummary,resumableSession,treatmentAffinity,visitorForecast}from'../src/v62-systems.js';
 import{storyEpisodes,extraStaff,socialPostTypes}from'../src/data/v62.js';
 
 const service={id:'facial',name:'フェイシャル',price:13200,time:60,matches:['毛穴','肌荒れ']};
@@ -16,6 +16,13 @@ assert.ok(calculateDailyVisitorCount({rank:'D',popularity:100,rating:3,reviews:0
 const session={queue:['a'],index:0,results:[],phase:'assign'};assert.ok(resumableSession(session));assert.ok(canPauseBusiness(session));assert.equal(canPauseBusiness({...session,phase:'treatment'}),false);
 assert.equal(eventResultSummary({title:'予約なし新規客'},{label:'待ってもらう'},{money:16500,satisfaction:-2},{staff}).changes.length,2);
 assert.equal(createBeforeAfterRecord({day:2,customer,service,plan:plans[0],score:90,staff:'オーナー'}).afterExpression,'joy');
+for(const [serviceId,type] of [['smallface','smallface'],['facial','facial'],['slimming','slimming'],['bust','bust'],['relax','relax']]){
+  const visual=createBeautyVisualProfile(serviceId,95);
+  assert.equal(beautyTreatmentType(serviceId),type,`${serviceId}の美容差分種別`);
+  assert.notEqual(visual.before.effect,visual.after.effect,`${serviceId}のBefore/Afterは同一にしない`);
+}
+assert.deepEqual([95,80,55,20].map(beautyResultTier),['perfect','good','notbad','bad'],'結果ランク別の差分');
+assert.ok(createBeautyVisualProfile('facial',95).intensity>createBeautyVisualProfile('facial',55).intensity,'結果が良いほど変化を強くする');
 assert.equal(Object.keys(storyEpisodes).length,10);assert.ok(Object.values(storyEpisodes).every(v=>v.length===5));assert.equal(Object.values(storyEpisodes).flat().length,50);
 assert.equal(extraStaff.length,2);assert.equal(socialPostTypes.length,4);assert.equal(createMonthlyGoals(1).length,3);assert.equal(LUMIERE_CITY.ja,'ルミエールシティ');
 console.log('v62 systems tests passed');
