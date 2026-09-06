@@ -106,6 +106,7 @@ assert.match(homeMarkup,new RegExp(`data-owner-hair="${targetHair}"`),'ホーム
 assert.match(homeMarkup,/data-owner-color="ピンクブラウン"/,'ホームで保存済み髪色を描画');
 assert.match(homeMarkup,/data-owner-makeup="cool"/,'ホームで保存済みメイクを描画');
 assert.match(homeMarkup,/owner-home-avatar/,'ホームは共通ownerAppearance描画を使用');
+assert.match(homeMarkup,/owner-official-fixed/,'ホームは添付の正式オーナー画像を使用');
 const paused=api.freshState();paused.session={queue:['misaki','ai'],index:1,results:[],phase:'assign'};paused.activeBusinessSession=paused.session;paused.todaySales=33000;
 const resumed=api.migrate(paused);assert.equal(resumed.screen,'businessResume','営業途中セーブを再開画面へ移行');assert.equal(resumed.session.index,1);assert.equal(resumed.todaySales,33000);
 assert.equal(api.manualServiceRequired({id:'rena',visits:12,trust:95}),false,'通常VIPもスタッフ接客可能');
@@ -120,12 +121,13 @@ assert.match(source,/getTreatmentChoices\(c,state,state\.staff,availableServices
 assert.match(source,/\['play','store','serviceResult'\]\.includes\(state\.screen\)/,'店舗・営業・結果で現在の主人公を表示');
 assert.match(css,/@media\(max-width:720px\)/,'iPhone向けレイアウト');
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'reduced motion対応');
-assert.match(index,/v61\.css\?v=(?:61|62|63)/,'v61 CSS互換レイヤーを読み込む');
-assert.match(serviceWorker,/salon-story-v(?:61|62|63)/,'v61以降の公開キャッシュを使用');
+assert.match(index,/v61\.css\?v=(?:61|62|63|64)/,'v61 CSS互換レイヤーを読み込む');
+assert.match(serviceWorker,/salon-story-v(?:61|62|63|64)/,'v61以降の公開キャッシュを使用');
 assert.match(source,/function treatmentServicePageV62/,'施術内容選択を独立');
 assert.match(source,/function treatmentPlanPageV62/,'価格プラン選択を独立');
 assert.match(source,/function businessEventResultPageV62/,'営業イベント結果を表示');
 assert.match(source,/function businessResumePageV62/,'営業再開UIを実装');
+assert.match(source,/officialPortrait\('owner','owner'/,'全画面のオーナーを正式画像へ統一');
 assert.match(source,/beautyPortrait\(c,ba,'before','md'\)/,'結果画面でBefore差分を描画');
 assert.match(source,/beautyPortrait\(c,ba,'after','md'\)/,'結果画面でAfter差分を描画');
 assert.match(source,/albumVisualCard/,'Beauty AlbumでもBefore\/Afterを描画');
