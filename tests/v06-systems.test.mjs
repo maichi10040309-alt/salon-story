@@ -64,6 +64,7 @@ assert.equal(migrated.autoServiceSettings.enabled,true);
 const play=api.freshState();
 play.staff={...staffTemplates[0],level:1,xp:0,energy:100,bond:0,role:'スタッフ',management:20,treatments:0,skills:[],nominations:0,monthlySales:0,monthlyPerfect:0};
 play.dailyPolicy=dailyPolicies.find(x=>x.id==='reviews');
+play.storeRank='C';
 api.setState(play);
 api.startDay();
 const started=api.getState();
@@ -91,6 +92,8 @@ started.session.eventCursor=0;started.session.afterEvent='batch';started.session
 api.resolveBusinessEvent(2);
 assert.equal(started.eventHistory.length,eventBefore+1,'イベント選択を履歴へ保存');
 assert.notEqual(started.money,moneyBefore,'イベント効果を即時反映');
+assert.equal(started.session.phase,'businessEventResult','選択後にRESULT画面へ進む');
+assert.ok(started.session.eventResult.changes.length>=1,'RESULTに数値変化を保持');
 
 const source=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
 const css=await readFile(new URL('../src/v06.css',import.meta.url),'utf8');

@@ -100,6 +100,9 @@ assert.equal(shop.ownerAppearance.makeup,'cool');
 const reloaded=api.migrate(JSON.parse(storage.get('salon-story-v01')));
 assert.equal(reloaded.ownerAppearance.hairStyle,targetHair,'再読み込み後も髪型を保持');
 assert.equal(reloaded.ownerAppearance.makeup,'cool','再読み込み後もメイクを保持');
+const paused=api.freshState();paused.session={queue:['misaki','ai'],index:1,results:[],phase:'assign'};paused.activeBusinessSession=paused.session;paused.todaySales=33000;
+const resumed=api.migrate(paused);assert.equal(resumed.screen,'businessResume','営業途中セーブを再開画面へ移行');assert.equal(resumed.session.index,1);assert.equal(resumed.todaySales,33000);
+assert.equal(api.manualServiceRequired({id:'rena',visits:12,trust:95}),false,'通常VIPもスタッフ接客可能');
 
 const source=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
 const css=await readFile(new URL('../src/v61.css',import.meta.url),'utf8');
@@ -110,7 +113,11 @@ assert.match(source,/getTreatmentChoices\(c,state,state\.staff,availableServices
 assert.match(source,/\['play','store','serviceResult'\]\.includes\(state\.screen\)/,'店舗・営業・結果で現在の主人公を表示');
 assert.match(css,/@media\(max-width:720px\)/,'iPhone向けレイアウト');
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'reduced motion対応');
-assert.match(index,/v61\.css\?v=61/,'公開HTMLでv61 CSSを読み込む');
-assert.match(serviceWorker,/salon-story-v61/,'公開キャッシュをv61へ更新');
+assert.match(index,/v61\.css\?v=(?:61|62)/,'v61 CSS互換レイヤーを読み込む');
+assert.match(serviceWorker,/salon-story-v(?:61|62)/,'v61以降の公開キャッシュを使用');
+assert.match(source,/function treatmentServicePageV62/,'施術内容選択を独立');
+assert.match(source,/function treatmentPlanPageV62/,'価格プラン選択を独立');
+assert.match(source,/function businessEventResultPageV62/,'営業イベント結果を表示');
+assert.match(source,/function businessResumePageV62/,'営業再開UIを実装');
 
 console.log('Salon Story v61 proposal and appearance tests: OK');
