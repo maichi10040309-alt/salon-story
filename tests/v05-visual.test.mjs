@@ -17,7 +17,10 @@ for(const asset of ['salon\/salon-exterior','fashion\/fashion-exterior','beauty\
 assert.match(gameSource,/town-map-point/,'街は背景上の軽量タップポイントを使用');
 assert.doesNotMatch(gameSource,/class="building-art"/,'街マップ上で施設外観カードを重ねない');
 assert.match(gameSource,/has-official-art/,'正式画像のロード成功状態を明示する');
+assert.match(gameSource,/customers\/\$\{c\.id\}\/\$\{expression\}\.webp\?v=55/,'全顧客の表情別正式画像を自動探索');
+assert.match(gameSource,/fallbackCustomerAppearance/,'未制作顧客は年代別・ID別SVG差分を使用');
 const visualCss=await readFile(new URL('../src/v05.css',import.meta.url),'utf8');
 assert.match(visualCss,/\.v5-salon\.has-official-art[^}]*\.scene-object/,'正式店舗背景では旧設備を非表示');
 assert.match(visualCss,/aspect-ratio:16\/10/,'スマートフォン用の街比率');
+assert.match(visualCss,/adaptive-customer-portrait:not\(\.has-official-art\)/,'結果画面のSVG顧客を小さく制限');
 console.log('Salon Story Ver.0.5 visual tests: OK');
