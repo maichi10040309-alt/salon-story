@@ -176,6 +176,7 @@ assert.match(css,/\.fashion-thumb-viewport\{display:block;width:90%;height:90%;o
 assert.match(css,/@media\(max-width:430px\)[\s\S]*\.v61-shop-layout \.tryon-panel,\.v61-beauty-preview \.tryon-panel\{grid-template-columns:1fr/,'430px以下では試着previewを1カラム表示');
 assert.match(css,/\.home-stage-v56\{display:grid;grid-template-columns:/,'Homeをカード基準のgridで配置');
 assert.match(ownerCss,/\.owner-avatar-canvas>\.owner-layer\{position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:50% 100%/,'bodyと衣装を共通stage座標へ統一');
+assert.match(ownerCss,/transform-origin:var\(--layer-origin-x,50%\) var\(--layer-origin-y,100%\)/,'alpha実測anchorを変形原点に使用');assert.match(ownerCss,/\.owner-shoes-left\{clip-path:[^}]+\}\.owner-shoes-right\{clip-path:/,'左右の靴を同一assetから別々に足へ配置');
 assert.match(ownerCss,/\.owner-avatar-canvas\{[^}]*aspect-ratio:2\/3;[^}]*overflow:hidden\}/,'avatar stage内に全レイヤーを収める');
 assert.match(source,/beautyPortrait\(c,ba,'before','md'\)/,'結果画面でBefore差分を描画');
 assert.match(source,/beautyPortrait\(c,ba,'after','md'\)/,'結果画面でAfter差分を描画');

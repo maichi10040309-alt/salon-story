@@ -1,7 +1,7 @@
 export const OWNER_CANVAS={width:1024,height:1536};
 
 export const OWNER_ALPHA_BOUNDS={
- BODY:{x:232,y:14,width:561,height:1498},
+ BODY:{x:225,y:10,width:574,height:1494},
  TOPS_01:{x:338,y:225,width:347,height:339},TOPS_02:{x:331,y:225,width:362,height:341},TOPS_03:{x:331,y:225,width:362,height:362},TOPS_04:{x:336,y:225,width:351,height:337},TOPS_05:{x:331,y:225,width:362,height:362},TOPS_06:{x:331,y:225,width:362,height:361},TOPS_07:{x:331,y:225,width:362,height:362},TOPS_08:{x:337,y:225,width:349,height:361},TOPS_09:{x:338,y:225,width:347,height:322},TOPS_10:{x:331,y:225,width:362,height:315},TOPS_11:{x:331,y:225,width:362,height:362},TOPS_12:{x:336,y:225,width:352,height:362},
  BOTTOMS_01:{x:410,y:485,width:203,height:372},BOTTOMS_02:{x:326,y:485,width:371,height:436},BOTTOMS_03:{x:410,y:485,width:204,height:435},BOTTOMS_04:{x:379,y:485,width:265,height:472},BOTTOMS_05:{x:417,y:485,width:190,height:472},BOTTOMS_06:{x:388,y:485,width:248,height:470},BOTTOMS_07:{x:340,y:485,width:343,height:477},
  STYLE_01:{x:409,y:220,width:206,height:443},STYLE_02:{x:370,y:220,width:284,height:458},STYLE_03:{x:367,y:220,width:290,height:468},STYLE_04:{x:392,y:220,width:239,height:463},STYLE_05:{x:384,y:220,width:256,height:469},
