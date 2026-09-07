@@ -1,5 +1,6 @@
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const round100=value=>Math.max(1000,Math.round(value/100)*100);
+import{DEFAULT_OWNER_APPEARANCE,normalizeOwnerAssetAppearance,ownerAssetForItem}from'./owner-avatar.js';
 
 export function customerTier(customer,state){
   if(!(state?.encounteredCustomers||[]).includes(customer.id))return'新規顧客';
@@ -105,7 +106,7 @@ export function getTreatmentChoices(customer,state,staff,availableServices=[]){
   });
 }
 
-export function deriveOwnerAppearance(state){const player=state?.player||{},equipped=state?.wardrobe?.equipped||{};return{skin:player.skin||'ナチュラル',hairStyle:player.hairStyle||'ボブ',hairColor:player.hairColor||'ダークブラウン',makeup:state?.wardrobe?.makeup||'natural',tops:equipped.tops||null,bottoms:equipped.bottoms||null,dress:equipped.dresses||null,outer:equipped.outer||null,shoes:equipped.shoes||null,bag:equipped.bags||null,accessories:equipped.accessories||null}}
-export function normalizeOwnerAppearance(appearance,state){return{...deriveOwnerAppearance(state),...(appearance||{})}}
-export function appearanceToLegacy(state,appearance){const a=normalizeOwnerAppearance(appearance,state);state.ownerAppearance={...a};state.player={...(state.player||{}),skin:a.skin,hairStyle:a.hairStyle,hairColor:a.hairColor};state.wardrobe={...(state.wardrobe||{}),makeup:a.makeup,equipped:{...(state.wardrobe?.equipped||{}),tops:a.tops,bottoms:a.bottoms,dresses:a.dress,outer:a.outer,shoes:a.shoes,bags:a.bag,accessories:a.accessories}};return a}
-export function previewFashionAppearance(current,item){const next={...current};const key={dresses:'dress',bags:'bag'}[item.category]||item.category;next[key]=item.id;if(item.category==='dresses'){next.tops=null;next.bottoms=null}else if(['tops','bottoms'].includes(item.category))next.dress=null;return next}
+export function deriveOwnerAppearance(state){const player=state?.player||{},equipped=state?.wardrobe?.equipped||{};return normalizeOwnerAssetAppearance({...DEFAULT_OWNER_APPEARANCE,skin:player.skin,hairStyle:player.hairStyle,hairColor:player.hairColor,makeup:state?.wardrobe?.makeup,tops:equipped.tops,bottoms:equipped.bottoms,dress:equipped.dresses,outer:equipped.outer,shoes:equipped.shoes,bag:equipped.bags,accessories:equipped.accessories})}
+export function normalizeOwnerAppearance(appearance,state){return normalizeOwnerAssetAppearance({...deriveOwnerAppearance(state),...(appearance||{})})}
+export function appearanceToLegacy(state,appearance){const a=normalizeOwnerAppearance(appearance,state);state.ownerAppearance={...a};state.player={...(state.player||{}),skin:a.skin,hairStyle:a.hairStyle,hairColor:a.hairColor};return a}
+export function previewFashionAppearance(current,item){const next={...normalizeOwnerAssetAppearance(current)};const key={dresses:'dress',bags:'bag'}[item.category]||item.category;next[key]=ownerAssetForItem(item);if(item.category==='dresses'){next.tops=null;next.bottoms=null}else if(['tops','bottoms'].includes(item.category))next.dress=null;return next}

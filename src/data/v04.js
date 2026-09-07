@@ -1,11 +1,12 @@
 const brands={LUNA:{style:'feminine',name:'LUNA',label:'フェミニン'},MODE:{style:'luxury',name:'MODE',label:'高級感'},MIEL:{style:'natural',name:'MIEL',label:'ナチュラル'},POPPY:{style:'trend',name:'POPPY',label:'トレンド'}};
 const specs={
- tops:[['lace','レースブラウス'],['ribbon','リボンニット'],['silk','シルクシャツ'],['turtle','上品タートル'],['linen','リネンシャツ'],['cardigan','やわらかカーデ'],['crop','クロップドトップス'],['logo','ロゴTシャツ'],['peplum','ペプラムトップス'],['sheer','シアーブラウス']],
+ tops:[['lace','サロンユニフォームブラウス'],['ribbon','ソフトラップトップ'],['silk','アイボリーニット'],['turtle','エレガントカーディガン'],['linen','ペプラムトップ'],['cardigan','ボウタイブラウス'],['crop','ノースリーブブラウス'],['logo','フィットジャケットトップ'],['peplum','オフショルダーニット'],['sheer','ハイネックニット'],['border','カジュアルボーダートップ'],['short','エレガント半袖トップ']],
  bottoms:[['flare','フレアスカート'],['tweed','ツイードスカート'],['slacks','美脚スラックス'],['tight','タイトスカート'],['cotton','コットンパンツ'],['longskirt','ロングスカート'],['cargo','カラーカーゴ'],['mini','プリーツミニ']],
- dresses:[['flower','花柄ワンピース'],['pinkdress','ピンクドレス'],['blackdress','ブラックドレス'],['jacketdress','ジャケットワンピ'],['apron','ナチュラルワンピ'],['knitdress','ニットワンピ'],['color','カラーワンピ'],['korean','韓国風ワンピ']],
- shoes:[['pumps','リボンパンプス'],['heels','パールヒール'],['loafers','レザーローファー'],['boots','ショートブーツ'],['flats','やわらかフラット'],['sneakers','厚底スニーカー']],
- bags:[['miniBag','ミニバッグ'],['chain','チェーンバッグ'],['leather','レザートート'],['canvas','キャンバストート']],
- accessories:[['pearl','パールピアス'],['ribbonPin','リボンピン'],['gold','ゴールドネックレス'],['watch','クラシック時計'],['wood','ウッドバングル'],['scarf','ナチュラルスカーフ'],['heart','ハートチョーカー'],['colorPin','カラーヘアピン']]
+ dresses:[['flower','サロンユニフォーム'],['pinkdress','上品ワンピース'],['blackdress','リボンワンピース'],['jacketdress','ニットワンピース'],['apron','ブラウスワンピース']],
+ outer:[['long-cardigan','ロングカーディガン'],['short-jacket','ショートジャケット'],['trench','トレンチコート'],['elegant-coat','エレガントコート'],['casual','カジュアルアウター']],
+ shoes:[['pumps','アイボリーリボンパンプス'],['heels','ダスティピンクポインテッド'],['loafers','ベージュビジューパンプス'],['boots','モカローファー'],['flats','ホワイトスニーカー'],['sneakers','ブラックストラップ'],['mule','ピンクベージュミュール'],['brown-boots','ダークブラウンショートブーツ']],
+ bags:[['miniBag','アイボリーハンドバッグ'],['chain','ダスティピンクトートバッグ'],['leather','ベージュショルダーバッグ'],['canvas','モカバケットバッグ'],['mini-shoulder','ホワイトミニショルダー'],['black-tote','ブラックトートバッグ'],['clutch','ピンクベージュクラッチバッグ'],['two-way','ダークブラウン2WAYバッグ']],
+ accessories:[['pearl','パールドロップピアス'],['ribbonPin','フラワーピアス'],['gold','一粒パールネックレス'],['watch','ハートネックレス'],['wood','ヘアリボン'],['scarf','パールカチューシャ'],['heart','ゴールドフラワーヘアクリップ'],['colorPin','チェーンブレスレット'],['rose-watch','ピンクゴールド腕時計'],['brooch','サロンブローチ']]
 };
 const brandCycle=['LUNA','LUNA','MODE','MODE','MIEL','MIEL','POPPY','POPPY'];
 export const fashionItems=Object.entries(specs).flatMap(([category,items])=>items.map(([id,name],i)=>{const brand=brandCycle[i%brandCycle.length],style=brands[brand].style;return{id:`${category}-${id}`,name,category,brand,price:6000+i*3500,style,points:8+(i%4)*4,icon:category==='tops'?'👚':category==='bottoms'?'👗':category==='dresses'?'👘':category==='shoes'?'👠':category==='bags'?'👜':'💎'}}));
@@ -18,7 +19,7 @@ export const makeupStyles=[
  {id:'glamorous',name:'華やか',price:28000,style:'feminine',points:18,icon:'✨'},
  {id:'cool',name:'クール',price:24000,style:'luxury',points:17,icon:'💄'}
 ];
-export const hairstyles20=['ショート','ボブ','ミディアム','ロング','ポニーテール','巻き髪','お団子','ハーフアップ','外ハネボブ','韓国風ロング','ウェーブ','編み込み','シニヨン','ツインテール','レイヤーミディアム','ストレートロング','ウルフ','くびれボブ','サイドポニー','編みおろし'];
+export const hairstyles20=['HAIR_01','HAIR_02','HAIR_03','HAIR_04','HAIR_05','HAIR_06','HAIR_07','HAIR_08','HAIR_09','HAIR_10','HAIR_11','HAIR_12','HAIR_13','HAIR_14','HAIR_15','HAIR_16','HAIR_17','HAIR_18','HAIR_19','HAIR_20'];
 export const townBuildings=[
  {id:'salon',name:'Salon Story',icon:'🌸',subtitle:'本店へ戻る'},
  {id:'fashionShop',name:'Fashion Shop',icon:'👗',subtitle:'服と小物を買う'},
