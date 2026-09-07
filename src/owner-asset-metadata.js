@@ -12,10 +12,11 @@ export const OWNER_ALPHA_BOUNDS={
 };
 
 export const OWNER_LAYER_CALIBRATION={
- default:{x:0,y:0,scale:1},
+ default:{x:0,y:0,scale:1,originX:.5,originY:1},
  slots:{tops:{x:0,y:0,scale:1},bottoms:{x:0,y:0,scale:1},dress:{x:0,y:0,scale:1},outer:{x:0,y:0,scale:1},shoes:{x:14/1024,y:0,scale:1},bag:{x:0,y:0,scale:1},accessory:{x:0,y:0,scale:1}},
  assets:{}
 };
 
 export function ownerLayerCalibration(slot,id){return{...OWNER_LAYER_CALIBRATION.default,...OWNER_LAYER_CALIBRATION.slots[slot],...OWNER_LAYER_CALIBRATION.assets[id]}}
+export function ownerShoePartCalibration(id,side){return ownerLayerCalibration('shoes',id)}
 export function ownerAlphaBounds(id){return OWNER_ALPHA_BOUNDS[id]||null}
