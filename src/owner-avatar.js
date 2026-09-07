@@ -20,18 +20,22 @@ const itemAliases={
  accessories:['accessories-pearl','accessories-ribbonPin','accessories-gold','accessories-watch','accessories-wood','accessories-scarf','accessories-heart','accessories-colorPin']
 };
 const prefixes={tops:'TOPS',bottoms:'BOTTOMS',dress:'STYLE',outer:'OUTER',shoes:'SHOES',bag:'BAG',accessories:'ACC'};
+const limits={HAIR:20,COLOR:12,MAKEUP:6,TOPS:12,BOTTOMS:8,STYLE:5,OUTER:5,SHOES:8,BAG:8,ACC:10};
 const id=(prefix,index)=>`${prefix}_${String(index+1).padStart(2,'0')}`;
-const resolvePart=(value,key,fallback)=>{if(!value)return fallback;if(/^[A-Z]+_\d\d$/.test(value))return value;const i=(itemAliases[key]||[]).indexOf(value);return i<0?fallback:id(prefixes[key],i%(key==='dress'?5:key==='outer'?5:key==='shoes'?8:key==='bag'?8:key==='accessories'?10:99))};
+const validId=(value,prefix)=>{const match=String(value||'').match(new RegExp(`^${prefix}_(\\d\\d)$`)),n=Number(match?.[1]);return!!match&&n>=1&&n<=limits[prefix]};
+const resolvePart=(value,key,fallback)=>{if(!value)return fallback;const prefix=prefixes[key];if(validId(value,prefix))return value;const i=(itemAliases[key]||[]).indexOf(value);return i<0?fallback:id(prefix,i)};
 export function normalizeOwnerAssetAppearance(raw={}){
  const a={...DEFAULT_OWNER_APPEARANCE,...raw};
- if(!/^HAIR_\d\d$/.test(a.hairStyle)){let i=OWNER_HAIR_NAMES.indexOf(a.hairStyle);if(i<0)i=oldHair.indexOf(a.hairStyle);a.hairStyle=id('HAIR',i<0?4:i)}
- if(!/^COLOR_\d\d$/.test(a.hairColor)){let i=OWNER_HAIR_COLORS.findIndex(x=>x[0]===a.hairColor);if(i<0)i=oldColors.indexOf(a.hairColor);a.hairColor=id('COLOR',i<0?1:Math.min(i,11))}
- if(!/^MAKEUP_\d\d$/.test(a.makeup))a.makeup=makeupAliases[a.makeup]||'MAKEUP_01';
+ if(!validId(a.hairStyle,'HAIR')){let i=OWNER_HAIR_NAMES.indexOf(a.hairStyle);if(i<0)i=oldHair.indexOf(a.hairStyle);a.hairStyle=id('HAIR',i<0?4:i)}
+ if(!validId(a.hairColor,'COLOR')){let i=OWNER_HAIR_COLORS.findIndex(x=>x[0]===a.hairColor);if(i<0)i=oldColors.indexOf(a.hairColor);a.hairColor=id('COLOR',i<0?1:Math.min(i,11))}
+ if(!validId(a.makeup,'MAKEUP'))a.makeup=makeupAliases[a.makeup]||'MAKEUP_01';
  for(const key of ['tops','bottoms','dress','outer','shoes','bag','accessories'])a[key]=resolvePart(a[key],key,DEFAULT_OWNER_APPEARANCE[key]);
+ for(const key of ['earrings','necklace','accessoryHead','accessoryWrist','brooch'])if(a[key]&&!validId(a[key],'ACC'))a[key]=DEFAULT_OWNER_APPEARANCE[key]||null;
  if(a.dress){a.tops=null;a.bottoms=null}
  return a;
 }
 export function ownerAssetForItem(item){if(!item)return null;const key={dresses:'dress',bags:'bag'}[item.category]||item.category;return resolvePart(item.id,key,null)}
+export function ownerAssetPathForItem(item){const asset=ownerAssetForItem(item);if(!asset)return null;if(item.category==='accessories')return accPath(asset);const folder={dresses:'dress',bags:'bags'}[item.category]||item.category;return`${folder}/${asset}.png`}
 export function ownerHairLabel(value){const a=normalizeOwnerAssetAppearance({hairStyle:value});return OWNER_HAIR_NAMES[Number(a.hairStyle.slice(-2))-1]||OWNER_HAIR_NAMES[4]}
 export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({hairColor:value});return OWNER_HAIR_COLORS[Number(a.hairColor.slice(-2))-1]?.[0]||OWNER_HAIR_COLORS[1][0]}
 
