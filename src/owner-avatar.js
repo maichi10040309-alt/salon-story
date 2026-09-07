@@ -11,13 +11,13 @@ const oldHair=['ショート','ボブ','ミディアム','ロング','ポニー�
 const oldColors=['ブラック','ダークブラウン','ブラウン','ライトブラウン','ベージュ','グレージュ','アッシュ','ピンクブラウン','ワイン'];
 const makeupAliases={natural:'MAKEUP_01',feminine:'MAKEUP_02',korean:'MAKEUP_03',mode:'MAKEUP_04',cool:'MAKEUP_05',glamorous:'MAKEUP_06'};
 const itemAliases={
- tops:['tops-lace','tops-ribbon','tops-silk','tops-turtle','tops-linen','tops-cardigan','tops-crop','tops-logo','tops-peplum','tops-sheer'],
+ tops:['tops-lace','tops-ribbon','tops-silk','tops-turtle','tops-linen','tops-cardigan','tops-crop','tops-logo','tops-peplum','tops-sheer','tops-border','tops-short'],
  bottoms:['bottoms-flare','bottoms-tweed','bottoms-slacks','bottoms-tight','bottoms-cotton','bottoms-longskirt','bottoms-cargo','bottoms-mini'],
  dress:['dresses-flower','dresses-pinkdress','dresses-blackdress','dresses-jacketdress','dresses-apron','dresses-knitdress','dresses-color','dresses-korean'],
  outer:['outer-long-cardigan','outer-short-jacket','outer-trench','outer-elegant-coat','outer-casual'],
- shoes:['shoes-pumps','shoes-heels','shoes-loafers','shoes-boots','shoes-flats','shoes-sneakers'],
- bag:['bags-miniBag','bags-chain','bags-leather','bags-canvas'],
- accessories:['accessories-pearl','accessories-ribbonPin','accessories-gold','accessories-watch','accessories-wood','accessories-scarf','accessories-heart','accessories-colorPin']
+ shoes:['shoes-pumps','shoes-heels','shoes-loafers','shoes-boots','shoes-flats','shoes-sneakers','shoes-mule','shoes-brown-boots'],
+ bag:['bags-miniBag','bags-chain','bags-leather','bags-canvas','bags-mini-shoulder','bags-black-tote','bags-clutch','bags-two-way'],
+ accessories:['accessories-pearl','accessories-ribbonPin','accessories-gold','accessories-watch','accessories-wood','accessories-scarf','accessories-heart','accessories-colorPin','accessories-rose-watch','accessories-brooch']
 };
 const prefixes={tops:'TOPS',bottoms:'BOTTOMS',dress:'STYLE',outer:'OUTER',shoes:'SHOES',bag:'BAG',accessories:'ACC'};
 const limits={HAIR:20,COLOR:12,MAKEUP:6,TOPS:12,BOTTOMS:8,STYLE:5,OUTER:5,SHOES:8,BAG:8,ACC:10};

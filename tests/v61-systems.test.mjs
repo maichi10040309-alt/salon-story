@@ -1,10 +1,10 @@
 import assert from'node:assert/strict';
-import{readFile}from'node:fs/promises';
+import{access,readFile}from'node:fs/promises';
 import{services}from'../src/data/services.js';
 import{fashionItems,hairstyles20,makeupStyles}from'../src/data/v04.js';
 import{dailyPolicies,customerConditions}from'../src/data/v06.js';
 import{appearanceToLegacy,budgetCompatibility,deriveOwnerAppearance,getTreatmentChoices,normalizeOwnerAppearance,previewFashionAppearance}from'../src/v61-systems.js';
-import{ownerAssetForItem}from'../src/owner-avatar.js';
+import{DEFAULT_OWNER_APPEARANCE,ownerAssetForItem,ownerAssetPathForItem}from'../src/owner-avatar.js';
 
 const condition=id=>customerConditions.find(x=>x.id===id);
 const policy=id=>dailyPolicies.find(x=>x.id===id);
@@ -53,6 +53,8 @@ const legacyState={player:{},wardrobe:{equipped:{}}};
 appearanceToLegacy(legacyState,dressed);
 assert.equal(legacyState.ownerAppearance.dress,ownerAssetForItem(dress));
 assert.equal(normalizeOwnerAppearance({hairColor:'ピンクブラウン'},legacyState).hairColor,'COLOR_09');
+for(const item of fashionItems){assert.ok(ownerAssetForItem(item),`${item.id}を正式オーナー素材へ割り当て`);await access(new URL('../assets/owner/'+ownerAssetPathForItem(item),import.meta.url))}
+for(const category of ['tops','bottoms','dresses','outer','shoes','bags','accessories']){const item=fashionItems.filter(x=>x.category===category).at(-1),preview=previewFashionAppearance(DEFAULT_OWNER_APPEARANCE,item),key={dresses:'dress',bags:'bag'}[category]||category;assert.equal(preview[key],ownerAssetForItem(item),`${category}の最終商品も試着可能`)}
 
 const storage=new Map();
 globalThis.localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
