@@ -13,10 +13,20 @@ export const OWNER_ALPHA_BOUNDS={
 
 export const OWNER_LAYER_CALIBRATION={
  default:{x:0,y:0,scale:1,originX:.5,originY:1},
- slots:{tops:{x:0,y:0,scale:1},bottoms:{x:0,y:0,scale:1},dress:{x:0,y:0,scale:1},outer:{x:0,y:0,scale:1},shoes:{x:14/1024,y:0,scale:1},bag:{x:0,y:0,scale:1},accessory:{x:0,y:0,scale:1}},
- assets:{}
+ slots:{
+  tops:{x:0,y:0,scale:1.06,originX:.5,originY:485/1536},
+  bottoms:{x:0,y:0,scale:1,originX:.5,originY:485/1536},
+  dress:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
+  outer:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
+  bag:{x:0,y:0,scale:1,originX:.5,originY:1},
+  accessory:{x:0,y:0,scale:1,originX:.5,originY:1}
+ },
+ assets:{
+  BOTTOMS_01:{scale:258/200},BOTTOMS_02:{scale:258/209},BOTTOMS_03:{scale:258/201},BOTTOMS_04:{scale:258/187},BOTTOMS_05:{scale:258/185},BOTTOMS_06:{scale:258/239},BOTTOMS_07:{scale:258/172},
+  STYLE_01:{scale:365/206},STYLE_02:{scale:365/284},STYLE_03:{scale:365/290},STYLE_04:{scale:365/239},STYLE_05:{scale:365/256},
+  OUTER_01:{scale:347/270},OUTER_02:{scale:347/262},OUTER_03:{scale:347/274},OUTER_04:{scale:347/296},OUTER_05:{scale:347/271}
+ }
 };
 
 export function ownerLayerCalibration(slot,id){return{...OWNER_LAYER_CALIBRATION.default,...OWNER_LAYER_CALIBRATION.slots[slot],...OWNER_LAYER_CALIBRATION.assets[id]}}
-export function ownerShoePartCalibration(id,side){return ownerLayerCalibration('shoes',id)}
 export function ownerAlphaBounds(id){return OWNER_ALPHA_BOUNDS[id]||null}
