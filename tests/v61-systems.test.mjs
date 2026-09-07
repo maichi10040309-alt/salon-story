@@ -1,5 +1,5 @@
 import assert from'node:assert/strict';
-import{access,readFile}from'node:fs/promises';
+import{access,readFile,stat}from'node:fs/promises';
 import{services}from'../src/data/services.js';
 import{fashionItems,hairstyles20,makeupStyles}from'../src/data/v04.js';
 import{dailyPolicies,customerConditions}from'../src/data/v06.js';
@@ -53,7 +53,7 @@ const legacyState={player:{},wardrobe:{equipped:{}}};
 appearanceToLegacy(legacyState,dressed);
 assert.equal(legacyState.ownerAppearance.dress,ownerAssetForItem(dress));
 assert.equal(normalizeOwnerAppearance({hairColor:'ピンクブラウン'},legacyState).hairColor,'COLOR_09');
-for(const item of fashionItems){assert.ok(ownerAssetForItem(item),`${item.id}を正式オーナー素材へ割り当て`);await access(new URL('../assets/owner/'+ownerAssetPathForItem(item),import.meta.url))}
+for(const item of fashionItems){assert.ok(ownerAssetForItem(item),`${item.id}を正式オーナー素材へ割り当て`);const asset=new URL('../assets/owner/'+ownerAssetPathForItem(item),import.meta.url);await access(asset);assert.equal((await stat(asset)).size>0,true,`${item.id}の商品画像を空ファイルにしない`)}
 for(const category of ['tops','bottoms','dresses','outer','shoes','bags','accessories']){const item=fashionItems.filter(x=>x.category===category).at(-1),preview=previewFashionAppearance(DEFAULT_OWNER_APPEARANCE,item),key={dresses:'dress',bags:'bag'}[category]||category;assert.equal(preview[key],ownerAssetForItem(item),`${category}の最終商品も試着可能`)}
 
 const storage=new Map();
@@ -119,6 +119,7 @@ assert.match(homeMarkup,/data-owner-color="COLOR_09"/,'ホームで保存済み�
 assert.match(homeMarkup,/data-owner-makeup="MAKEUP_05"/,'ホームで保存済みメイクを描画');
 assert.match(homeMarkup,/owner-home-avatar/,'ホームは共通ownerAppearance描画を使用');
 assert.match(homeMarkup,/owner-layer-avatar/,'ホームは正式レイヤーオーナーを使用');
+assert.match(homeMarkup,/data-owner-stage="shared"/,'Homeは共通avatar stageを使用');
 for(const [screen,renderPage] of [['fashionShop',api.fashionShopPageV5],['beautyShop',api.beautyShopPageV5],['owner',api.ownerPageV5]]){reloaded.screen=screen;const markup=renderPage();assert.match(markup,new RegExp(`data-owner-hair="${targetHair}"`),`${screen}で保存済みownerAppearanceを使用`);assert.match(markup,/owner-layer-avatar/)}
 reloaded.screen='town';const townMarkup=api.townPageV5();assert.doesNotMatch(townMarkup,/town-player|owner-layer-avatar|data-owner-hair=/,'TownはオーナーをHTML生成しない');
 for(const building of ['salon','fashionShop','beautyShop','cafe','school'])assert.match(townMarkup,new RegExp(`data-town="${building}"`),`Townに${building}施設を表示`);
@@ -133,6 +134,7 @@ for(const tab of ['hair','color','makeup']){reloaded.ui.beautyTab=tab;const mark
 reloaded.ui.beautyTab='invalid';assert.equal((api.beautyShopPageV5().match(/data-preview-hair=/g)||[]).length>=3,true,'不正なBeautyタブ状態でもHair Styleへfallback');
 const fashionMarkup=api.fashionShopPageV5();for(const category of ['tops','bottoms','dresses','outer','shoes','bags','accessories'])assert.match(fashionMarkup,new RegExp(`fashion-thumb--${category}`),`${category}の商品画像へ拡大classを付与`);
 assert.match(fashionMarkup,/owner-display--shop-preview/,'Fashion試着を専用の大きいpreview領域へ分離');
+assert.match(fashionMarkup,/data-owner-stage="shared"/,'Fashion試着もHomeと同じavatar stageを使用');
 assert.match(api.beautyShopPageV5(),/owner-display--beauty-preview/,'Beauty previewを専用領域へ分離');
 reloaded.screen='store';assert.match(api.salonScene(),new RegExp(`data-owner-hair="${targetHair}"`),'店舗でも保存済みownerAppearanceを使用');
 const paused=api.freshState();paused.session={queue:['misaki','ai'],index:1,results:[],phase:'assign'};paused.activeBusinessSession=paused.session;paused.todaySales=33000;
@@ -144,13 +146,14 @@ const css=await readFile(new URL('../src/v61.css',import.meta.url),'utf8');
 const index=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const serviceWorker=await readFile(new URL('../sw.js',import.meta.url),'utf8');
 const v62css=await readFile(new URL('../src/v62.css',import.meta.url),'utf8');
+const ownerCss=await readFile(new URL('../src/owner-avatar.css',import.meta.url),'utf8');
 for(const screen of ['homeV56','townPageV5','salonScene','fashionShopPageV5','beautyShopPageV5'])assert.match(source,new RegExp(`function ${screen}`),`${screen}を維持`);
 assert.match(source,/getTreatmentChoices\(c,state,state\.staff,availableServices\(\)\)/,'接客画面を動的3択へ接続');
 assert.match(source,/\['play','store','serviceResult'\]\.includes\(state\.screen\)/,'店舗・営業・結果で現在の主人公を表示');
 assert.match(css,/@media\(max-width:720px\)/,'iPhone向けレイアウト');
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'reduced motion対応');
-assert.match(index,/owner-avatar\.css\?v=65/,'正式オーナーCSSを読み込む');
-assert.match(serviceWorker,/salon-story-v65/,'v65公開キャッシュを使用');
+assert.match(index,/owner-avatar\.css\?v=67/,'v67正式オーナーCSSを読み込む');
+assert.match(serviceWorker,/salon-story-v67/,'v67公開キャッシュを使用');
 assert.match(source,/function treatmentServicePageV62/,'施術内容選択を独立');
 assert.match(source,/function treatmentPlanPageV62/,'価格プラン選択を独立');
 assert.match(source,/function businessEventResultPageV62/,'営業イベント結果を表示');
@@ -163,9 +166,11 @@ assert.match(source,/data-preview-makeup[\s\S]*beautyOptionAvatar/,'メイク一
 assert.match(css,/@media\(max-width:430px\)\{\.home-stage-v56,\.v5-town,\.v61-shop-layout,\.v61-beauty-preview\{width:100%;max-width:100%;overflow-x:clip\}/,'320〜430pxの主要画面で横スクロールを防止');
 assert.match(css,/@media\(max-width:350px\)[\s\S]*\.v61-shop-layout \.fashion-scroll,\.v61-beauty-options,\.v61-color-options,\.v61-makeup-options\{grid-template-columns:1fr\}/,'320pxではFashionとBeautyを1列表示');
 assert.match(css,/@media\(max-width:720px\)[\s\S]*\.v61-shop-layout \.fashion-scroll\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'375・390・430pxではFashion商品を収まる2列表示');
-assert.match(css,/\.fashion-thumb--tops>img\{transform:scale\(2\.25\)\}/,'Fashion商品画像本体をカテゴリ別に拡大');
+assert.match(css,/\.v61-shop-layout \.fashion-thumb>img\{[^}]*max-width:100%;max-height:100%;object-fit:contain;object-position:center;transform:none\}/,'Fashion商品画像を切らずに全体表示');
 assert.match(css,/@media\(max-width:430px\)[\s\S]*\.v61-shop-layout \.tryon-panel,\.v61-beauty-preview \.tryon-panel\{grid-template-columns:1fr/,'430px以下では試着previewを1カラム表示');
-assert.match(css,/\.owner-display--home\{position:absolute;right:8%;bottom:168px/,'Home専用wrapperで足元位置を調整');
+assert.match(css,/\.home-stage-v56\{display:grid;grid-template-columns:/,'Homeをカード基準のgridで配置');
+assert.match(ownerCss,/\.owner-avatar-canvas>\.owner-layer\{position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:50% 100%/,'bodyと衣装を共通stage座標へ統一');
+assert.match(ownerCss,/\.owner-avatar-canvas\{[^}]*aspect-ratio:2\/3;[^}]*overflow:hidden\}/,'avatar stage内に全レイヤーを収める');
 assert.match(source,/beautyPortrait\(c,ba,'before','md'\)/,'結果画面でBefore差分を描画');
 assert.match(source,/beautyPortrait\(c,ba,'after','md'\)/,'結果画面でAfter差分を描画');
 assert.match(source,/albumVisualCard/,'Beauty AlbumでもBefore\/Afterを描画');

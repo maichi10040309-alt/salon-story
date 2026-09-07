@@ -1,4 +1,5 @@
 const ROOT='./assets/owner/';
+const OWNER_ASSET_RENDER_FALLBACKS={BOTTOMS_08:'BOTTOMS_07'};
 
 export const OWNER_HAIR_NAMES=['ショート','ショートボブ','ソフトボブ','ミディアムストレート','ミディアムウェーブ','ロングストレート','ロングウェーブ','ポニーテール','ローポニーテール','ハーフアップ','お団子','ツインブレイド','サイドブレイド','レイヤーミディアム','ウルフカット','姫カット','エレガントアップ','リボンハーフアップ','ルーズカール','サロンブロー'];
 export const OWNER_HAIR_COLORS=[['ブラック','#2f2b2d','brightness(.55) saturate(.75)'],['ダークブラウン','#5b4636','brightness(.72) saturate(.9)'],['モカブラウン','#795c50','sepia(.2) brightness(.82)'],['チョコレートブラウン','#69463c','sepia(.28) brightness(.72) saturate(1.05)'],['チェスナット','#855f4d','sepia(.35) brightness(.86) saturate(1.08)'],['ミルクティーベージュ','#aa8d7e','sepia(.25) brightness(1.08) saturate(.72)'],['グレージュ','#857873','grayscale(.24) brightness(.91)'],['アッシュブラウン','#726561','grayscale(.18) brightness(.78)'],['ピンクブラウン','#9a6467','sepia(.22) hue-rotate(318deg) saturate(1.08)'],['ラベンダーブラウン','#765e70','sepia(.16) hue-rotate(280deg) saturate(.9)'],['ワインブラウン','#713f49','sepia(.2) hue-rotate(320deg) saturate(1.25) brightness(.76)'],['ハイトーンベージュ','#bea190','sepia(.18) brightness(1.18) saturate(.68)']];
@@ -35,18 +36,19 @@ export function normalizeOwnerAssetAppearance(raw={}){
  return a;
 }
 export function ownerAssetForItem(item){if(!item)return null;const key={dresses:'dress',bags:'bag'}[item.category]||item.category;return resolvePart(item.id,key,null)}
-export function ownerAssetPathForItem(item){const asset=ownerAssetForItem(item);if(!asset)return null;if(item.category==='accessories')return accPath(asset);const folder={dresses:'dress',bags:'bags'}[item.category]||item.category;return`${folder}/${asset}.png`}
+export function ownerAssetPathForItem(item){let asset=ownerAssetForItem(item);if(!asset)return null;asset=OWNER_ASSET_RENDER_FALLBACKS[asset]||asset;if(item.category==='accessories')return accPath(asset);const folder={dresses:'dress',bags:'bags'}[item.category]||item.category;return`${folder}/${asset}.png`}
 export function ownerHairLabel(value){const a=normalizeOwnerAssetAppearance({hairStyle:value});return OWNER_HAIR_NAMES[Number(a.hairStyle.slice(-2))-1]||OWNER_HAIR_NAMES[4]}
 export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({hairColor:value});return OWNER_HAIR_COLORS[Number(a.hairColor.slice(-2))-1]?.[0]||OWNER_HAIR_COLORS[1][0]}
 
 const img=(path,cls,style='')=>path?`<img class="owner-layer ${cls}" src="${ROOT}${path}" alt="" draggable="false" ${style?`style="${style}"`:''} onerror="this.hidden=true">`:'';
 const accPath=id=>{const n=Number(id?.slice(-2));if(n<=2)return`accessories/earrings/${id}.png`;if(n<=4)return`accessories/necklace/${id}.png`;if(n<=7)return`accessories/head/${id}.png`;if(n<=9)return`accessories/wrist/${id}.png`;return`accessories/brooch/${id}.png`};
+const ownerPartPath=(folder,id)=>`${folder}/${OWNER_ASSET_RENDER_FALLBACKS[id]||id}.png`;
 export function renderOwnerAvatar(appearance={},options={}){
  const a=normalizeOwnerAssetAppearance(appearance),n=Number(a.hairColor.slice(-2))-1,filter=OWNER_HAIR_COLORS[n]?.[2]||'';
  const showBag=options.showBag!==false,showAccessory=options.showAccessory!==false,size=options.size||'lg',name=options.name||'オーナー';
  const layers=[img('hair/styles/'+a.hairStyle+'_back.png','owner-hair owner-hair-back',`filter:${filter}`),img('base/body.png','owner-base'),img('base/skin.png','owner-skin'),img('base/face_base.png','owner-face'),img('base/eyes_default.png','owner-eyes'),img('base/eyebrows_default.png','owner-eyebrows'),img('makeup/'+a.makeup+'.png','owner-makeup'),img('base/mouth_default.png','owner-mouth'),img('hair/styles/'+a.hairStyle+'_front.png','owner-hair owner-hair-front',`filter:${filter}`)];
- if(a.dress)layers.push(img('dress/'+a.dress+'.png','owner-dress'));else layers.push(img('tops/'+a.tops+'.png','owner-tops'),img('bottoms/'+a.bottoms+'.png','owner-bottoms'));
- layers.push(img(a.outer?'outer/'+a.outer+'.png':null,'owner-outer'),img('shoes/'+a.shoes+'.png','owner-shoes'),img(showBag&&a.bag?'bags/'+a.bag+'.png':null,'owner-bag'));
+ if(a.dress)layers.push(img(ownerPartPath('dress',a.dress),'owner-dress'));else layers.push(img(ownerPartPath('tops',a.tops),'owner-tops'),img(ownerPartPath('bottoms',a.bottoms),'owner-bottoms'));
+ layers.push(img(a.outer?ownerPartPath('outer',a.outer):null,'owner-outer'),img(ownerPartPath('shoes',a.shoes),'owner-shoes'),img(showBag&&a.bag?ownerPartPath('bags',a.bag):null,'owner-bag'));
  if(showAccessory)layers.push(img(a.earrings?accPath(a.earrings):null,'owner-accessory'),img(a.necklace?accPath(a.necklace):null,'owner-accessory'),img(a.accessoryHead?accPath(a.accessoryHead):null,'owner-accessory'),img(a.accessoryWrist?accPath(a.accessoryWrist):null,'owner-accessory'),img(a.brooch?accPath(a.brooch):null,'owner-accessory'),img(a.accessories?accPath(a.accessories):null,'owner-accessory'));
- return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
+ return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-stage="shared" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas avatar-stage">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
 }
