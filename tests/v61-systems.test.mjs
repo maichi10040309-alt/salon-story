@@ -4,7 +4,8 @@ import{services}from'../src/data/services.js';
 import{fashionItems,hairstyles20,makeupStyles}from'../src/data/v04.js';
 import{dailyPolicies,customerConditions}from'../src/data/v06.js';
 import{appearanceToLegacy,budgetCompatibility,deriveOwnerAppearance,getTreatmentChoices,normalizeOwnerAppearance,previewFashionAppearance}from'../src/v61-systems.js';
-import{DEFAULT_OWNER_APPEARANCE,ownerAssetForItem,ownerAssetPathForItem}from'../src/owner-avatar.js';
+import{DEFAULT_OWNER_APPEARANCE,ownerAssetBoundsForItem,ownerAssetForItem,ownerAssetPathForItem}from'../src/owner-avatar.js';
+import{OWNER_ALPHA_BOUNDS,OWNER_CANVAS,ownerLayerCalibration}from'../src/owner-asset-metadata.js';
 
 const condition=id=>customerConditions.find(x=>x.id===id);
 const policy=id=>dailyPolicies.find(x=>x.id===id);
@@ -136,6 +137,10 @@ const fashionMarkup=api.fashionShopPageV5();for(const category of ['tops','botto
 assert.match(fashionMarkup,/owner-display--shop-preview/,'Fashion試着を専用の大きいpreview領域へ分離');
 assert.match(fashionMarkup,/data-owner-stage="shared"/,'Fashion試着もHomeと同じavatar stageを使用');
 assert.match(api.beautyShopPageV5(),/owner-display--beauty-preview/,'Beauty previewを専用領域へ分離');
+const bodyCenter=OWNER_ALPHA_BOUNDS.BODY.x+OWNER_ALPHA_BOUNDS.BODY.width/2;
+for(const id of ['TOPS_01','TOPS_02','TOPS_04','BOTTOMS_01','BOTTOMS_02','STYLE_01','STYLE_02']){const b=OWNER_ALPHA_BOUNDS[id];assert.equal(Math.abs(b.x+b.width/2-bodyCenter)<=1.5,true,`${id}はbody中心線と整合`)}
+for(const id of ['SHOES_01','SHOES_02']){const b=OWNER_ALPHA_BOUNDS[id],c=ownerLayerCalibration('shoes',id);assert.equal(Math.abs(b.x+b.width/2+c.x*OWNER_CANVAS.width-494)<=1,true,`${id}はbody足元中心へ実測補正`)}
+for(const itemId of ['tops-lace','tops-ribbon','tops-turtle','bottoms-flare','bottoms-tweed','dresses-flower','dresses-pinkdress','shoes-pumps','shoes-heels']){const item=fashionItems.find(x=>x.id===itemId),meta=ownerAssetBoundsForItem(item),match=fashionMarkup.match(new RegExp(`aria-label="${item.name}を試着"><svg[^>]+viewBox="([^"]+)"`));assert.ok(match,`${itemId}のalpha viewportを描画`);const [x,y,w,h]=match[1].split(' ').map(Number),b=meta.bounds;assert.equal(x<=b.x&&y<=b.y&&x+w>=b.x+b.width&&y+h>=b.y+b.height,true,`${itemId}のalpha全体を切らずに表示`)}
 reloaded.screen='store';assert.match(api.salonScene(),new RegExp(`data-owner-hair="${targetHair}"`),'店舗でも保存済みownerAppearanceを使用');
 const paused=api.freshState();paused.session={queue:['misaki','ai'],index:1,results:[],phase:'assign'};paused.activeBusinessSession=paused.session;paused.todaySales=33000;
 const resumed=api.migrate(paused);assert.equal(resumed.screen,'businessResume','営業途中セーブを再開画面へ移行');assert.equal(resumed.session.index,1);assert.equal(resumed.todaySales,33000);
@@ -154,6 +159,7 @@ assert.match(css,/@media\(max-width:720px\)/,'iPhone向けレイアウト');
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'reduced motion対応');
 assert.match(index,/owner-avatar\.css\?v=67/,'v67正式オーナーCSSを読み込む');
 assert.match(serviceWorker,/salon-story-v67/,'v67公開キャッシュを使用');
+assert.match(serviceWorker,/owner-asset-metadata\.js\?v=67/,'alpha解析metadataを公開キャッシュへ含める');
 assert.match(source,/function treatmentServicePageV62/,'施術内容選択を独立');
 assert.match(source,/function treatmentPlanPageV62/,'価格プラン選択を独立');
 assert.match(source,/function businessEventResultPageV62/,'営業イベント結果を表示');
@@ -166,7 +172,7 @@ assert.match(source,/data-preview-makeup[\s\S]*beautyOptionAvatar/,'メイク一
 assert.match(css,/@media\(max-width:430px\)\{\.home-stage-v56,\.v5-town,\.v61-shop-layout,\.v61-beauty-preview\{width:100%;max-width:100%;overflow-x:clip\}/,'320〜430pxの主要画面で横スクロールを防止');
 assert.match(css,/@media\(max-width:350px\)[\s\S]*\.v61-shop-layout \.fashion-scroll,\.v61-beauty-options,\.v61-color-options,\.v61-makeup-options\{grid-template-columns:1fr\}/,'320pxではFashionとBeautyを1列表示');
 assert.match(css,/@media\(max-width:720px\)[\s\S]*\.v61-shop-layout \.fashion-scroll\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'375・390・430pxではFashion商品を収まる2列表示');
-assert.match(css,/\.v61-shop-layout \.fashion-thumb>img\{[^}]*max-width:100%;max-height:100%;object-fit:contain;object-position:center;transform:none\}/,'Fashion商品画像を切らずに全体表示');
+assert.match(css,/\.fashion-thumb-viewport\{display:block;width:90%;height:90%;overflow:visible\}/,'Fashion商品をalpha bbox viewport内へ約90%で表示');
 assert.match(css,/@media\(max-width:430px\)[\s\S]*\.v61-shop-layout \.tryon-panel,\.v61-beauty-preview \.tryon-panel\{grid-template-columns:1fr/,'430px以下では試着previewを1カラム表示');
 assert.match(css,/\.home-stage-v56\{display:grid;grid-template-columns:/,'Homeをカード基準のgridで配置');
 assert.match(ownerCss,/\.owner-avatar-canvas>\.owner-layer\{position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:50% 100%/,'bodyと衣装を共通stage座標へ統一');
