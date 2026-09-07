@@ -4,5 +4,5 @@
 .owner-layer-avatar figcaption{position:relative;z-index:30;margin-top:-5px;padding:4px 11px;border-radius:999px;background:rgba(255,249,246,.9);color:#5b4636;font-size:12px;font-weight:700;box-shadow:0 3px 12px rgba(90,70,65,.09)}
 .portrait-sm.owner-layer-avatar{width:min(112px,25vw);height:auto}.portrait-md.owner-layer-avatar{width:min(170px,38vw);height:auto}.portrait-lg.owner-layer-avatar{width:min(270px,56vw);height:auto}.portrait-xl.owner-layer-avatar{width:min(340px,70vw);height:auto}
 .owner-home-avatar{width:min(310px,51vw)!important}.owner-mode-town{width:min(126px,27vw)!important}.owner-mode-service .owner-bag{display:none}
-.fashion-thumb img,.beauty-option img{width:100%;height:96px;object-fit:contain;display:block}.owner-item-thumb{background:linear-gradient(145deg,#fff9f6,#f8f2eb);border-radius:14px}
+.fashion-thumb>img,.beauty-option>img{width:100%;height:96px;object-fit:contain;display:block}.owner-item-thumb{background:linear-gradient(145deg,#fff9f6,#f8f2eb);border-radius:14px}
 @media(max-width:640px){.owner-home-avatar{width:min(250px,52vw)!important}.v61-shop-layout .portrait-xl.owner-layer-avatar{width:min(280px,64vw)}.portrait-lg.owner-layer-avatar{width:min(220px,54vw)}}

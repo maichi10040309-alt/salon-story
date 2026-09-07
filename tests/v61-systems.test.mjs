@@ -76,6 +76,15 @@ assert.equal(migrated.money,432100,'v60所持金を維持');
 assert.equal(migrated.ownerAppearance.hairStyle,'HAIR_11','旧playerから髪型を移行');
 assert.equal(migrated.ownerAppearance.hairColor,'COLOR_05','旧playerから髪色を移行');
 assert.equal(migrated.ownerAppearance.makeup,'MAKEUP_02','旧wardrobeからメイクを移行');
+const savedOwner=api.freshState();
+savedOwner.wardrobe.owned.push('tops-silk');
+savedOwner.ownedAppearanceItems.tops.push('TOPS_03');
+savedOwner.ui.previewAppearance={...savedOwner.ownerAppearance,hairStyle:'HAIR_09'};
+savedOwner.ui.previewContext={type:'beauty'};
+const preservedOwner=api.migrate(savedOwner);
+assert.equal(preservedOwner.ui.previewAppearance.hairStyle,'HAIR_09','既存セーブの試着中Appearanceを維持');
+assert.equal(preservedOwner.wardrobe.owned.includes('tops-silk'),true,'既存セーブのwardrobe購入情報を維持');
+assert.equal(preservedOwner.ownedAppearanceItems.tops.includes('TOPS_03'),true,'既存セーブの正式owner所持品を維持');
 
 const shop=api.freshState();api.setState(shop);
 const item=fashionItems.find(x=>!shop.wardrobe.owned.includes(x.id));
@@ -111,6 +120,14 @@ assert.match(homeMarkup,/data-owner-makeup="MAKEUP_05"/,'ホームで保存済�
 assert.match(homeMarkup,/owner-home-avatar/,'ホームは共通ownerAppearance描画を使用');
 assert.match(homeMarkup,/owner-layer-avatar/,'ホームは正式レイヤーオーナーを使用');
 for(const [screen,renderPage] of [['town',api.townPageV5],['fashionShop',api.fashionShopPageV5],['beautyShop',api.beautyShopPageV5],['owner',api.ownerPageV5]]){reloaded.screen=screen;const markup=renderPage();assert.match(markup,new RegExp(`data-owner-hair="${targetHair}"`),`${screen}で保存済みownerAppearanceを使用`);assert.match(markup,/owner-layer-avatar/)}
+reloaded.ui.previewAppearance=null;
+reloaded.ui.beautyTab='hair';
+assert.equal((api.beautyShopPageV5().match(/data-preview-hair=/g)||[]).length,20,'Hair Style 20件を空白にせず表示');
+reloaded.ui.beautyTab='color';
+assert.equal((api.beautyShopPageV5().match(/data-preview-color=/g)||[]).length,12,'Hair Color 12件を空白にせず表示');
+reloaded.ui.beautyTab='makeup';
+assert.equal((api.beautyShopPageV5().match(/data-preview-makeup=/g)||[]).length,6,'Makeup 6件を空白にせず表示');
+for(const tab of ['hair','color','makeup']){reloaded.ui.beautyTab=tab;const markup=api.beautyShopPageV5();assert.match(markup,/Beautyプレビュー/);assert.equal((markup.match(/owner-avatar-canvas/g)||[]).length>1,true,`${tab}一覧とowner previewをレイヤー表示`)}
 reloaded.screen='store';assert.match(api.salonScene(),new RegExp(`data-owner-hair="${targetHair}"`),'店舗でも保存済みownerAppearanceを使用');
 const paused=api.freshState();paused.session={queue:['misaki','ai'],index:1,results:[],phase:'assign'};paused.activeBusinessSession=paused.session;paused.todaySales=33000;
 const resumed=api.migrate(paused);assert.equal(resumed.screen,'businessResume','営業途中セーブを再開画面へ移行');assert.equal(resumed.session.index,1);assert.equal(resumed.todaySales,33000);
@@ -133,6 +150,14 @@ assert.match(source,/function treatmentPlanPageV62/,'価格プラン選択を独
 assert.match(source,/function businessEventResultPageV62/,'営業イベント結果を表示');
 assert.match(source,/function businessResumePageV62/,'営業再開UIを実装');
 assert.match(source,/renderOwnerAvatar\(appearance/,'全画面のオーナーを正式レイヤー画像へ統一');
+assert.match(source,/function beautyOptionAvatar[\s\S]*renderOwnerAvatar/,'Beauty一覧を完成済みownerプレビューで表示');
+assert.match(source,/data-preview-hair[\s\S]*beautyOptionAvatar/,'髪型一覧を表示');
+assert.match(source,/data-preview-color[\s\S]*beautyOptionAvatar/,'髪色一覧を表示');
+assert.match(source,/data-preview-makeup[\s\S]*beautyOptionAvatar/,'メイク一覧を表示');
+assert.match(css,/@media\(max-width:430px\)\{\.home-stage-v56,\.v5-town,\.v61-shop-layout,\.v61-beauty-preview\{width:100%;max-width:100%;overflow-x:clip\}/,'320〜430pxの主要画面で横スクロールを防止');
+assert.match(css,/@media\(max-width:350px\)[\s\S]*\.v61-shop-layout \.fashion-scroll,\.v61-beauty-options,\.v61-color-options,\.v61-makeup-options\{grid-template-columns:1fr\}/,'320pxではFashionとBeautyを1列表示');
+assert.match(css,/@media\(max-width:720px\)[\s\S]*\.v61-shop-layout \.fashion-scroll\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'375・390・430pxではFashion商品を収まる2列表示');
+assert.match(css,/@media\(max-width:430px\)[\s\S]*\.v5-town \.town-player\{display:none\}/,'430px以下ではTownの施設操作をownerが妨げない');
 assert.match(source,/beautyPortrait\(c,ba,'before','md'\)/,'結果画面でBefore差分を描画');
 assert.match(source,/beautyPortrait\(c,ba,'after','md'\)/,'結果画面でAfter差分を描画');
 assert.match(source,/albumVisualCard/,'Beauty AlbumでもBefore\/Afterを描画');
