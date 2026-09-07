@@ -14,6 +14,7 @@ export const OWNER_ALPHA_BOUNDS={
 export const OWNER_LAYER_CALIBRATION={
  default:{x:0,y:0,scale:1,originX:.5,originY:1},
  slots:{
+  hair:{x:-.75/1024,y:2/1536,scale:1,originX:.5,originY:0},
   tops:{x:0,y:0,scale:1.06,originX:.5,originY:485/1536},
   bottoms:{x:0,y:0,scale:1,originX:.5,originY:485/1536},
   dress:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
