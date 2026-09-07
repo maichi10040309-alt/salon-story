@@ -94,6 +94,7 @@ const targetHair=hairstyles20.find(x=>!shop.wardrobe.hairOwned.includes(x));
 api.applyBeautyPreview('hairStyle',targetHair);
 api.applyBeautyPreview('hairColor','COLOR_09');
 api.applyBeautyPreview('makeup','MAKEUP_05');
+assert.equal(api.displayedOwnerAppearance().hairStyle,targetHair,'髪色・メイク選択後も試着中の髪型を維持');
 assert.equal(api.displayedOwnerAppearance().hairColor,'COLOR_09','髪色を即時プレビュー');
 assert.equal(api.commitAppearancePreview(),true,'Beauty変更を保存');
 assert.equal(shop.ownerAppearance.hairStyle,targetHair);

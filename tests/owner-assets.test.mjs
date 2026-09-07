@@ -12,4 +12,7 @@ assert.equal(normalizeOwnerAssetAppearance({hairColor:'COLOR_99'}).hairColor,'CO
 assert.equal(normalizeOwnerAssetAppearance({tops:'TOPS_99'}).tops,'TOPS_01');
 assert.equal(ownerAssetPathForItem({id:'accessories-pearl',category:'accessories'}),'accessories/earrings/ACC_01.png');
 const dress=renderOwnerAvatar({...DEFAULT_OWNER_APPEARANCE,dress:'STYLE_02'});assert.match(dress,/STYLE_02\.png/);assert.doesNotMatch(dress,/TOPS_01\.png|BOTTOMS_01\.png/);
+for(let i=1;i<=20;i++){const id=`HAIR_${String(i).padStart(2,'0')}`,markup=renderOwnerAvatar({...DEFAULT_OWNER_APPEARANCE,hairStyle:id});assert.match(markup,new RegExp(`${id}_front\\.png`));assert.match(markup,new RegExp(`${id}_back\\.png`))}
+for(let i=1;i<=12;i++){const id=`COLOR_${String(i).padStart(2,'0')}`,markup=renderOwnerAvatar({...DEFAULT_OWNER_APPEARANCE,hairColor:id});assert.match(markup,new RegExp(`data-owner-color="${id}"`))}
+for(let i=1;i<=6;i++){const id=`MAKEUP_${String(i).padStart(2,'0')}`,markup=renderOwnerAvatar({...DEFAULT_OWNER_APPEARANCE,makeup:id});assert.match(markup,new RegExp(`${id}\\.png`))}
 console.log('Salon Story owner layered asset tests: OK');
