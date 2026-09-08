@@ -11,25 +11,37 @@ export const OWNER_ALPHA_BOUNDS={
  ACC_01:{x:429,y:205,width:66,height:76},ACC_02:{x:422,y:225,width:81,height:41},ACC_03:{x:442,y:335,width:78,height:66},ACC_04:{x:442,y:335,width:79,height:66},ACC_05:{x:412,y:74,width:76,height:79},ACC_06:{x:412,y:72,width:72,height:79},ACC_07:{x:412,y:82,width:71,height:66},ACC_08:{x:742,y:658,width:78,height:75},ACC_09:{x:760,y:592,width:55,height:82},ACC_10:{x:672,y:374,width:81,height:71}
 };
 
-export const OWNER_LAYER_CALIBRATION={
- default:{x:0,y:0,scale:1,originX:.5,originY:1},
+const bodyBounds=OWNER_ALPHA_BOUNDS.BODY,bodyCenterX=bodyBounds.x+bodyBounds.width/2;
+export const OWNER_ALPHA_ANALYSIS=Object.fromEntries(Object.entries(OWNER_ALPHA_BOUNDS).map(([id,bounds])=>[id,{centerXDelta:bounds.x+bounds.width/2-bodyCenterX,topYDelta:bounds.y-bodyBounds.y,bottomYDelta:bounds.y+bounds.height-(bodyBounds.y+bodyBounds.height),widthRatio:bounds.width/bodyBounds.width,heightRatio:bounds.height/bodyBounds.height}]));
+export const OWNER_INVALID_ASSETS={BOTTOMS_08:'zero-byte / empty PNG fallback to BOTTOMS_07'};
+
+export const OWNER_BODY_ANCHORS={
+ head:{faceCenterX:512,headTopY:10,neckTopY:220},
+ shoulder:{x:512,y:225,width:259},
+ waist:{x:512,y:485,width:166},
+ hip:{x:512,y:600,width:258},
+ rightWrist:{x:737.5,y:660},
+ leftEar:{x:444,y:150}
+};
+const point=(x,y,details={})=>({x,y,...details});
+export const OWNER_LAYER_ANCHORS={
+ default:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1},
  slots:{
-  hair:{x:-1/1024,y:3/1536,scale:1,originX:.5,originY:0},
-  tops:{x:0,y:0,scale:1.08,originX:.5,originY:485/1536},
-  bottoms:{x:0,y:0,scale:1,originX:.5,originY:485/1536},
-  dress:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
-  outer:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
-  bag:{x:0,y:0,scale:1,originX:.5,originY:1},
-  accessory:{x:0,y:0,scale:1,originX:.5,originY:1}
+  hair:{source:point(512,220,{faceCenterX:512,headTopY:10,neckTopY:220}),target:point(OWNER_BODY_ANCHORS.head.faceCenterX,OWNER_BODY_ANCHORS.head.neckTopY,{headTopY:OWNER_BODY_ANCHORS.head.headTopY}),scaleX:1,scaleY:1},
+  tops:{source:point(512,485,{shoulderY:225,waistY:485}),target:point(OWNER_BODY_ANCHORS.waist.x,OWNER_BODY_ANCHORS.waist.y,{shoulderWidth:OWNER_BODY_ANCHORS.shoulder.width,waistWidth:OWNER_BODY_ANCHORS.waist.width}),scaleX:1.1,scaleY:1},
+  bottoms:{source:point(512,485,{waistY:485,hipY:600}),target:point(OWNER_BODY_ANCHORS.waist.x,OWNER_BODY_ANCHORS.waist.y,{waistWidth:OWNER_BODY_ANCHORS.waist.width,hipWidth:OWNER_BODY_ANCHORS.hip.width}),scaleX:1,scaleY:1},
+  dress:{source:point(512,485,{shoulderY:220,waistY:485,hipY:600}),target:point(OWNER_BODY_ANCHORS.waist.x,OWNER_BODY_ANCHORS.waist.y,{shoulderWidth:OWNER_BODY_ANCHORS.shoulder.width,waistWidth:OWNER_BODY_ANCHORS.waist.width,hipWidth:OWNER_BODY_ANCHORS.hip.width}),scaleX:1,scaleY:1},
+  outer:{source:point(512,220),target:point(OWNER_BODY_ANCHORS.shoulder.x,220),scaleX:1,scaleY:1},
+  bag:{source:point(512,1536),target:point(512,1536),scaleX:1,scaleY:1},
+  accessory:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1}
  },
  assets:{
-  BOTTOMS_01:{scale:266/200},BOTTOMS_02:{scale:266/209},BOTTOMS_03:{scale:266/201},BOTTOMS_04:{scale:266/187},BOTTOMS_05:{scale:266/185},BOTTOMS_06:{scale:266/239},BOTTOMS_07:{scale:266/172},
-  STYLE_01:{scale:375/206},STYLE_02:{scale:375/284},STYLE_03:{scale:375/290},STYLE_04:{scale:375/239},STYLE_05:{scale:375/256},
-  OUTER_01:{scale:347/270},OUTER_02:{scale:347/262},OUTER_03:{scale:347/274},OUTER_04:{scale:347/296},OUTER_05:{scale:347/271},
-  ACC_01:{x:0,y:-66/1536,scale:1,originX:.5,originY:1},ACC_02:{x:0,y:-70/1536,scale:1,originX:.5,originY:1},
-  ACC_08:{x:-44/1024,y:-35.5/1536,scale:.55,originX:781/1024,originY:695.5/1536},ACC_09:{x:-50/1024,y:27/1536,scale:.6,originX:787.5/1024,originY:633/1536}
+  BOTTOMS_01:{scaleX:280/200},BOTTOMS_02:{scaleX:292/209},BOTTOMS_03:{scaleX:280/201},BOTTOMS_04:{scaleX:292/186},BOTTOMS_05:{scaleX:292/183},BOTTOMS_06:{scaleX:280/238},BOTTOMS_07:{scaleX:292/172},BOTTOMS_08:{scaleX:300/172},
+  STYLE_01:{scaleX:280/124,scaleY:260/265},STYLE_02:{scaleX:300/269,scaleY:260/265},STYLE_03:{scaleX:300/267,scaleY:260/265},STYLE_04:{scaleX:280/159,scaleY:260/265},STYLE_05:{scaleX:292/244,scaleY:260/265},
+  OUTER_01:{scaleX:347/270,scaleY:347/270},OUTER_02:{scaleX:347/262,scaleY:347/262},OUTER_03:{scaleX:347/274,scaleY:347/274},OUTER_04:{scaleX:347/296,scaleY:347/296},OUTER_05:{scaleX:347/271,scaleY:347/271},
+  ACC_01:{source:point(462,211),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.55,scaleY:.55},ACC_02:{source:point(462.5,245),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.5,scaleY:.5},
+  ACC_08:{source:point(781,695.5),target:OWNER_BODY_ANCHORS.rightWrist,scaleX:.55,scaleY:.55},ACC_09:{source:point(787.5,633),target:OWNER_BODY_ANCHORS.rightWrist,scaleX:.6,scaleY:.6}
  }
 };
-
-export function ownerLayerCalibration(slot,id){return{...OWNER_LAYER_CALIBRATION.default,...OWNER_LAYER_CALIBRATION.slots[slot],...OWNER_LAYER_CALIBRATION.assets[id]}}
+export function ownerLayerAnchorSpec(slot,id){const base=OWNER_LAYER_ANCHORS.slots[slot]||OWNER_LAYER_ANCHORS.default,asset=OWNER_LAYER_ANCHORS.assets[id]||{};return{...OWNER_LAYER_ANCHORS.default,...base,...asset,source:{...OWNER_LAYER_ANCHORS.default.source,...base.source,...asset.source},target:{...OWNER_LAYER_ANCHORS.default.target,...base.target,...asset.target}}}
 export function ownerAlphaBounds(id){return OWNER_ALPHA_BOUNDS[id]||null}
