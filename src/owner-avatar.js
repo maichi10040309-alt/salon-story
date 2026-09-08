@@ -1,4 +1,4 @@
-import{OWNER_CANVAS,ownerAlphaBounds,ownerLayerCalibration}from'./owner-asset-metadata.js';
+import{OWNER_CANVAS,ownerAlphaBounds,ownerLayerAnchorSpec}from'./owner-asset-metadata.js';
 
 const ROOT='./assets/owner/';
 const OWNER_ASSET_RENDER_FALLBACKS={BOTTOMS_08:'BOTTOMS_07'};
@@ -44,19 +44,20 @@ export function ownerAssetBoundsForItem(item){const asset=ownerAssetForItem(item
 export function ownerHairLabel(value){const a=normalizeOwnerAssetAppearance({hairStyle:value});return OWNER_HAIR_NAMES[Number(a.hairStyle.slice(-2))-1]||OWNER_HAIR_NAMES[4]}
 export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({hairColor:value});return OWNER_HAIR_COLORS[Number(a.hairColor.slice(-2))-1]?.[0]||OWNER_HAIR_COLORS[1][0]}
 
-const img=(path,cls,style='',calibration=null)=>{if(!path)return'';const c=calibration?`--layer-x:${calibration.x*100}%;--layer-y:${calibration.y*100}%;--layer-scale:${calibration.scale};--layer-origin-x:${calibration.originX*100}%;--layer-origin-y:${calibration.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
+export function ownerLayerTransform(slot,id){const fit=ownerLayerAnchorSpec(slot,id),{source,target}=fit;return{x:(target.x-source.x)/OWNER_CANVAS.width,y:(target.y-source.y)/OWNER_CANVAS.height,scaleX:fit.scaleX,scaleY:fit.scaleY,originX:source.x/OWNER_CANVAS.width,originY:source.y/OWNER_CANVAS.height}}
+const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
 const accPath=id=>{const n=Number(id?.slice(-2));if(n<=2)return`accessories/earrings/${id}.png`;if(n<=4)return`accessories/necklace/${id}.png`;if(n<=7)return`accessories/head/${id}.png`;if(n<=9)return`accessories/wrist/${id}.png`;return`accessories/brooch/${id}.png`};
 const ownerPartPath=(folder,id)=>`${folder}/${OWNER_ASSET_RENDER_FALLBACKS[id]||id}.png`;
 export function renderOwnerAvatar(appearance={},options={}){
  const a=normalizeOwnerAssetAppearance(appearance),n=Number(a.hairColor.slice(-2))-1,filter=OWNER_HAIR_COLORS[n]?.[2]||'';
  const showBag=options.showBag!==false,showAccessory=options.showAccessory!==false,size=options.size||'lg',name=options.name||'オーナー';
- const hairCalibration=ownerLayerCalibration('hair',a.hairStyle);
- const layers=[img('hair/styles/'+a.hairStyle+'_back.png','owner-hair owner-hair-back',`filter:${filter}`,hairCalibration),img('base/body.png','owner-base'),img('makeup/'+a.makeup+'.png','owner-makeup'),img('hair/styles/'+a.hairStyle+'_front.png','owner-hair owner-hair-front',`filter:${filter}`,hairCalibration)];
- if(a.dress)layers.push(img(ownerPartPath('dress',a.dress),'owner-dress','',ownerLayerCalibration('dress',a.dress)));else layers.push(img(ownerPartPath('tops',a.tops),'owner-tops','',ownerLayerCalibration('tops',a.tops)),img(ownerPartPath('bottoms',a.bottoms),'owner-bottoms','',ownerLayerCalibration('bottoms',a.bottoms)));
- layers.push(img(a.outer?ownerPartPath('outer',a.outer):null,'owner-outer','',ownerLayerCalibration('outer',a.outer)),img(showBag&&a.bag?ownerPartPath('bags',a.bag):null,'owner-bag','',ownerLayerCalibration('bag',a.bag)));
+ const hairTransform=ownerLayerTransform('hair',a.hairStyle);
+ const layers=[img('hair/styles/'+a.hairStyle+'_back.png','owner-hair owner-hair-back',`filter:${filter}`,hairTransform),img('base/body.png','owner-base'),img('makeup/'+a.makeup+'.png','owner-makeup'),img('hair/styles/'+a.hairStyle+'_front.png','owner-hair owner-hair-front',`filter:${filter}`,hairTransform)];
+ if(a.dress)layers.push(img(ownerPartPath('dress',a.dress),'owner-dress','',ownerLayerTransform('dress',a.dress)));else layers.push(img(ownerPartPath('tops',a.tops),'owner-tops','',ownerLayerTransform('tops',a.tops)),img(ownerPartPath('bottoms',a.bottoms),'owner-bottoms','',ownerLayerTransform('bottoms',a.bottoms)));
+ layers.push(img(a.outer?ownerPartPath('outer',a.outer):null,'owner-outer','',ownerLayerTransform('outer',a.outer)),img(showBag&&a.bag?ownerPartPath('bags',a.bag):null,'owner-bag','',ownerLayerTransform('bag',a.bag)));
  if(showAccessory){
-  const used=new Set(),addAccessory=(id,cls='owner-accessory')=>{if(!id||used.has(id))return;used.add(id);layers.push(img(accPath(id),cls,'',ownerLayerCalibration('accessory',id)))};
-  addAccessory(a.earrings,'owner-accessory owner-earring-single');
+  const used=new Set(),addAccessory=(id,cls='owner-accessory')=>{if(!id||used.has(id))return;used.add(id);layers.push(img(accPath(id),cls,'',ownerLayerTransform('accessory',id)))};
+  addAccessory(a.earrings,'owner-accessory owner-earring-left-pair');
   addAccessory(a.necklace);
   addAccessory(a.accessoryHead);
   addAccessory(a.accessoryWrist,'owner-accessory owner-wrist-accessory');
