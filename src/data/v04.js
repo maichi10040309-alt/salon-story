@@ -1,7 +1,7 @@
 const brands={LUNA:{style:'feminine',name:'LUNA',label:'フェミニン'},MODE:{style:'luxury',name:'MODE',label:'高級感'},MIEL:{style:'natural',name:'MIEL',label:'ナチュラル'},POPPY:{style:'trend',name:'POPPY',label:'トレンド'}};
 const specs={
  tops:[['lace','サロンユニフォームブラウス'],['ribbon','ソフトラップトップ'],['silk','アイボリーニット'],['turtle','エレガントカーディガン'],['linen','ペプラムトップ'],['cardigan','ボウタイブラウス'],['crop','ノースリーブブラウス'],['logo','フィットジャケットトップ'],['peplum','オフショルダーニット'],['sheer','ハイネックニット'],['border','カジュアルボーダートップ'],['short','エレガント半袖トップ']],
- bottoms:[['flare','フレアスカート'],['tweed','ツイードスカート'],['slacks','美脚スラックス'],['tight','タイトスカート'],['cotton','コットンパンツ'],['longskirt','ロングスカート'],['cargo','カラーカーゴ'],['mini','プリーツミニ']],
+ bottoms:[['flare','リボンラップペンシルスカート'],['tweed','桜柄フレアラップスカート'],['slacks','ベルト付きペンシルスカート'],['tight','パステルピンクワイドパンツ'],['cotton','ダークブラウンテーラードパンツ'],['longskirt','チェック柄ショーツ＆タイツ'],['cargo','パステルピンクマーメイドスカート'],['mini','ライトブルーワイドデニム']],
  dresses:[['flower','サロンユニフォーム'],['pinkdress','上品ワンピース'],['blackdress','リボンワンピース'],['jacketdress','ニットワンピース'],['apron','ブラウスワンピース']],
  outer:[['long-cardigan','ロングカーディガン'],['short-jacket','ショートジャケット'],['trench','トレンチコート'],['elegant-coat','エレガントコート'],['casual','カジュアルアウター']],
  shoes:[['pumps','アイボリーリボンパンプス'],['heels','ダスティピンクポインテッド'],['loafers','ベージュビジューパンプス'],['boots','モカローファー'],['flats','ホワイトスニーカー'],['sneakers','ブラックストラップ'],['mule','ピンクベージュミュール'],['brown-boots','ダークブラウンショートブーツ']],

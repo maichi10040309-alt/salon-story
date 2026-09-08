@@ -3,7 +3,7 @@ export const OWNER_CANVAS={width:1024,height:1536};
 export const OWNER_ALPHA_BOUNDS={
  BODY:{x:225,y:10,width:574,height:1494},
  TOPS_01:{x:338,y:225,width:347,height:339},TOPS_02:{x:331,y:225,width:362,height:341},TOPS_03:{x:331,y:225,width:362,height:362},TOPS_04:{x:336,y:225,width:351,height:337},TOPS_05:{x:331,y:225,width:362,height:362},TOPS_06:{x:331,y:225,width:362,height:361},TOPS_07:{x:331,y:225,width:362,height:362},TOPS_08:{x:337,y:225,width:349,height:361},TOPS_09:{x:338,y:225,width:347,height:322},TOPS_10:{x:331,y:225,width:362,height:315},TOPS_11:{x:331,y:225,width:362,height:362},TOPS_12:{x:336,y:225,width:352,height:362},
- BOTTOMS_01:{x:410,y:485,width:203,height:372},BOTTOMS_02:{x:326,y:485,width:371,height:436},BOTTOMS_03:{x:410,y:485,width:204,height:435},BOTTOMS_04:{x:379,y:485,width:265,height:472},BOTTOMS_05:{x:417,y:485,width:190,height:472},BOTTOMS_06:{x:388,y:485,width:248,height:470},BOTTOMS_07:{x:340,y:485,width:343,height:477},
+ BOTTOMS_01:{x:2,y:76,width:852,height:1386},BOTTOMS_02:{x:0,y:94,width:1024,height:1298},BOTTOMS_03:{x:0,y:96,width:964,height:1338},BOTTOMS_04:{x:49,y:28,width:861,height:1442},BOTTOMS_05:{x:71,y:55,width:791,height:1420},BOTTOMS_06:{x:65,y:36,width:945,height:1468},BOTTOMS_07:{x:58,y:67,width:908,height:1339},BOTTOMS_08:{x:169,y:41,width:767,height:1432},
  STYLE_01:{x:409,y:220,width:206,height:443},STYLE_02:{x:370,y:220,width:284,height:458},STYLE_03:{x:367,y:220,width:290,height:468},STYLE_04:{x:392,y:220,width:239,height:463},STYLE_05:{x:384,y:220,width:256,height:469},
  OUTER_01:{x:377,y:220,width:270,height:463},OUTER_02:{x:381,y:220,width:262,height:406},OUTER_03:{x:375,y:220,width:274,height:487},OUTER_04:{x:364,y:220,width:296,height:479},OUTER_05:{x:376,y:220,width:271,height:467},
  SHOES_01:{x:364,y:1320,width:232,height:106},SHOES_02:{x:359,y:1320,width:243,height:105},SHOES_03:{x:361,y:1320,width:238,height:106},SHOES_04:{x:359,y:1320,width:243,height:102},SHOES_05:{x:360,y:1320,width:241,height:99},SHOES_06:{x:362,y:1320,width:236,height:108},SHOES_07:{x:357,y:1320,width:247,height:93},SHOES_08:{x:363,y:1320,width:235,height:108},
@@ -13,7 +13,7 @@ export const OWNER_ALPHA_BOUNDS={
 
 const bodyBounds=OWNER_ALPHA_BOUNDS.BODY,bodyCenterX=bodyBounds.x+bodyBounds.width/2;
 export const OWNER_ALPHA_ANALYSIS=Object.fromEntries(Object.entries(OWNER_ALPHA_BOUNDS).map(([id,bounds])=>[id,{centerXDelta:bounds.x+bounds.width/2-bodyCenterX,topYDelta:bounds.y-bodyBounds.y,bottomYDelta:bounds.y+bounds.height-(bodyBounds.y+bodyBounds.height),widthRatio:bounds.width/bodyBounds.width,heightRatio:bounds.height/bodyBounds.height}]));
-export const OWNER_INVALID_ASSETS={BOTTOMS_08:'zero-byte / empty PNG fallback to BOTTOMS_07'};
+export const OWNER_INVALID_ASSETS={};
 
 export const OWNER_BODY_ANCHORS={
  head:{faceCenterX:512,headTopY:10,neckTopY:220},
@@ -36,7 +36,14 @@ export const OWNER_LAYER_ANCHORS={
   accessory:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1}
  },
  assets:{
-  BOTTOMS_01:{scaleX:280/200},BOTTOMS_02:{scaleX:292/209},BOTTOMS_03:{scaleX:280/201},BOTTOMS_04:{scaleX:292/186},BOTTOMS_05:{scaleX:292/183},BOTTOMS_06:{scaleX:280/238},BOTTOMS_07:{scaleX:292/172},BOTTOMS_08:{scaleX:300/172},
+  BOTTOMS_01:{source:point(428,76),scaleX:.4,scaleY:.4},
+  BOTTOMS_02:{source:point(512,94),scaleX:.52,scaleY:.52},
+  BOTTOMS_03:{source:point(482,96),scaleX:.42,scaleY:.42},
+  BOTTOMS_04:{source:point(479.5,28),scaleX:.7,scaleY:.7},
+  BOTTOMS_05:{source:point(466.5,55),scaleX:.7,scaleY:.7},
+  BOTTOMS_06:{source:point(537.5,36),scaleX:.69,scaleY:.69},
+  BOTTOMS_07:{source:point(512,67),scaleX:.68,scaleY:.68},
+  BOTTOMS_08:{source:point(552.5,41),scaleX:.7,scaleY:.7},
   STYLE_01:{scaleX:280/124,scaleY:260/265},STYLE_02:{scaleX:300/269,scaleY:260/265},STYLE_03:{scaleX:300/267,scaleY:260/265},STYLE_04:{scaleX:280/159,scaleY:260/265},STYLE_05:{scaleX:292/244,scaleY:260/265},
   OUTER_01:{scaleX:347/270,scaleY:347/270},OUTER_02:{scaleX:347/262,scaleY:347/262},OUTER_03:{scaleX:347/274,scaleY:347/274},OUTER_04:{scaleX:347/296,scaleY:347/296},OUTER_05:{scaleX:347/271,scaleY:347/271},
   ACC_01:{source:point(462,211),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.55,scaleY:.55},ACC_02:{source:point(462.5,245),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.5,scaleY:.5},
