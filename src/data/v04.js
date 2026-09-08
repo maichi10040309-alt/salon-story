@@ -19,7 +19,8 @@ export const makeupStyles=[
  {id:'glamorous',name:'華やか',price:28000,style:'feminine',points:18,icon:'✨'},
  {id:'cool',name:'クール',price:24000,style:'luxury',points:17,icon:'💄'}
 ];
-export const hairstyles20=['HAIR_01','HAIR_02','HAIR_03','HAIR_04','HAIR_05','HAIR_06','HAIR_07','HAIR_08','HAIR_09','HAIR_10','HAIR_11','HAIR_12','HAIR_13','HAIR_14','HAIR_15','HAIR_16','HAIR_17','HAIR_18','HAIR_19','HAIR_20'];
+export const hairstyles17=['HAIR_01','HAIR_02','HAIR_03','HAIR_04','HAIR_05','HAIR_06','HAIR_07','HAIR_08','HAIR_09','HAIR_10','HAIR_11','HAIR_12','HAIR_13','HAIR_14','HAIR_15','HAIR_16','HAIR_17'];
+export const hairstyles20=hairstyles17;
 export const townBuildings=[
  {id:'salon',name:'Salon Story',icon:'🌸',subtitle:'本店へ戻る'},
  {id:'fashionShop',name:'Fashion Shop',icon:'👗',subtitle:'服と小物を買う'},
