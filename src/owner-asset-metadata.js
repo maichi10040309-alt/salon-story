@@ -14,8 +14,8 @@ export const OWNER_ALPHA_BOUNDS={
 export const OWNER_LAYER_CALIBRATION={
  default:{x:0,y:0,scale:1,originX:.5,originY:1},
  slots:{
-  hair:{x:-.75/1024,y:2/1536,scale:1,originX:.5,originY:0},
-  tops:{x:0,y:0,scale:1.06,originX:.5,originY:485/1536},
+  hair:{x:-1/1024,y:3/1536,scale:1,originX:.5,originY:0},
+  tops:{x:0,y:0,scale:1.08,originX:.5,originY:485/1536},
   bottoms:{x:0,y:0,scale:1,originX:.5,originY:485/1536},
   dress:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
   outer:{x:0,y:0,scale:1,originX:.5,originY:220/1536},
@@ -23,9 +23,11 @@ export const OWNER_LAYER_CALIBRATION={
   accessory:{x:0,y:0,scale:1,originX:.5,originY:1}
  },
  assets:{
-  BOTTOMS_01:{scale:258/200},BOTTOMS_02:{scale:258/209},BOTTOMS_03:{scale:258/201},BOTTOMS_04:{scale:258/187},BOTTOMS_05:{scale:258/185},BOTTOMS_06:{scale:258/239},BOTTOMS_07:{scale:258/172},
-  STYLE_01:{scale:365/206},STYLE_02:{scale:365/284},STYLE_03:{scale:365/290},STYLE_04:{scale:365/239},STYLE_05:{scale:365/256},
-  OUTER_01:{scale:347/270},OUTER_02:{scale:347/262},OUTER_03:{scale:347/274},OUTER_04:{scale:347/296},OUTER_05:{scale:347/271}
+  BOTTOMS_01:{scale:266/200},BOTTOMS_02:{scale:266/209},BOTTOMS_03:{scale:266/201},BOTTOMS_04:{scale:266/187},BOTTOMS_05:{scale:266/185},BOTTOMS_06:{scale:266/239},BOTTOMS_07:{scale:266/172},
+  STYLE_01:{scale:375/206},STYLE_02:{scale:375/284},STYLE_03:{scale:375/290},STYLE_04:{scale:375/239},STYLE_05:{scale:375/256},
+  OUTER_01:{scale:347/270},OUTER_02:{scale:347/262},OUTER_03:{scale:347/274},OUTER_04:{scale:347/296},OUTER_05:{scale:347/271},
+  ACC_01:{x:0,y:-66/1536,scale:1,originX:.5,originY:1},ACC_02:{x:0,y:-70/1536,scale:1,originX:.5,originY:1},
+  ACC_08:{x:-44/1024,y:-35.5/1536,scale:.55,originX:781/1024,originY:695.5/1536},ACC_09:{x:-50/1024,y:27/1536,scale:.6,originX:787.5/1024,originY:633/1536}
  }
 };
 
