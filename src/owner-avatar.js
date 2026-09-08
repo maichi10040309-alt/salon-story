@@ -54,6 +54,14 @@ export function renderOwnerAvatar(appearance={},options={}){
  const layers=[img('hair/styles/'+a.hairStyle+'_back.png','owner-hair owner-hair-back',`filter:${filter}`,hairCalibration),img('base/body.png','owner-base'),img('makeup/'+a.makeup+'.png','owner-makeup'),img('hair/styles/'+a.hairStyle+'_front.png','owner-hair owner-hair-front',`filter:${filter}`,hairCalibration)];
  if(a.dress)layers.push(img(ownerPartPath('dress',a.dress),'owner-dress','',ownerLayerCalibration('dress',a.dress)));else layers.push(img(ownerPartPath('tops',a.tops),'owner-tops','',ownerLayerCalibration('tops',a.tops)),img(ownerPartPath('bottoms',a.bottoms),'owner-bottoms','',ownerLayerCalibration('bottoms',a.bottoms)));
  layers.push(img(a.outer?ownerPartPath('outer',a.outer):null,'owner-outer','',ownerLayerCalibration('outer',a.outer)),img(showBag&&a.bag?ownerPartPath('bags',a.bag):null,'owner-bag','',ownerLayerCalibration('bag',a.bag)));
- if(showAccessory){const supported=[a.necklace,a.accessoryHead,a.brooch,a.accessories].filter((id,index,all)=>id&&all.indexOf(id)===index);layers.push(...supported.map(id=>img(accPath(id),'owner-accessory','',ownerLayerCalibration('accessory',id))))}
+ if(showAccessory){
+  const used=new Set(),addAccessory=(id,cls='owner-accessory')=>{if(!id||used.has(id))return;used.add(id);layers.push(img(accPath(id),cls,'',ownerLayerCalibration('accessory',id)))};
+  addAccessory(a.earrings,'owner-accessory owner-earring-single');
+  addAccessory(a.necklace);
+  addAccessory(a.accessoryHead);
+  addAccessory(a.accessoryWrist,'owner-accessory owner-wrist-accessory');
+  addAccessory(a.brooch);
+  addAccessory(a.accessories);
+ }
  return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-stage="shared" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas avatar-stage">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
 }
