@@ -1,9 +1,6 @@
 {
-  "version": 1,
-  "canvas": {
-    "width": 1024,
-    "height": 1536
-  },
+  "version": 2,
+  "canvas": {"width": 1024, "height": 1536},
   "base": {
     "skin": "assets/owner/base/skin.png",
     "faceBase": "assets/owner/base/face_base.png",
@@ -13,599 +10,113 @@
     "body": "assets/owner/base/body.png"
   },
   "hairStyles": [
-    {
-      "id": "HAIR_01",
-      "name": "ショート",
-      "front": "assets/owner/hair/styles/HAIR_01_front.png",
-      "back": "assets/owner/hair/styles/HAIR_01_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_02",
-      "name": "ショートボブ",
-      "front": "assets/owner/hair/styles/HAIR_02_front.png",
-      "back": "assets/owner/hair/styles/HAIR_02_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_03",
-      "name": "ソフトボブ",
-      "front": "assets/owner/hair/styles/HAIR_03_front.png",
-      "back": "assets/owner/hair/styles/HAIR_03_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_04",
-      "name": "ミディアムストレート",
-      "front": "assets/owner/hair/styles/HAIR_04_front.png",
-      "back": "assets/owner/hair/styles/HAIR_04_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_05",
-      "name": "ミディアムウェーブ",
-      "front": "assets/owner/hair/styles/HAIR_05_front.png",
-      "back": "assets/owner/hair/styles/HAIR_05_back.png",
-      "unlockType": "default"
-    },
-    {
-      "id": "HAIR_06",
-      "name": "ロングストレート",
-      "front": "assets/owner/hair/styles/HAIR_06_front.png",
-      "back": "assets/owner/hair/styles/HAIR_06_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_07",
-      "name": "ロングウェーブ",
-      "front": "assets/owner/hair/styles/HAIR_07_front.png",
-      "back": "assets/owner/hair/styles/HAIR_07_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_08",
-      "name": "ポニーテール",
-      "front": "assets/owner/hair/styles/HAIR_08_front.png",
-      "back": "assets/owner/hair/styles/HAIR_08_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_09",
-      "name": "ローポニーテール",
-      "front": "assets/owner/hair/styles/HAIR_09_front.png",
-      "back": "assets/owner/hair/styles/HAIR_09_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_10",
-      "name": "ハーフアップ",
-      "front": "assets/owner/hair/styles/HAIR_10_front.png",
-      "back": "assets/owner/hair/styles/HAIR_10_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_11",
-      "name": "お団子",
-      "front": "assets/owner/hair/styles/HAIR_11_front.png",
-      "back": "assets/owner/hair/styles/HAIR_11_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_12",
-      "name": "ツインブレイド",
-      "front": "assets/owner/hair/styles/HAIR_12_front.png",
-      "back": "assets/owner/hair/styles/HAIR_12_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_13",
-      "name": "サイドブレイド",
-      "front": "assets/owner/hair/styles/HAIR_13_front.png",
-      "back": "assets/owner/hair/styles/HAIR_13_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_14",
-      "name": "レイヤーミディアム",
-      "front": "assets/owner/hair/styles/HAIR_14_front.png",
-      "back": "assets/owner/hair/styles/HAIR_14_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_15",
-      "name": "ウルフカット",
-      "front": "assets/owner/hair/styles/HAIR_15_front.png",
-      "back": "assets/owner/hair/styles/HAIR_15_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_16",
-      "name": "姫カット",
-      "front": "assets/owner/hair/styles/HAIR_16_front.png",
-      "back": "assets/owner/hair/styles/HAIR_16_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_17",
-      "name": "エレガントアップ",
-      "front": "assets/owner/hair/styles/HAIR_17_front.png",
-      "back": "assets/owner/hair/styles/HAIR_17_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_18",
-      "name": "リボンハーフアップ",
-      "front": "assets/owner/hair/styles/HAIR_18_front.png",
-      "back": "assets/owner/hair/styles/HAIR_18_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_19",
-      "name": "ルーズカール",
-      "front": "assets/owner/hair/styles/HAIR_19_front.png",
-      "back": "assets/owner/hair/styles/HAIR_19_back.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "HAIR_20",
-      "name": "サロンブロー",
-      "front": "assets/owner/hair/styles/HAIR_20_front.png",
-      "back": "assets/owner/hair/styles/HAIR_20_back.png",
-      "unlockType": "shop"
-    }
+    {"id":"HAIR_01","name":"ショートボブ","path":"assets/owner/hair/styles/HAIR_01.png","unlockType":"shop"},
+    {"id":"HAIR_02","name":"ナチュラルボブ","path":"assets/owner/hair/styles/HAIR_02.png","unlockType":"shop"},
+    {"id":"HAIR_03","name":"ミディアムストレート","path":"assets/owner/hair/styles/HAIR_03.png","unlockType":"shop"},
+    {"id":"HAIR_04","name":"ミディアムウェーブ","path":"assets/owner/hair/styles/HAIR_04.png","unlockType":"shop"},
+    {"id":"HAIR_05","name":"エアリーミディアム","path":"assets/owner/hair/styles/HAIR_05.png","unlockType":"default"},
+    {"id":"HAIR_06","name":"ロングストレート","path":"assets/owner/hair/styles/HAIR_06.png","unlockType":"shop"},
+    {"id":"HAIR_07","name":"ロングウェーブ","path":"assets/owner/hair/styles/HAIR_07.png","unlockType":"shop"},
+    {"id":"HAIR_08","name":"サイドポニー","path":"assets/owner/hair/styles/HAIR_08.png","unlockType":"shop"},
+    {"id":"HAIR_09","name":"ハーフアップ","path":"assets/owner/hair/styles/HAIR_09.png","unlockType":"shop"},
+    {"id":"HAIR_10","name":"ルーズアップ","path":"assets/owner/hair/styles/HAIR_10.png","unlockType":"shop"},
+    {"id":"HAIR_11","name":"ツインブレイド","path":"assets/owner/hair/styles/HAIR_11.png","unlockType":"shop"},
+    {"id":"HAIR_12","name":"サイドブレイド","path":"assets/owner/hair/styles/HAIR_12.png","unlockType":"shop"},
+    {"id":"HAIR_13","name":"レイヤーミディアム","path":"assets/owner/hair/styles/HAIR_13.png","unlockType":"shop"},
+    {"id":"HAIR_14","name":"スーパーロング","path":"assets/owner/hair/styles/HAIR_14.png","unlockType":"shop"},
+    {"id":"HAIR_15","name":"エレガントアップ","path":"assets/owner/hair/styles/HAIR_15.png","unlockType":"shop"},
+    {"id":"HAIR_16","name":"リボンブレイド","path":"assets/owner/hair/styles/HAIR_16.png","unlockType":"shop"},
+    {"id":"HAIR_17","name":"ソフトカール","path":"assets/owner/hair/styles/HAIR_17.png","unlockType":"shop"}
   ],
   "hairColors": [
-    {
-      "id": "COLOR_01",
-      "name": "ブラック",
-      "type": "filter",
-      "value": "#2f2b2d",
-      "filter": "brightness(.55) saturate(.75)"
-    },
-    {
-      "id": "COLOR_02",
-      "name": "ダークブラウン",
-      "type": "filter",
-      "value": "#5b4636",
-      "filter": "brightness(.72) saturate(.9)"
-    },
-    {
-      "id": "COLOR_03",
-      "name": "モカブラウン",
-      "type": "filter",
-      "value": "#795c50",
-      "filter": "sepia(.2) brightness(.82)"
-    },
-    {
-      "id": "COLOR_04",
-      "name": "チョコレートブラウン",
-      "type": "filter",
-      "value": "#69463c",
-      "filter": "sepia(.28) brightness(.72) saturate(1.05)"
-    },
-    {
-      "id": "COLOR_05",
-      "name": "チェスナット",
-      "type": "filter",
-      "value": "#855f4d",
-      "filter": "sepia(.35) brightness(.86) saturate(1.08)"
-    },
-    {
-      "id": "COLOR_06",
-      "name": "ミルクティーベージュ",
-      "type": "filter",
-      "value": "#aa8d7e",
-      "filter": "sepia(.25) brightness(1.08) saturate(.72)"
-    },
-    {
-      "id": "COLOR_07",
-      "name": "グレージュ",
-      "type": "filter",
-      "value": "#857873",
-      "filter": "grayscale(.24) brightness(.91)"
-    },
-    {
-      "id": "COLOR_08",
-      "name": "アッシュブラウン",
-      "type": "filter",
-      "value": "#726561",
-      "filter": "grayscale(.18) brightness(.78)"
-    },
-    {
-      "id": "COLOR_09",
-      "name": "ピンクブラウン",
-      "type": "filter",
-      "value": "#9a6467",
-      "filter": "sepia(.22) hue-rotate(318deg) saturate(1.08)"
-    },
-    {
-      "id": "COLOR_10",
-      "name": "ラベンダーブラウン",
-      "type": "filter",
-      "value": "#765e70",
-      "filter": "sepia(.16) hue-rotate(280deg) saturate(.9)"
-    },
-    {
-      "id": "COLOR_11",
-      "name": "ワインブラウン",
-      "type": "filter",
-      "value": "#713f49",
-      "filter": "sepia(.2) hue-rotate(320deg) saturate(1.25) brightness(.76)"
-    },
-    {
-      "id": "COLOR_12",
-      "name": "ハイトーンベージュ",
-      "type": "filter",
-      "value": "#bea190",
-      "filter": "sepia(.18) brightness(1.18) saturate(.68)"
-    }
+    {"id":"COLOR_01","name":"ブラック","type":"filter","value":"#2f2b2d","filter":"brightness(.55) saturate(.75)"},
+    {"id":"COLOR_02","name":"ダークブラウン","type":"filter","value":"#5b4636","filter":"brightness(.72) saturate(.9)"},
+    {"id":"COLOR_03","name":"モカブラウン","type":"filter","value":"#795c50","filter":"sepia(.2) brightness(.82)"},
+    {"id":"COLOR_04","name":"チョコレートブラウン","type":"filter","value":"#69463c","filter":"sepia(.28) brightness(.72) saturate(1.05)"},
+    {"id":"COLOR_05","name":"チェスナット","type":"filter","value":"#855f4d","filter":"sepia(.35) brightness(.86) saturate(1.08)"},
+    {"id":"COLOR_06","name":"ミルクティーベージュ","type":"filter","value":"#aa8d7e","filter":"sepia(.25) brightness(1.08) saturate(.72)"},
+    {"id":"COLOR_07","name":"グレージュ","type":"filter","value":"#857873","filter":"grayscale(.24) brightness(.91)"},
+    {"id":"COLOR_08","name":"アッシュブラウン","type":"filter","value":"#726561","filter":"grayscale(.18) brightness(.78)"},
+    {"id":"COLOR_09","name":"ピンクブラウン","type":"filter","value":"#9a6467","filter":"sepia(.22) hue-rotate(318deg) saturate(1.08)"},
+    {"id":"COLOR_10","name":"ラベンダーブラウン","type":"filter","value":"#765e70","filter":"sepia(.16) hue-rotate(280deg) saturate(.9)"},
+    {"id":"COLOR_11","name":"ワインブラウン","type":"filter","value":"#713f49","filter":"sepia(.2) hue-rotate(320deg) saturate(1.25) brightness(.76)"},
+    {"id":"COLOR_12","name":"ハイトーンベージュ","type":"filter","value":"#bea190","filter":"sepia(.18) brightness(1.18) saturate(.68)"}
   ],
   "makeups": [
-    {
-      "id": "MAKEUP_01",
-      "name": "Natural",
-      "path": "assets/owner/makeup/MAKEUP_01.png",
-      "unlockType": "default"
-    },
-    {
-      "id": "MAKEUP_02",
-      "name": "Feminine",
-      "path": "assets/owner/makeup/MAKEUP_02.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "MAKEUP_03",
-      "name": "Korean",
-      "path": "assets/owner/makeup/MAKEUP_03.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "MAKEUP_04",
-      "name": "Mode",
-      "path": "assets/owner/makeup/MAKEUP_04.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "MAKEUP_05",
-      "name": "Cool",
-      "path": "assets/owner/makeup/MAKEUP_05.png",
-      "unlockType": "shop"
-    },
-    {
-      "id": "MAKEUP_06",
-      "name": "Glamorous",
-      "path": "assets/owner/makeup/MAKEUP_06.png",
-      "unlockType": "shop"
-    }
+    {"id":"MAKEUP_01","name":"Natural","path":"assets/owner/makeup/MAKEUP_01.png","unlockType":"default"},
+    {"id":"MAKEUP_02","name":"Feminine","path":"assets/owner/makeup/MAKEUP_02.png","unlockType":"shop"},
+    {"id":"MAKEUP_03","name":"Korean","path":"assets/owner/makeup/MAKEUP_03.png","unlockType":"shop"},
+    {"id":"MAKEUP_04","name":"Mode","path":"assets/owner/makeup/MAKEUP_04.png","unlockType":"shop"},
+    {"id":"MAKEUP_05","name":"Cool","path":"assets/owner/makeup/MAKEUP_05.png","unlockType":"shop"},
+    {"id":"MAKEUP_06","name":"Glamorous","path":"assets/owner/makeup/MAKEUP_06.png","unlockType":"shop"}
   ],
   "tops": [
-    {
-      "id": "TOPS_01",
-      "name": "Salon Uniform Blouse",
-      "path": "assets/owner/tops/TOPS_01.png"
-    },
-    {
-      "id": "TOPS_02",
-      "name": "Soft Wrap Top",
-      "path": "assets/owner/tops/TOPS_02.png"
-    },
-    {
-      "id": "TOPS_03",
-      "name": "Ivory Knit",
-      "path": "assets/owner/tops/TOPS_03.png"
-    },
-    {
-      "id": "TOPS_04",
-      "name": "Elegant Cardigan",
-      "path": "assets/owner/tops/TOPS_04.png"
-    },
-    {
-      "id": "TOPS_05",
-      "name": "Peplum Top",
-      "path": "assets/owner/tops/TOPS_05.png"
-    },
-    {
-      "id": "TOPS_06",
-      "name": "Bowtie Blouse",
-      "path": "assets/owner/tops/TOPS_06.png"
-    },
-    {
-      "id": "TOPS_07",
-      "name": "Sleeveless Blouse",
-      "path": "assets/owner/tops/TOPS_07.png"
-    },
-    {
-      "id": "TOPS_08",
-      "name": "Fit Jacket Top",
-      "path": "assets/owner/tops/TOPS_08.png"
-    },
-    {
-      "id": "TOPS_09",
-      "name": "Off-shoulder Knit",
-      "path": "assets/owner/tops/TOPS_09.png"
-    },
-    {
-      "id": "TOPS_10",
-      "name": "High-neck Knit",
-      "path": "assets/owner/tops/TOPS_10.png"
-    },
-    {
-      "id": "TOPS_11",
-      "name": "Casual Border Top",
-      "path": "assets/owner/tops/TOPS_11.png"
-    },
-    {
-      "id": "TOPS_12",
-      "name": "Elegant Short-sleeve Top",
-      "path": "assets/owner/tops/TOPS_12.png"
-    }
+    {"id":"TOPS_01","name":"Salon Uniform Blouse","path":"assets/owner/tops/TOPS_01.png"},
+    {"id":"TOPS_02","name":"Soft Wrap Top","path":"assets/owner/tops/TOPS_02.png"},
+    {"id":"TOPS_03","name":"Ivory Knit","path":"assets/owner/tops/TOPS_03.png"},
+    {"id":"TOPS_04","name":"Elegant Cardigan","path":"assets/owner/tops/TOPS_04.png"},
+    {"id":"TOPS_05","name":"Peplum Top","path":"assets/owner/tops/TOPS_05.png"},
+    {"id":"TOPS_06","name":"Bowtie Blouse","path":"assets/owner/tops/TOPS_06.png"},
+    {"id":"TOPS_07","name":"Sleeveless Blouse","path":"assets/owner/tops/TOPS_07.png"},
+    {"id":"TOPS_08","name":"Fit Jacket Top","path":"assets/owner/tops/TOPS_08.png"},
+    {"id":"TOPS_09","name":"Off-shoulder Knit","path":"assets/owner/tops/TOPS_09.png"},
+    {"id":"TOPS_10","name":"High-neck Knit","path":"assets/owner/tops/TOPS_10.png"}
   ],
   "bottoms": [
-    {
-      "id": "BOTTOMS_01",
-      "name": "Slim Skirt",
-      "path": "assets/owner/bottoms/BOTTOMS_01.png"
-    },
-    {
-      "id": "BOTTOMS_02",
-      "name": "Flare Midi Skirt",
-      "path": "assets/owner/bottoms/BOTTOMS_02.png"
-    },
-    {
-      "id": "BOTTOMS_03",
-      "name": "Straight Skirt",
-      "path": "assets/owner/bottoms/BOTTOMS_03.png"
-    },
-    {
-      "id": "BOTTOMS_04",
-      "name": "Wide Pants",
-      "path": "assets/owner/bottoms/BOTTOMS_04.png"
-    },
-    {
-      "id": "BOTTOMS_05",
-      "name": "Tapered Pants",
-      "path": "assets/owner/bottoms/BOTTOMS_05.png"
-    },
-    {
-      "id": "BOTTOMS_06",
-      "name": "Short Pants + Tights",
-      "path": "assets/owner/bottoms/BOTTOMS_06.png"
-    },
-    {
-      "id": "BOTTOMS_07",
-      "name": "Mermaid Skirt",
-      "path": "assets/owner/bottoms/BOTTOMS_07.png"
-    },
-    {
-      "id": "BOTTOMS_08",
-      "name": "Denim",
-      "path": "assets/owner/bottoms/BOTTOMS_08.png"
-    }
+    {"id":"BOTTOMS_01","name":"Slim Skirt","path":"assets/owner/bottoms/BOTTOMS_01.png"},
+    {"id":"BOTTOMS_02","name":"Flare Midi Skirt","path":"assets/owner/bottoms/BOTTOMS_02.png"},
+    {"id":"BOTTOMS_03","name":"Straight Skirt","path":"assets/owner/bottoms/BOTTOMS_03.png"},
+    {"id":"BOTTOMS_04","name":"Wide Pants","path":"assets/owner/bottoms/BOTTOMS_04.png"},
+    {"id":"BOTTOMS_05","name":"Tapered Pants","path":"assets/owner/bottoms/BOTTOMS_05.png"},
+    {"id":"BOTTOMS_06","name":"Short Pants + Tights","path":"assets/owner/bottoms/BOTTOMS_06.png"},
+    {"id":"BOTTOMS_07","name":"Mermaid Skirt","path":"assets/owner/bottoms/BOTTOMS_07.png"},
+    {"id":"BOTTOMS_08","name":"Denim","path":"assets/owner/bottoms/BOTTOMS_08.png"}
   ],
   "dress": [
-    {
-      "id": "STYLE_01",
-      "name": "サロンユニフォーム",
-      "path": "assets/owner/dress/STYLE_01.png",
-      "kind": "dress"
-    },
-    {
-      "id": "STYLE_02",
-      "name": "上品ワンピース",
-      "path": "assets/owner/dress/STYLE_02.png",
-      "kind": "dress"
-    },
-    {
-      "id": "STYLE_03",
-      "name": "リボンワンピース",
-      "path": "assets/owner/dress/STYLE_03.png",
-      "kind": "dress"
-    },
-    {
-      "id": "STYLE_04",
-      "name": "ニットワンピース",
-      "path": "assets/owner/dress/STYLE_04.png",
-      "kind": "dress"
-    },
-    {
-      "id": "STYLE_05",
-      "name": "ブラウスワンピース",
-      "path": "assets/owner/dress/STYLE_05.png",
-      "kind": "dress"
-    }
+    {"id":"STYLE_01","name":"サロンユニフォーム","path":"assets/owner/dress/STYLE_01.png","kind":"dress"},
+    {"id":"STYLE_02","name":"上品ワンピース","path":"assets/owner/dress/STYLE_02.png","kind":"dress"},
+    {"id":"STYLE_03","name":"リボンワンピース","path":"assets/owner/dress/STYLE_03.png","kind":"dress"},
+    {"id":"STYLE_04","name":"ニットワンピース","path":"assets/owner/dress/STYLE_04.png","kind":"dress"},
+    {"id":"STYLE_05","name":"ブラウスワンピース","path":"assets/owner/dress/STYLE_05.png","kind":"dress"}
   ],
   "outer": [
-    {
-      "id": "OUTER_01",
-      "name": "ロングカーディガン",
-      "path": "assets/owner/outer/OUTER_01.png",
-      "kind": "outer"
-    },
-    {
-      "id": "OUTER_02",
-      "name": "ショートジャケット",
-      "path": "assets/owner/outer/OUTER_02.png",
-      "kind": "outer"
-    },
-    {
-      "id": "OUTER_03",
-      "name": "トレンチコート",
-      "path": "assets/owner/outer/OUTER_03.png",
-      "kind": "outer"
-    },
-    {
-      "id": "OUTER_04",
-      "name": "エレガントコート",
-      "path": "assets/owner/outer/OUTER_04.png",
-      "kind": "outer"
-    },
-    {
-      "id": "OUTER_05",
-      "name": "カジュアルアウター",
-      "path": "assets/owner/outer/OUTER_05.png",
-      "kind": "outer"
-    }
+    {"id":"OUTER_01","name":"ロングカーディガン","path":"assets/owner/outer/OUTER_01.png","kind":"outer"},
+    {"id":"OUTER_02","name":"ショートジャケット","path":"assets/owner/outer/OUTER_02.png","kind":"outer"},
+    {"id":"OUTER_03","name":"トレンチコート","path":"assets/owner/outer/OUTER_03.png","kind":"outer"},
+    {"id":"OUTER_04","name":"エレガントコート","path":"assets/owner/outer/OUTER_04.png","kind":"outer"},
+    {"id":"OUTER_05","name":"カジュアルアウター","path":"assets/owner/outer/OUTER_05.png","kind":"outer"}
   ],
   "shoes": [
-    {
-      "id": "SHOES_01",
-      "name": "アイボリーリボンパンプス",
-      "path": "assets/owner/shoes/SHOES_01.png"
-    },
-    {
-      "id": "SHOES_02",
-      "name": "ダスティピンクポインテッド",
-      "path": "assets/owner/shoes/SHOES_02.png"
-    },
-    {
-      "id": "SHOES_03",
-      "name": "ベージュビジューパンプス",
-      "path": "assets/owner/shoes/SHOES_03.png"
-    },
-    {
-      "id": "SHOES_04",
-      "name": "モカローファー",
-      "path": "assets/owner/shoes/SHOES_04.png"
-    },
-    {
-      "id": "SHOES_05",
-      "name": "ホワイトスニーカー",
-      "path": "assets/owner/shoes/SHOES_05.png"
-    },
-    {
-      "id": "SHOES_06",
-      "name": "ブラックストラップ",
-      "path": "assets/owner/shoes/SHOES_06.png"
-    },
-    {
-      "id": "SHOES_07",
-      "name": "ピンクベージュミュール",
-      "path": "assets/owner/shoes/SHOES_07.png"
-    },
-    {
-      "id": "SHOES_08",
-      "name": "ダークブラウンショートブーツ",
-      "path": "assets/owner/shoes/SHOES_08.png"
-    }
+    {"id":"SHOES_01","name":"アイボリーリボンパンプス","path":"assets/owner/shoes/SHOES_01.png"},
+    {"id":"SHOES_02","name":"ダスティピンクポインテッド","path":"assets/owner/shoes/SHOES_02.png"},
+    {"id":"SHOES_03","name":"ベージュビジューパンプス","path":"assets/owner/shoes/SHOES_03.png"},
+    {"id":"SHOES_04","name":"モカローファー","path":"assets/owner/shoes/SHOES_04.png"},
+    {"id":"SHOES_05","name":"ホワイトスニーカー","path":"assets/owner/shoes/SHOES_05.png"},
+    {"id":"SHOES_06","name":"ブラックストラップ","path":"assets/owner/shoes/SHOES_06.png"},
+    {"id":"SHOES_07","name":"ピンクベージュミュール","path":"assets/owner/shoes/SHOES_07.png"},
+    {"id":"SHOES_08","name":"ダークブラウンショートブーツ","path":"assets/owner/shoes/SHOES_08.png"}
   ],
   "bags": [
-    {
-      "id": "BAG_01",
-      "name": "アイボリーハンドバッグ",
-      "path": "assets/owner/bags/BAG_01.png"
-    },
-    {
-      "id": "BAG_02",
-      "name": "ダスティピンクトートバッグ",
-      "path": "assets/owner/bags/BAG_02.png"
-    },
-    {
-      "id": "BAG_03",
-      "name": "ベージュショルダーバッグ",
-      "path": "assets/owner/bags/BAG_03.png"
-    },
-    {
-      "id": "BAG_04",
-      "name": "モカバケットバッグ",
-      "path": "assets/owner/bags/BAG_04.png"
-    },
-    {
-      "id": "BAG_05",
-      "name": "ホワイトミニショルダー",
-      "path": "assets/owner/bags/BAG_05.png"
-    },
-    {
-      "id": "BAG_06",
-      "name": "ブラックトートバッグ",
-      "path": "assets/owner/bags/BAG_06.png"
-    },
-    {
-      "id": "BAG_07",
-      "name": "ピンクベージュクラッチバッグ",
-      "path": "assets/owner/bags/BAG_07.png"
-    },
-    {
-      "id": "BAG_08",
-      "name": "ダークブラウン2WAYバッグ",
-      "path": "assets/owner/bags/BAG_08.png"
-    }
+    {"id":"BAG_01","name":"アイボリーハンドバッグ","path":"assets/owner/bags/BAG_01.png"},
+    {"id":"BAG_02","name":"ダスティピンクトートバッグ","path":"assets/owner/bags/BAG_02.png"},
+    {"id":"BAG_03","name":"ベージュショルダーバッグ","path":"assets/owner/bags/BAG_03.png"},
+    {"id":"BAG_04","name":"モカバケットバッグ","path":"assets/owner/bags/BAG_04.png"},
+    {"id":"BAG_05","name":"ホワイトミニショルダー","path":"assets/owner/bags/BAG_05.png"},
+    {"id":"BAG_06","name":"ブラックトートバッグ","path":"assets/owner/bags/BAG_06.png"},
+    {"id":"BAG_07","name":"ピンクベージュクラッチバッグ","path":"assets/owner/bags/BAG_07.png"},
+    {"id":"BAG_08","name":"ダークブラウン2WAYバッグ","path":"assets/owner/bags/BAG_08.png"}
   ],
   "accessories": [
-    {
-      "id": "ACC_01",
-      "name": "パールドロップピアス",
-      "path": "assets/owner/accessories/earrings/ACC_01.png",
-      "slot": "earrings"
-    },
-    {
-      "id": "ACC_02",
-      "name": "フラワーピアス",
-      "path": "assets/owner/accessories/earrings/ACC_02.png",
-      "slot": "earrings"
-    },
-    {
-      "id": "ACC_03",
-      "name": "一粒パールネックレス",
-      "path": "assets/owner/accessories/necklace/ACC_03.png",
-      "slot": "necklace"
-    },
-    {
-      "id": "ACC_04",
-      "name": "ハートネックレス",
-      "path": "assets/owner/accessories/necklace/ACC_04.png",
-      "slot": "necklace"
-    },
-    {
-      "id": "ACC_05",
-      "name": "リボン",
-      "path": "assets/owner/accessories/head/ACC_05.png",
-      "slot": "head"
-    },
-    {
-      "id": "ACC_06",
-      "name": "パールカチューシャ",
-      "path": "assets/owner/accessories/head/ACC_06.png",
-      "slot": "head"
-    },
-    {
-      "id": "ACC_07",
-      "name": "ゴールドフラワーヘアクリップ",
-      "path": "assets/owner/accessories/head/ACC_07.png",
-      "slot": "head"
-    },
-    {
-      "id": "ACC_08",
-      "name": "チェーンブレスレット",
-      "path": "assets/owner/accessories/wrist/ACC_08.png",
-      "slot": "wrist"
-    },
-    {
-      "id": "ACC_09",
-      "name": "ピンクゴールド腕時計",
-      "path": "assets/owner/accessories/wrist/ACC_09.png",
-      "slot": "wrist"
-    },
-    {
-      "id": "ACC_10",
-      "name": "ブローチ",
-      "path": "assets/owner/accessories/brooch/ACC_10.png",
-      "slot": "brooch"
-    }
+    {"id":"ACC_01","name":"パールドロップピアス","path":"assets/owner/accessories/earrings/ACC_01.png","slot":"earrings"},
+    {"id":"ACC_02","name":"フラワーピアス","path":"assets/owner/accessories/earrings/ACC_02.png","slot":"earrings"},
+    {"id":"ACC_03","name":"一粒パールネックレス","path":"assets/owner/accessories/necklace/ACC_03.png","slot":"necklace"},
+    {"id":"ACC_04","name":"ハートネックレス","path":"assets/owner/accessories/necklace/ACC_04.png","slot":"necklace"},
+    {"id":"ACC_05","name":"リボン","path":"assets/owner/accessories/head/ACC_05.png","slot":"head"},
+    {"id":"ACC_06","name":"パールカチューシャ","path":"assets/owner/accessories/head/ACC_06.png","slot":"head"},
+    {"id":"ACC_07","name":"ゴールドフラワーヘアクリップ","path":"assets/owner/accessories/head/ACC_07.png","slot":"head"},
+    {"id":"ACC_08","name":"チェーンブレスレット","path":"assets/owner/accessories/wrist/ACC_08.png","slot":"wrist"},
+    {"id":"ACC_09","name":"ピンクゴールド腕時計","path":"assets/owner/accessories/wrist/ACC_09.png","slot":"wrist"},
+    {"id":"ACC_10","name":"ブローチ","path":"assets/owner/accessories/brooch/ACC_10.png","slot":"brooch"}
   ],
-  "defaults": {
-    "hairStyle": "HAIR_05",
-    "hairColor": "COLOR_02",
-    "makeup": "MAKEUP_01",
-    "tops": "TOPS_01",
-    "bottoms": "BOTTOMS_01",
-    "dress": null,
-    "outer": null,
-    "shoes": "SHOES_01",
-    "bag": null,
-    "earrings": "ACC_01",
-    "necklace": "ACC_03",
-    "accessoryHead": null,
-    "accessoryWrist": "ACC_09",
-    "brooch": "ACC_10"
-  }
+  "defaults": {"hairStyle":"HAIR_05","hairColor":"COLOR_02","makeup":"MAKEUP_01","tops":"TOPS_01","bottoms":"BOTTOMS_01","dress":null,"outer":null,"shoes":"SHOES_01","bag":null,"earrings":"ACC_01","necklace":"ACC_03","accessoryHead":null,"accessoryWrist":"ACC_09","brooch":"ACC_10"}
 }
