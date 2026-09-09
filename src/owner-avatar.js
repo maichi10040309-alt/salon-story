@@ -10,11 +10,11 @@ export const OWNER_MAKEUPS=['Natural','Feminine','Korean','Mode','Cool','Glamoro
 export const DEFAULT_OWNER_APPEARANCE={skin:'natural',hairStyle:'HAIR_05',hairColor:'COLOR_02',makeup:'MAKEUP_01',tops:'TOPS_01',bottoms:'BOTTOMS_01',dress:null,outer:null,shoes:'SHOES_01',bag:null,earrings:'ACC_01',necklace:'ACC_03',accessoryHead:null,accessoryWrist:'ACC_09',brooch:'ACC_10'};
 export const DEFAULT_OWNED_APPEARANCE={hairStyles:['HAIR_05'],hairColors:['COLOR_02'],makeups:['MAKEUP_01'],tops:['TOPS_01'],bottoms:['BOTTOMS_01'],dress:[],outer:[],shoes:['SHOES_01'],bags:[],accessories:['ACC_01','ACC_03','ACC_09','ACC_10']};
 
-const oldHair=['ショート','ボブ','ミディアム','ロング','ポニーテール','巻き髪','お団子','ハーフアップ','外ハネボブ','韓国風ロング','ウェーブ','編み込み','シニヨン','ツインテール','レイヤーミディアム','ストレートロング','ウルフ','くびれボブ','サイドポニー','編みおろし'];
+const oldHair=['ショート','ボブ','ミディアム','ロング','ポニーテール','巻き髪','お団子','ハーフアップ','外ハネボブ','韓国風ロング','ウェーブ','編み込み','シニヨン','ツインテール','レイヤーミディアム','ストレートロング','ウルフ'];
 const oldColors=['ブラック','ダークブラウン','ブラウン','ライトブラウン','ベージュ','グレージュ','アッシュ','ピンクブラウン','ワイン'];
 const makeupAliases={natural:'MAKEUP_01',feminine:'MAKEUP_02',korean:'MAKEUP_03',mode:'MAKEUP_04',cool:'MAKEUP_05',glamorous:'MAKEUP_06'};
 const itemAliases={
- tops:['tops-lace','tops-ribbon','tops-silk','tops-turtle','tops-linen','tops-cardigan','tops-crop','tops-logo','tops-peplum','tops-sheer','tops-border','tops-short'],
+ tops:['tops-lace','tops-ribbon','tops-silk','tops-turtle','tops-linen','tops-cardigan','tops-crop','tops-logo','tops-peplum','tops-sheer'],
  bottoms:['bottoms-flare','bottoms-tweed','bottoms-slacks','bottoms-tight','bottoms-cotton','bottoms-longskirt','bottoms-cargo','bottoms-mini'],
  dress:['dresses-flower','dresses-pinkdress','dresses-blackdress','dresses-jacketdress','dresses-apron','dresses-knitdress','dresses-color','dresses-korean'],
  outer:['outer-long-cardigan','outer-short-jacket','outer-trench','outer-elegant-coat','outer-casual'],
@@ -23,7 +23,7 @@ const itemAliases={
  accessories:['accessories-pearl','accessories-ribbonPin','accessories-gold','accessories-watch','accessories-wood','accessories-scarf','accessories-heart','accessories-colorPin','accessories-rose-watch','accessories-brooch']
 };
 const prefixes={tops:'TOPS',bottoms:'BOTTOMS',dress:'STYLE',outer:'OUTER',shoes:'SHOES',bag:'BAG',accessories:'ACC'};
-const limits={HAIR:17,COLOR:12,MAKEUP:6,TOPS:12,BOTTOMS:8,STYLE:5,OUTER:5,SHOES:8,BAG:8,ACC:10};
+const limits={HAIR:17,COLOR:12,MAKEUP:6,TOPS:10,BOTTOMS:8,STYLE:5,OUTER:5,SHOES:8,BAG:8,ACC:10};
 const id=(prefix,index)=>`${prefix}_${String(index+1).padStart(2,'0')}`;
 const validId=(value,prefix)=>{const match=String(value||'').match(new RegExp(`^${prefix}_(\\d\\d)$`)),n=Number(match?.[1]);return!!match&&n>=1&&n<=limits[prefix]};
 const resolvePart=(value,key,fallback)=>{if(!value)return fallback;const prefix=prefixes[key];if(validId(value,prefix))return value;const i=(itemAliases[key]||[]).indexOf(value);return i<0?fallback:id(prefix,i)};
