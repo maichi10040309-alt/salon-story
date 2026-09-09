@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "canvas": {"width": 1024, "height": 1536},
   "base": {
     "skin": "assets/owner/base/skin.png",
