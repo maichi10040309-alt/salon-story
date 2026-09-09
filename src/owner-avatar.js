@@ -1,4 +1,4 @@
-import{OWNER_CANVAS,ownerAlphaBounds,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=79';
+import{OWNER_CANVAS,ownerAlphaBounds,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=80';
 
 const ROOT='./assets/owner/';
 const OWNER_ASSET_RENDER_FALLBACKS={};
