@@ -50,7 +50,8 @@ export const OWNER_LAYER_ANCHORS={
   accessory:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1}
  },
  assets:{
-  BOTTOMS_01:{source:point(428,76),scaleX:.4,scaleY:.4},
+  TOPS_01:{source:point(512,374),target:point(513,219),scaleX:(382/736)*1.035,scaleY:(339/636)*1.01},
+  BOTTOMS_01:{source:point(428,76),target:point(513,480),scaleX:.416,scaleY:.404},
   BOTTOMS_02:{source:point(512,94),scaleX:.52,scaleY:.52},
   BOTTOMS_03:{source:point(482,96),scaleX:.42,scaleY:.42},
   BOTTOMS_04:{source:point(479.5,28),scaleX:.7,scaleY:.7},
