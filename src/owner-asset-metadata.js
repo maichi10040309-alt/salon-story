@@ -43,13 +43,21 @@ export const OWNER_LAYER_ANCHORS={
  slots:{
   hair:{source:point(512,220,{faceCenterX:512,headTopY:10,neckTopY:220}),target:point(OWNER_BODY_ANCHORS.head.faceCenterX,OWNER_BODY_ANCHORS.head.neckTopY,{headTopY:OWNER_BODY_ANCHORS.head.headTopY}),scaleX:1,scaleY:1},
   tops:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1},
-  bottoms:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1},
+  bottoms:{source:point(512,485,{waistY:485,hipY:600}),target:point(OWNER_BODY_ANCHORS.waist.x,OWNER_BODY_ANCHORS.waist.y,{waistWidth:OWNER_BODY_ANCHORS.waist.width,hipWidth:OWNER_BODY_ANCHORS.hip.width}),scaleX:1,scaleY:1},
   dress:{source:point(512,485,{shoulderY:220,waistY:485,hipY:600}),target:point(OWNER_BODY_ANCHORS.waist.x,OWNER_BODY_ANCHORS.waist.y,{shoulderWidth:OWNER_BODY_ANCHORS.shoulder.width,waistWidth:OWNER_BODY_ANCHORS.waist.width,hipWidth:OWNER_BODY_ANCHORS.hip.width}),scaleX:1,scaleY:1},
   outer:{source:point(512,220),target:point(OWNER_BODY_ANCHORS.shoulder.x,220),scaleX:1,scaleY:1},
   bag:{source:point(512,1536),target:point(512,1536),scaleX:1,scaleY:1},
   accessory:{source:point(512,768),target:point(512,768),scaleX:1,scaleY:1}
  },
  assets:{
+  BOTTOMS_01:{source:point(428,76),scaleX:.4,scaleY:.4},
+  BOTTOMS_02:{source:point(512,94),scaleX:.52,scaleY:.52},
+  BOTTOMS_03:{source:point(482,96),scaleX:.42,scaleY:.42},
+  BOTTOMS_04:{source:point(479.5,28),scaleX:.7,scaleY:.7},
+  BOTTOMS_05:{source:point(466.5,55),scaleX:.7,scaleY:.7},
+  BOTTOMS_06:{source:point(537.5,36),scaleX:.69,scaleY:.69},
+  BOTTOMS_07:{source:point(512,67),scaleX:.68,scaleY:.68},
+  BOTTOMS_08:{source:point(552.5,41),scaleX:.7,scaleY:.7},
   STYLE_01:{scaleX:280/124,scaleY:260/265},STYLE_02:{scaleX:300/269,scaleY:260/265},STYLE_03:{scaleX:300/267,scaleY:260/265},STYLE_04:{scaleX:280/159,scaleY:260/265},STYLE_05:{scaleX:292/244,scaleY:260/265},
   OUTER_01:{scaleX:347/270,scaleY:347/270},OUTER_02:{scaleX:347/262,scaleY:347/262},OUTER_03:{scaleX:347/274,scaleY:347/274},OUTER_04:{scaleX:347/296,scaleY:347/296},OUTER_05:{scaleX:347/271,scaleY:347/271},
   ACC_01:{source:point(462,211),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.55,scaleY:.55},ACC_02:{source:point(462.5,245),target:OWNER_BODY_ANCHORS.leftEar,scaleX:.5,scaleY:.5},
