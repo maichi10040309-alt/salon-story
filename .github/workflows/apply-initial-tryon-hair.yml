@@ -1,0 +1,46 @@
+name: Apply initial owner hair to fashion preview
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch fashion preview hair
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('src/owner-avatar.js')
+          s=p.read_text()
+          s=s.replace("from'./owner-asset-metadata.js?v=82';", "from'./owner-asset-metadata.js?v=84';")
+          if "const TRYON_HAIR_PATH=" not in s:
+              s=s.replace("const OUTFIT_COUNT=13;", "const OUTFIT_COUNT=13;\nconst TRYON_HAIR_PATH='hair/INITIAL_TRYON_HAIR.png';")
+          s=s.replace("?v=82", "?v=84")
+          old="if(a.outfit!=='OUTFIT_01')layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)));"
+          new="if(a.outfit!=='OUTFIT_01'){if(options.fashionPreview)layers.push(`<img class=\"owner-layer owner-hair owner-hair-initial\" src=\"${ROOT}${TRYON_HAIR_PATH}?v=84\" alt=\"\" draggable=\"false\" style=\"position:absolute;left:31.54%;top:0;width:30.66%;height:auto;transform:none;filter:none\" onerror=\"this.hidden=true\">`);else layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)))}"
+          if old not in s:
+              raise SystemExit('owner preview render pattern not found')
+          p.write_text(s.replace(old,new))
+
+          p=Path('src/game-v03.js')
+          s=p.read_text()
+          old="function ownerPortrait(expression='smile',size='lg',options={}){const appearance=options.preview===false?getOwnerAppearance():displayedOwnerAppearance();return renderOwnerAvatar(appearance,{size,name:state.player.name,home:options.home,mode:options.mode||((state.screen==='town')?'town':['play','serviceResult'].includes(state.screen)?'service':'default'),showBag:!['play','serviceResult'].includes(state.screen)})}"
+          new="function ownerPortrait(expression='smile',size='lg',options={}){const appearance=options.preview===false?getOwnerAppearance():displayedOwnerAppearance();const fashionPreview=state.ui?.previewContext?.type==='fashion'&&options.preview!==false;return renderOwnerAvatar(appearance,{size,name:state.player.name,home:options.home,mode:options.mode||((state.screen==='town')?'town':['play','serviceResult'].includes(state.screen)?'service':'default'),showBag:!['play','serviceResult'].includes(state.screen),fashionPreview})}"
+          if old not in s:
+              raise SystemExit('ownerPortrait pattern not found')
+          p.write_text(s.replace(old,new))
+
+          p=Path('index.html')
+          s=p.read_text().replace('v=83','v=84').replace('v83 -','v84 -')
+          p.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/owner-avatar.js src/game-v03.js index.html
+          git commit -m "fix: use exact initial owner hair in fashion preview"
+          git push
