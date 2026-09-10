@@ -10,7 +10,7 @@ import{selectDailyCustomers,visitReason}from'./visitor-selection.js';
 import{isNewCustomer as isNewCustomerInState,migrateEncounteredCustomerIds,registerCustomerEncounter}from'./customer-encounters.js';
 import{dailyPolicies,treatmentEvents,businessEvents}from'./data/v06.js';
 import{applyEventEffects,conditionServiceBonus,createDailyWeather,dailyGuestAdjustment,dayAtmosphere,effectiveBudget,nextDayPreview,pickCustomerCondition,seasonForDay,selectBusinessEvents}from'./v06-systems.js';
-import{appearanceToLegacy,budgetCompatibility,calculateTreatmentChoiceScore,deriveOwnerAppearance,getTreatmentChoices,normalizeOwnerAppearance,previewFashionAppearance,treatmentBudget}from'./v61-systems.js';
+import{appearanceToLegacy,budgetCompatibility,calculateTreatmentChoiceScore,deriveOwnerAppearance,getTreatmentChoices,normalizeOwnerAppearance,previewFashionAppearance,treatmentBudget}from'./v61-systems.js?v=83';
 import{LUMIERE_CITY,calculateDailyVisitorCount,canPauseBusiness,createBeforeAfterRecord,createBeautyVisualProfile,createMonthlyGoals,createTreatmentPlans,decorItems,eventResultSummary,idleDayActions,inferCustomerMemory,nextVisitMemoryLine,resumableSession,treatmentAffinity,visitorForecast}from'./v62-systems.js';
 import{extraStaff,socialPostTypes,storyEpisodes}from'./data/v62.js';
 
@@ -49,8 +49,8 @@ function createDailyMissions(day){const pool=[
   {id:`sales-${day}`,title:'売上30,000円',type:'dailySales',target:30000},
   {id:`new-${day}`,title:'新規顧客1人と出会う',type:'newCustomers',target:1}
 ];return pool.sort(()=>.5-Math.random()).slice(0,3).map(x=>({...x,progress:0,done:false}))}
-function defaultPlayer(){return{name:'オーナー',skin:'ナチュラル',hairStyle:'HAIR_05',hairColor:'COLOR_02',outfit:'natural',expression:'smile'}}
-function defaultWardrobe(){return{owned:['tops-lace','bottoms-flare','shoes-pumps'],equipped:{tops:'tops-lace',bottoms:'bottoms-flare',dresses:null,outer:null,shoes:'shoes-pumps',bags:null,accessories:null},makeupOwned:['MAKEUP_01'],hairOwned:['HAIR_05'],makeup:'MAKEUP_01'}}
+function defaultPlayer(){return{name:'オーナー',skin:'ナチュラル',hairStyle:'HAIR_15',hairColor:'COLOR_02',outfit:'natural',expression:'smile'}}
+function defaultWardrobe(){return{owned:['tops-lace','bottoms-flare','shoes-pumps'],equipped:{tops:'tops-lace',bottoms:'bottoms-flare',dresses:null,outer:null,shoes:'shoes-pumps',bags:null,accessories:null},makeupOwned:['MAKEUP_01'],hairOwned:['HAIR_15'],makeup:'MAKEUP_01'}}
 function defaultOwnerAppearance(){const player=defaultPlayer(),wardrobe=defaultWardrobe();return deriveOwnerAppearance({player,wardrobe})}
 function defaultStores(){return[{id:'main',name:'Salon Story 本店',area:'main',rank:'D',popularity:100,sales:0,dailySales:0,rent:0,manager:null,equipment:[]} ]}
 function freshState(){return{
