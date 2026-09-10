@@ -2,6 +2,8 @@ import{OWNER_CANVAS,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=93';
 
 const ROOT='./assets/owner/';
 const OUTFIT_COUNT=13;
+const TRYON_HAIR_PATH='hair/INITIAL_TRYON_HAIR_ONLY.png';
+const TRYON_HAIR_STYLE='z-index:20;inset:auto;left:39.2578125%;top:.1302083%;width:18.5546875%;height:17.7734375%;max-width:none;max-height:none;object-fit:fill;object-position:0 0;transform:none;filter:none';
 
 export const OWNER_HAIR_NAMES=['ショートボブ','ナチュラルボブ','ミディアムストレート','ミディアムウェーブ','エアリーミディアム','ロングストレート','ロングウェーブ','サイドポニー','ハーフアップ','ルーズアップ','ツインブレイド','サイドブレイド','レイヤーミディアム','スーパーロング','エレガントアップ','リボンブレイド','ソフトカール'];
 export const OWNER_HAIR_COLORS=[['ブラック','#2f2b2d','brightness(.55) saturate(.75)'],['ダークブラウン','#5b4636','brightness(.72) saturate(.9)'],['モカブラウン','#795c50','sepia(.2) brightness(.82)'],['チョコレートブラウン','#69463c','sepia(.28) brightness(.72) saturate(1.05)'],['チェスナット','#855f4d','sepia(.35) brightness(.86) saturate(1.08)'],['ミルクティーベージュ','#aa8d7e','sepia(.25) brightness(1.08) saturate(.72)'],['グレージュ','#857873','grayscale(.24) brightness(.91)'],['アッシュブラウン','#726561','grayscale(.18) brightness(.78)'],['ピンクブラウン','#9a6467','sepia(.22) hue-rotate(318deg) saturate(1.08)'],['ラベンダーブラウン','#765e70','sepia(.16) hue-rotate(280deg) saturate(.9)'],['ワインブラウン','#713f49','sepia(.2) hue-rotate(320deg) saturate(1.25) brightness(.76)'],['ハイトーンベージュ','#bea190','sepia(.18) brightness(1.18) saturate(.68)']];
@@ -42,21 +44,15 @@ export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({ha
 export function ownerLayerTransform(slot,value){if(slot!=='hair')return{x:0,y:0,scaleX:1,scaleY:1,originX:.5,originY:.5};const fit=ownerLayerAnchorSpec('hair',value),{source,target}=fit;return{x:(target.x-source.x)/OWNER_CANVAS.width,y:(target.y-source.y)/OWNER_CANVAS.height,scaleX:fit.scaleX,scaleY:fit.scaleY,originX:source.x/OWNER_CANVAS.width,originY:source.y/OWNER_CANVAS.height}}
 const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}?v=93" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
 
-const initialTryOnHairLayers=()=>[
- img('outfits/OUTFIT_01.png','owner-hair owner-hair-initial owner-hair-top','z-index:20;transform:none;filter:none;clip-path:inset(0 0 89.58% 0)'),
- img('outfits/OUTFIT_01.png','owner-hair owner-hair-initial owner-hair-left','z-index:20;transform:none;filter:none;clip-path:polygon(35% 7%,45% 7%,45% 23%,35% 23%)'),
- img('outfits/OUTFIT_01.png','owner-hair owner-hair-initial owner-hair-right','z-index:20;transform:none;filter:none;clip-path:polygon(55% 7%,65% 7%,65% 23%,55% 23%)')
-];
-
 export function renderOwnerAvatar(appearance={},options={}){
  const a=normalizeOwnerAssetAppearance(appearance),n=Number(a.hairColor.slice(-2))-1,filter=OWNER_HAIR_COLORS[n]?.[2]||'';
  const size=options.size||'lg',name=options.name||'オーナー',layers=[];
  layers.push(img(`outfits/${a.outfit}.png`,'owner-outfit'));
- // Fashion preview preserves the selected outfit's native face, neck, collar and
- // shoulders. Only hair pixels from the initial owner are overlaid, split into
- // top/left/right regions so no source face or neck can cover the outfit.
+ // Fashion preview never replaces or moves the selected outfit's face/neck/body.
+ // A dedicated transparent crop containing only the initial up-do hair is placed
+ // at the source-canvas coordinates (x=402,y=2,w=190,h=273).
  if(a.outfit!=='OUTFIT_01'){
-  if(options.fashionPreview)layers.push(...initialTryOnHairLayers());
+  if(options.fashionPreview)layers.push(img(TRYON_HAIR_PATH,'owner-hair owner-hair-initial',TRYON_HAIR_STYLE));
   else layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)));
  }
  return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-stage="shared" data-owner-outfit="${a.outfit}" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas avatar-stage">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
