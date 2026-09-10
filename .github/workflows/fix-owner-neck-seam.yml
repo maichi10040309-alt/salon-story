@@ -1,0 +1,36 @@
+name: Fix owner neck seam
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply neck seam fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('src/owner-avatar.js')
+          s=p.read_text()
+          old="if(options.fashionPreview)layers.push(img('outfits/OUTFIT_01.png','owner-head-reference','z-index:20;transform:none;filter:none;clip-path:inset(0 0 80.47% 0)'));"
+          new="if(options.fashionPreview)layers.push(img('outfits/OUTFIT_01.png','owner-head-reference','z-index:20;transform:none;filter:none;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%)'));"
+          if old not in s:
+              raise SystemExit('target preview overlay pattern not found')
+          s=s.replace(old,new)
+          s=s.replace('?v=87','?v=88')
+          p.write_text(s)
+
+          p=Path('index.html')
+          s=p.read_text().replace('v=87','v=88').replace('v87 -','v88 -')
+          p.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/owner-avatar.js index.html
+          git commit -m "fix: blend owner head overlay above outfit neckline"
+          git push
