@@ -1,4 +1,4 @@
-import{OWNER_CANVAS,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=89';
+import{OWNER_CANVAS,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=90';
 
 const ROOT='./assets/owner/';
 const OUTFIT_COUNT=13;
@@ -40,18 +40,19 @@ export function ownerHairLabel(value){const a=normalizeOwnerAssetAppearance({hai
 export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({hairColor:value});return OWNER_HAIR_COLORS[Number(a.hairColor.slice(-2))-1]?.[0]||OWNER_HAIR_COLORS[1][0]}
 
 export function ownerLayerTransform(slot,value){if(slot!=='hair')return{x:0,y:0,scaleX:1,scaleY:1,originX:.5,originY:.5};const fit=ownerLayerAnchorSpec('hair',value),{source,target}=fit;return{x:(target.x-source.x)/OWNER_CANVAS.width,y:(target.y-source.y)/OWNER_CANVAS.height,scaleX:fit.scaleX,scaleY:fit.scaleY,originX:source.x/OWNER_CANVAS.width,originY:source.y/OWNER_CANVAS.height}}
-const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}?v=89" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
+const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}?v=90" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
 
 export function renderOwnerAvatar(appearance={},options={}){
  const a=normalizeOwnerAssetAppearance(appearance),n=Number(a.hairColor.slice(-2))-1,filter=OWNER_HAIR_COLORS[n]?.[2]||'';
  const size=options.size||'lg',name=options.name||'オーナー',layers=[];
- layers.push(img(`outfits/${a.outfit}.png`,'owner-outfit'));
- // Fashion Shop preview uses the exact head/hair from OUTFIT_01.
- // The source head sits slightly lower than the bald outfit heads, so raise it
- // by 30px on the shared 1024x1536 canvas. The mask still fades out before
- // the clothing neckline so the selected outfit remains untouched.
+ const previewOutfit=a.outfit!=='OUTFIT_01'&&options.fashionPreview;
+ const outfitStyle=previewOutfit?'transform:translateY(1.953125%) scaleY(.98);transform-origin:50% 0':'';
+ layers.push(img(`outfits/${a.outfit}.png`,'owner-outfit',outfitStyle));
+ // Keep the complete initial head inside the canvas. During fashion preview the
+ // selected outfit is moved down 30px and compressed vertically by 2%, instead
+ // of moving the head upward. This preserves the bun top and aligns the neck.
  if(a.outfit!=='OUTFIT_01'){
-  if(options.fashionPreview)layers.push(img('outfits/OUTFIT_01.png','owner-head-reference','z-index:20;transform:translateY(-1.953125%);filter:none;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%)'));
+  if(options.fashionPreview)layers.push(img('outfits/OUTFIT_01.png','owner-head-reference','z-index:20;transform:none;filter:none;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 17.25%,transparent 17.9%,transparent 100%)'));
   else layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)));
  }
  return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-stage="shared" data-owner-outfit="${a.outfit}" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas avatar-stage">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
