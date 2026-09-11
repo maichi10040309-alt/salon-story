@@ -99,6 +99,17 @@ assert.equal(assignmentState.staff,assignmentState.staffRoster[1],'選択した�
 assert.equal(assignmentState.session.assignedStaffId,staffTemplates[1].id,'現在顧客の担当スタッフIDを保持');
 assert.equal(assignmentState.session.staffAssignments[assignmentState.customers[0].id],staffTemplates[1].id,'顧客別担当履歴を保持');
 assert.equal(api.assignedStaffForCurrentCustomer().id,staffTemplates[1].id,'現在顧客の担当スタッフを取得できる');
+const cautiousCustomer={...assignmentState.customers[0],personality:'慎重',concern:'毛穴',budget:12000,favoriteStaff:staffTemplates[0].name,staffScores:{[staffTemplates[0].id]:2}};
+const favoriteFit=api.staffCustomerAffinity(staffTemplates[0],cautiousCustomer),otherFit=api.staffCustomerAffinity(staffTemplates[1],cautiousCustomer);
+assert.ok(favoriteFit.score>otherFit.score,'指名スタッフは担当相性が高くなる');
+assert.equal(favoriteFit.favorite,true,'お気に入りスタッフを指名として判定');
+assert.match(api.assignmentPageV6(cautiousCustomer),/指名/,'担当選択UIに指名状態を表示');
+assert.match(api.assignmentPageV6(cautiousCustomer),/相性/,'担当選択UIにスタッフ相性を表示');
+const minami=api.normalizeStaffMember({id:'minami'}),vipFit=api.staffCustomerAffinity(minami,{id:'vip-fit',visits:10,trust:95,budget:30000,personality:'結果重視',concern:'小顔'});
+assert.ok(vipFit.score>=3,'VIP型スタッフはVIP顧客との相性が上がる');
+const relationCustomer={staffRelations:{}};api.setState({...assignmentState,day:12});const relation=api.updateStaffCustomerRelation(relationCustomer,staffTemplates[0],92);
+assert.equal(relation.points,2,'高満足度でスタッフ顧客関係が成長');
+assert.equal(relation.visits,1,'スタッフ別担当回数を記録');
 
 const payrollState={day:30,stores:[{rent:70000}],staffRoster:[
  {...staffTemplates[0],energy:80},
