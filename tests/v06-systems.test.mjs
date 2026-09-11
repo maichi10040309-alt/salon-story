@@ -153,6 +153,15 @@ assert.equal(reportState.monthlyReports.length,1,'月次結果を履歴保存');
 assert.equal(api.finalizeMonthlyReport(reportState).rewardMoney,120000,'同月再確定でも同じレポートを返す');
 assert.equal(reportState.monthlyReports.length,1,'同じ月を二重保存しない');
 
+const endlessLegacy=api.migrate({...api.freshState(),day:75,completedChapters:[1,2,3,4,5],chapter:5,cumulativeSales:1500000,popularity:2500,endlessMode:false,endlessTier:1,endlessCycle:null});
+assert.equal(api.endlessModeActive(endlessLegacy),true,'旧Chapter5クリア済みセーブはEndless Modeへ移行');
+assert.ok(endlessLegacy.endlessCycle,'旧セーブにも長期目標を自動生成');
+api.setState(endlessLegacy);const cycle=endlessLegacy.endlessCycle;endlessLegacy.cumulativeSales=cycle.startedSales+cycle.salesTarget;endlessLegacy.popularity=cycle.startedPopularity+cycle.popularityTarget;for(let i=0;i<cycle.vipTarget;i++){if(endlessLegacy.customers[i]){endlessLegacy.customers[i].visits=10;endlessLegacy.customers[i].trust=95;if(!endlessLegacy.encounteredCustomers.includes(endlessLegacy.customers[i].id))endlessLegacy.encounteredCustomers.push(endlessLegacy.customers[i].id)}}endlessLegacy.monthlyReports.push({month:99,profit:cycle.profitTarget+50000,sales:999999});
+assert.equal(api.endlessCycleReady(endlessLegacy),true,'売上・人気・VIP・月間利益を満たすとMaster Goal達成可能');
+const moneyBeforeEndless=endlessLegacy.money,tierBefore=endlessLegacy.endlessTier,reward=cycle.reward;assert.equal(api.completeEndlessCycle(),true,'Master Goalを完了できる');
+assert.equal(endlessLegacy.money,moneyBeforeEndless+reward,'Endless達成報酬を付与');
+assert.equal(endlessLegacy.endlessTier,tierBefore+1,'達成後にMaster Lv.が上がる');
+assert.equal(endlessLegacy.endlessCycle.tier,tierBefore+1,'次の長期目標を生成');
 const highStamina=api.treatmentEnergyCost({stamina:90,speed:50},1,16),lowStamina=api.treatmentEnergyCost({stamina:20,speed:50},1,16);
 assert.ok(highStamina<lowStamina,'staminaが高いほどEnergy消費が少ない');
 assert.ok(api.treatmentEnergyCost({stamina:100,speed:100},.25,1)>=5,'Energy最低消費量を維持');
