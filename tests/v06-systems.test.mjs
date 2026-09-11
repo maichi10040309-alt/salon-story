@@ -141,6 +141,17 @@ monthlyClose.dailyPolicy=dailyPolicies[1];api.setState(monthlyClose);api.closeDa
 assert.equal(monthlyClose.history.at(-1).expenses,staffTemplates[0].salary+staffTemplates[1].salary,'closeDayで全スタッフ給与を控除');
 assert.equal(monthlyClose.staff.energy,80,'閉店後も担当スタッフ固有のEnergyを保持');
 assert.equal(monthlyClose.staffRoster.find(x=>x.id==='mizuki').energy,90,'閉店後も非担当スタッフのEnergyを保持');
+const reportState=api.migrate({...api.freshState(),day:30,money:500000,staff:{...staffTemplates[0],energy:80},staffRoster:[{...staffTemplates[0],energy:80}],stores:[{id:'main',name:'本店',rent:70000,dailySales:0,sales:0}],monthlyStats:{sales:320000,reviews:6,perfect:9,newCustomers:3}});
+reportState.monthlyGoals.forEach(g=>g.progress=reportState.monthlyStats[g.type]||0);reportState.history=Array.from({length:30},(_,i)=>({day:i+1,sales:i===29?30000:10000,autoSales:0,expenses:i===29?staffTemplates[0].salary+70000:0,guests:2,reviews:i===29?6:0,perfect:i===29?9:0,newCustomers:i===29?3:0}));api.setState(reportState);const report=api.finalizeMonthlyReport(reportState);
+assert.equal(report.month,1,'Day30で月次決算を確定');
+assert.equal(report.sales,320000,'月間売上を30日分集計');
+assert.equal(report.payroll,staffTemplates[0].salary,'月次決算に給与を表示');
+assert.equal(report.rent,70000,'月次決算に家賃を表示');
+assert.equal(report.goals.every(g=>g.achieved),true,'達成済み月間目標を確定');
+assert.equal(report.rewardMoney,120000,'月間目標報酬を合算');
+assert.equal(reportState.monthlyReports.length,1,'月次結果を履歴保存');
+assert.equal(api.finalizeMonthlyReport(reportState).rewardMoney,120000,'同月再確定でも同じレポートを返す');
+assert.equal(reportState.monthlyReports.length,1,'同じ月を二重保存しない');
 
 const highStamina=api.treatmentEnergyCost({stamina:90,speed:50},1,16),lowStamina=api.treatmentEnergyCost({stamina:20,speed:50},1,16);
 assert.ok(highStamina<lowStamina,'staminaが高いほどEnergy消費が少ない');
