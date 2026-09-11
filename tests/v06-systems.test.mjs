@@ -225,3 +225,11 @@ console.log(`Salon Story Ver.0.6 systems tests: OK (${businessEvents.length} eve
 const staffSelectSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
 assert.match(staffSelectSource,/state\.session\.ownerForced=false/,'顧客切替時にownerForcedを解除');
 assert.match(staffSelectSource,/state\.session\.phase='service';save\(\);render\(\)/,'スタッフ選択後に施術選択へ進む');
+
+
+// Regression: nomination is visible at assignment and non-nominated service cannot become PERFECT.
+const nominationSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.ok(nominationSource.includes('★ 指名スタッフ：<strong>${nominated}</strong>'),'担当選択画面に指名スタッフ名を表示');
+assert.ok(nominationSource.includes('指名外 · PERFECT不可'),'指名外の注意を担当選択画面に表示');
+assert.ok(nominationSource.includes('nominationMiss=!!nominatedStaff&&servedBy!==nominatedStaff'),'指名外判定を実装');
+assert.ok(nominationSource.includes('effectiveCap=nominationMiss?Math.min(Number(plan.cap||100),89)'),'指名外はスコア上限89でPERFECT不可');
