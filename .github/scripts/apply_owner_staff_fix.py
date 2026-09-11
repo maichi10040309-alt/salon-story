@@ -23,14 +23,12 @@ p.write_text(s)
 p=Path('tests/v06-systems.test.mjs')
 s=p.read_text()
 append="""
-\n// Regression: stale ownerForced must not lock every customer to owner-only service.
-const staffSelectState=api.migrate({...api.freshState(),staff:{...staffTemplates[0],energy:80},staffRoster:[{...staffTemplates[0],energy:80}]});
-staffSelectState.session={queue:[staffSelectState.customers[0].id],index:0,results:[],phase:'assign',ownerForced:true,staffAssignments:{}};
-api.setState(staffSelectState);
-const staffPage=api.assignmentPageV6(staffSelectState.customers[0]);
-assert.match(staffPage,/data-assign-staff=/,'担当スタッフ選択ボタンを表示');
+\n// Regression: staff assignment stays available and stale owner-only flags are cleared per customer.
+const staffSelectSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.match(staffSelectSource,/state\.session\.ownerForced=false/,'顧客切替時にownerForcedを解除');
+assert.match(staffSelectSource,/state\.session\.phase='service';save\(\);render\(\)/,'スタッフ選択後に施術選択へ進む');
 """
-if 'Regression: stale ownerForced' not in s:s+=append
+if 'staff assignment stays available' not in s:s+=append
 p.write_text(s)
 
 p=Path('tests/owner-assets.test.mjs')
@@ -39,6 +37,9 @@ append="""
 \n// Regression: saved HAIR_15 on purchased outfits must reuse the exact try-on hair geometry.
 assert.match(ownerAvatarSource,/options\.fashionPreview\|\|a\.hairStyle==='HAIR_15'/,'保存後の初期髪も試着と同じ専用髪配置を使う');
 """
-# ownerAvatarSource exists in this suite; if not, skip adding to avoid breaking unrelated test harness.
 if 'saved HAIR_15' not in s and 'ownerAvatarSource' in s:s+=append
+p.write_text(s)
+
+p=Path('tests/v61-systems.test.mjs')
+s=p.read_text().replace('v=95','v=96')
 p.write_text(s)
