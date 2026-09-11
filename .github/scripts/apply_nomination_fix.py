@@ -13,7 +13,6 @@ new2="const fatiguePenalty=staffFatiguePenalty(state.staff),nominatedStaff=c.fav
 assert old2 in s, 'score target not found'
 s=s.replace(old2,new2,1)
 
-# Add result metadata for UI/debugging.
 old3="condition:condition?.name||'',auto,treatmentBonus:state.session.treatmentBonus||0,beforeAfter:beauty}"
 new3="condition:condition?.name||'',auto,treatmentBonus:state.session.treatmentBonus||0,nominatedStaff,nominationMiss,beforeAfter:beauty}"
 assert old3 in s, 'result metadata target not found'
@@ -26,10 +25,10 @@ s=p.read_text()
 append="""
 \n// Regression: nomination is visible at assignment and non-nominated service cannot become PERFECT.
 const nominationSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
-assert.match(nominationSource,/指名スタッフ：<strong>\$\{nominated\}<\\\/strong>/,'担当選択画面に指名スタッフ名を表示');
-assert.match(nominationSource,/指名外 · PERFECT不可/,'指名外の注意を担当選択画面に表示');
-assert.match(nominationSource,/nominationMiss=!!nominatedStaff&&servedBy!==nominatedStaff/,'指名外判定を実装');
-assert.match(nominationSource,/effectiveCap=nominationMiss\?Math\.min\(Number\(plan\.cap\|\|100\),89\)/,'指名外はスコア上限89でPERFECT不可');
+assert.ok(nominationSource.includes('★ 指名スタッフ：<strong>${nominated}</strong>'),'担当選択画面に指名スタッフ名を表示');
+assert.ok(nominationSource.includes('指名外 · PERFECT不可'),'指名外の注意を担当選択画面に表示');
+assert.ok(nominationSource.includes('nominationMiss=!!nominatedStaff&&servedBy!==nominatedStaff'),'指名外判定を実装');
+assert.ok(nominationSource.includes('effectiveCap=nominationMiss?Math.min(Number(plan.cap||100),89)'),'指名外はスコア上限89でPERFECT不可');
 """
 if 'nomination is visible at assignment' not in s:s+=append
 p.write_text(s)
