@@ -29,6 +29,7 @@ const selected=selectBusinessEvents({day:12,rng:()=>.99,max:3});
 assert.equal(selected.length,3,'1日最大3イベント');
 assert.equal(new Set(selected.map(x=>x.id)).size,3,'同じ営業イベントを重複させない');
 assert.equal(selected.every(x=>x.day===12),true);
+assert.equal(selectBusinessEvents({day:12,rng:()=>.99,max:3,rivalsUnlocked:false}).every(x=>x.category!=='rival'),true,'ライバル未解放時はライバル営業イベントを除外');
 const eventState={money:1000,popularity:10,staff:{energy:50}};
 const applied=applyEventEffects(eventState,{money:-2000,popularity:3,energy:80,satisfaction:2});
 assert.equal(eventState.money,0,'イベント支出で所持金を負にしない');
@@ -126,6 +127,15 @@ assert.ok(vipFit.score>=3,'VIP型スタッフはVIP顧客との相性が上が�
 const relationCustomer={staffRelations:{}};api.setState({...assignmentState,day:12});const relation=api.updateStaffCustomerRelation(relationCustomer,staffTemplates[0],92);
 assert.equal(relation.points,2,'高満足度でスタッフ顧客関係が成長');
 assert.equal(relation.visits,1,'スタッフ別担当回数を記録');
+
+const rivalState=api.migrate({...api.freshState(),day:20,rivalsUnlocked:true,popularity:900,rivalBattle:{wins:0,losses:0,draws:0,streak:0,lastDay:10,history:[]},staff:{...staffTemplates[0],tech:95,service:92,sales:90,energy:100},staffRoster:[{...staffTemplates[0],tech:95,service:92,sales:90,energy:100}]});
+api.setState(rivalState);
+assert.equal(api.rivalChallengeAvailable(rivalState),true,'7日以上空くとライバル対決可能');
+assert.ok(api.rivalChallengeTarget(rivalState),'対戦相手を選出');
+const battle=api.resolveRivalChallenge('tech',rivalState);assert.ok(battle,'ライバル対決を実行');
+assert.equal(rivalState.rivalBattle.history.length,1,'対決履歴を保存');
+assert.equal(rivalState.rivalBattle.lastDay,20,'対決日を保存');
+assert.equal(api.rivalChallengeAvailable(rivalState),false,'同日再戦は不可');
 
 const payrollState={day:30,stores:[{rent:70000}],staffRoster:[
  {...staffTemplates[0],energy:80},
