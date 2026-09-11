@@ -1,0 +1,69 @@
+from pathlib import Path
+import re
+
+p=Path('src/game-v03.js')
+s=p.read_text()
+
+replacement="""function endlessModeActive(s=state){return!!s?.endlessMode||!!s?.completedChapters?.includes(5)}
+function createEndlessCycle(s=state,tier=Math.max(1,Number(s?.endlessTier)||1)){const vip=counts(s).vip,totalCustomers=Array.isArray(s.customers)?s.customers.length:32;return{tier,startedDay:Number(s.day)||1,startedSales:Number(s.cumulativeSales)||0,startedPopularity:Number(s.popularity)||0,startedVip:vip,startedReportCount:Array.isArray(s.monthlyReports)?s.monthlyReports.length:0,salesTarget:400000+tier*100000,popularityTarget:250+tier*100,vipTarget:Math.min(totalCustomers,vip+Math.min(1+Math.floor(tier/2),4)),profitTarget:100000+tier*50000,reward:100000+tier*50000}}
+function ensureEndlessCycle(s=state){if(!endlessModeActive(s))return null;s.endlessMode=true;s.endlessTier=Math.max(1,Number(s.endlessTier)||1);if(!s.endlessCycle||Number(s.endlessCycle.tier)!==s.endlessTier)s.endlessCycle=createEndlessCycle(s,s.endlessTier);return s.endlessCycle}
+function endlessCycleProgress(s=state){const cycle=ensureEndlessCycle(s);if(!cycle)return null;const reports=(Array.isArray(s.monthlyReports)?s.monthlyReports:[]).slice(Number(cycle.startedReportCount)||0),bestProfit=reports.length?Math.max(...reports.map(x=>Number(x.profit)||0)):0;return{sales:Math.max(0,(Number(s.cumulativeSales)||0)-Number(cycle.startedSales||0)),popularity:Math.max(0,(Number(s.popularity)||0)-Number(cycle.startedPopularity||0)),vip:counts(s).vip,profit:bestProfit}}
+function endlessCycleReady(s=state){const c=ensureEndlessCycle(s),p=endlessCycleProgress(s);return!!c&&p.sales>=c.salesTarget&&p.popularity>=c.popularityTarget&&p.vip>=c.vipTarget&&p.profit>=c.profitTarget}
+function completeEndlessCycle(){if(!endlessCycleReady())return false;const cleared=state.endlessCycle,reward=Number(cleared.reward)||0;state.money+=reward;state.endlessTier=Math.max(1,Number(state.endlessTier)||1)+1;state.endlessCycle=createEndlessCycle(state,state.endlessTier);state.news.unshift(`SALON MASTER Lv.${cleared.tier} 達成！ 報酬 ${yen(reward)}`);state.specialOverlay={type:'chapter',title:'SALON MASTER!',big:`Master Lv.${cleared.tier}`,text:`長期目標をすべて達成！\\n報酬 ${yen(reward)}\\nMaster Lv.${state.endlessTier}へ`};return true}
+function completeChapter(){if(!chapterReady()||state.completedChapters.includes(state.chapter))return false;const ch=chapters.find(x=>x.id===state.chapter);state.completedChapters.push(ch.id);if(ch.reward.money)state.money+=ch.reward.money;if(ch.id===2)state.rivalsUnlocked=true;if(ch.id===5){state.endlessMode=true;state.endlessTier=Math.max(1,Number(state.endlessTier)||1);state.endlessCycle=createEndlessCycle(state,state.endlessTier)}else state.chapter=Math.min(5,state.chapter+1);state.specialOverlay={type:'chapter',title:'CHAPTER CLEAR!',big:`Chapter ${ch.id}`,text:`${ch.title}\\n報酬 ${yen(ch.reward.money||0)}${ch.id===5?'\\nSALON MASTER MODE 解放！':''}`};return true}
+"""
+if 'function endlessModeActive' not in s:
+    s,n=re.subn(r"function completeChapter\(\)\{.*?\n(?=function outfitBonus)",replacement,s,count=1,flags=re.S)
+    if n!=1: raise SystemExit('completeChapter regex missing')
+
+old="monthlyGoals:createMonthlyGoals(1),monthlyStats:{sales:0,reviews:0,perfect:0,newCustomers:0},monthlyReports:[],pendingMonthlyReport:null,declinedCustomers:0"
+new="monthlyGoals:createMonthlyGoals(1),monthlyStats:{sales:0,reviews:0,perfect:0,newCustomers:0},monthlyReports:[],pendingMonthlyReport:null,endlessMode:false,endlessTier:1,endlessCycle:null,declinedCustomers:0"
+if old in s:s=s.replace(old,new,1)
+elif 'endlessMode:false' not in s: raise SystemExit('fresh endless anchor missing')
+
+old="monthlyReports:Array.isArray(raw.monthlyReports)?raw.monthlyReports:[],pendingMonthlyReport:raw.pendingMonthlyReport||null,salonDecor:"
+new="monthlyReports:Array.isArray(raw.monthlyReports)?raw.monthlyReports:[],pendingMonthlyReport:raw.pendingMonthlyReport||null,endlessMode:raw.endlessMode??(Array.isArray(raw.completedChapters)&&raw.completedChapters.includes(5)),endlessTier:Math.max(1,Number(raw.endlessTier)||1),endlessCycle:raw.endlessCycle||null,salonDecor:"
+if old in s:s=s.replace(old,new,1)
+elif 'endlessMode:raw.endlessMode' not in s: raise SystemExit('migrate endless anchor missing')
+
+old="checkCustomerUnlocks(merged);return merged"
+new="checkCustomerUnlocks(merged);if(endlessModeActive(merged))ensureEndlessCycle(merged);return merged"
+if old in s:s=s.replace(old,new,1)
+elif 'ensureEndlessCycle(merged)' not in s: raise SystemExit('migrate return anchor missing')
+
+endless_card="""function endlessCard(){const c=ensureEndlessCycle(),p=endlessCycleProgress();if(!c||!p)return'';const goals=[[`売上チャレンジ`,yen(p.sales),yen(c.salesTarget),p.sales>=c.salesTarget],[`人気アップ`,p.popularity,c.popularityTarget,p.popularity>=c.popularityTarget],[`VIP顧客`,p.vip,c.vipTarget,p.vip>=c.vipTarget],[`月間利益`,yen(p.profit),yen(c.profitTarget),p.profit>=c.profitTarget]];return`<div class=\"card chapter-card endless-card\"><span class=\"pill\">SALON MASTER Lv.${c.tier}</span><h2>終わりのないサロン経営</h2><p>Chapter 5クリア後の長期目標です。営業・育成・月次経営を続けてMaster Lv.を上げましょう。</p>${goals.map(([label,value,target,ok])=>`<div class=\"row\"><span>${ok?'✅':'▫️'} ${label}</span><b>${value} / ${target}</b></div>`).join('')}<div class=\"row\"><span>達成報酬</span><b>${yen(c.reward)}</b></div><button class=\"primary wide\" data-action=\"endlessCycle\" ${endlessCycleReady()?'':'disabled'}>MASTER GOAL 達成</button></div>`}
+function chapterCard(){if(endlessModeActive())return endlessCard();const ch=chapters.find(x=>x.id===state.chapter);if(!ch)return'';return`<div class=\"card chapter-card\"><span class=\"pill\">CHAPTER ${ch.id}</span><h2>${ch.title}</h2>${Object.entries(ch.requirements).map(([k,v])=>{const labels={salonLevel:'Salon Lv.',sales:'累計売上',repeaters:'リピーター',vip:'VIP',popularity:'人気',rating:'口コミ',storeRank:'店舗Rank',beatRivals:'ライバル全店を超える'};const value=chapterValue(k),target=chapterTarget(k,v),ok=value>=target;return`<div class=\"row\"><span>${ok?'✅':'▫️'} ${labels[k]}</span><b>${k==='sales'?yen(value):k==='storeRank'?`Rank ${state.storeRank}`:k==='beatRivals'?(value?'達成':'未達'):value} / ${k==='sales'?yen(v):k==='storeRank'?`Rank ${v}`:k==='beatRivals'?'達成':v}</b></div>`}).join('')}<button class=\"primary wide\" data-action=\"chapter\" ${chapterReady()?'':'disabled'}>Chapterをクリア</button></div>`}
+"""
+if 'function endlessCard' not in s:
+    s,n=re.subn(r"function chapterCard\(\)\{.*?\n(?=function missionCards)",endless_card,s,count=1,flags=re.S)
+    if n!=1: raise SystemExit('chapterCard regex missing')
+
+old="document.querySelector('[data-action=\"chapter\"]')?.addEventListener('click',()=>{if(completeChapter()){save();render()}});"
+if 'data-action="endlessCycle"' not in s:
+    if old not in s: raise SystemExit('chapter listener anchor missing')
+    s=s.replace(old,old+"document.querySelector('[data-action=\"endlessCycle\"]')?.addEventListener('click',()=>{if(completeEndlessCycle()){save();render()}});",1)
+
+old="rankEligible,expandStore,chapterReady,completeChapter,outfitBonus"
+if 'endlessModeActive,createEndlessCycle' not in s:
+    if old not in s: raise SystemExit('test export anchor missing')
+    s=s.replace(old,"rankEligible,expandStore,chapterReady,completeChapter,endlessModeActive,createEndlessCycle,ensureEndlessCycle,endlessCycleProgress,endlessCycleReady,completeEndlessCycle,outfitBonus",1)
+
+p.write_text(s)
+
+t=Path('tests/v06-systems.test.mjs')
+x=t.read_text()
+marker="const highStamina=api.treatmentEnergyCost"
+extra="""const endlessLegacy=api.migrate({...api.freshState(),day:75,completedChapters:[1,2,3,4,5],chapter:5,cumulativeSales:1500000,popularity:2500,endlessMode:false,endlessTier:1,endlessCycle:null});
+assert.equal(api.endlessModeActive(endlessLegacy),true,'旧Chapter5クリア済みセーブはEndless Modeへ移行');
+assert.ok(endlessLegacy.endlessCycle,'旧セーブにも長期目標を自動生成');
+api.setState(endlessLegacy);const cycle=endlessLegacy.endlessCycle;endlessLegacy.cumulativeSales=cycle.startedSales+cycle.salesTarget;endlessLegacy.popularity=cycle.startedPopularity+cycle.popularityTarget;for(let i=0;i<cycle.vipTarget;i++){if(endlessLegacy.customers[i]){endlessLegacy.customers[i].visits=10;endlessLegacy.customers[i].trust=95}}endlessLegacy.monthlyReports.push({month:99,profit:cycle.profitTarget+50000,sales:999999});
+assert.equal(api.endlessCycleReady(endlessLegacy),true,'売上・人気・VIP・月間利益を満たすとMaster Goal達成可能');
+const moneyBeforeEndless=endlessLegacy.money,tierBefore=endlessLegacy.endlessTier,reward=cycle.reward;assert.equal(api.completeEndlessCycle(),true,'Master Goalを完了できる');
+assert.equal(endlessLegacy.money,moneyBeforeEndless+reward,'Endless達成報酬を付与');
+assert.equal(endlessLegacy.endlessTier,tierBefore+1,'達成後にMaster Lv.が上がる');
+assert.equal(endlessLegacy.endlessCycle.tier,tierBefore+1,'次の長期目標を生成');
+"""
+if '旧Chapter5クリア済みセーブはEndless Modeへ移行' not in x:
+    if marker not in x: raise SystemExit('endless test marker missing')
+    x=x.replace(marker,extra+marker,1)
+t.write_text(x)
