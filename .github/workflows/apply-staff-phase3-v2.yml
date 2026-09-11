@@ -1,0 +1,62 @@
+name: apply-staff-phase3-v2
+on:
+  push:
+    branches: [staff-phase3-affinity]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: staff-phase3-affinity
+          fetch-depth: 0
+      - name: Apply phase3
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('src/game-v03.js'); s=p.read_text()
+          if 'function staffCustomerAffinity(' not in s:
+            a="function treatmentEnergyCost(staff,policyMultiplier=1,baseCost=15){const stamina=clamp(Number(staff?.stamina??50),0,100),speed=clamp(Number(staff?.speed??50),0,100),reduction=(stamina-50)*.06+(speed-50)*.03;return Math.max(5,Math.round(Math.max(1,Number(baseCost)||15)*Math.max(.25,Number(policyMultiplier)||1)-reduction))}\n"
+            b="""function staffCustomerAffinity(staff,customer){if(!staff||!customer)return{score:0,label:'標準',reasons:[],favorite:false};const profile={...(staffProfiles[staff.id]||{}),...(staff.profile||{})},personality=String(customer.personality||''),concern=String(customer.concern||''),best=String(profile.best||''),budget=Number(customer.budget||0),rank=customerRank(customer),favorite=customer.favoriteStaff===staff.name;let score=0;const reasons=[];if(favorite){score+=4;reasons.push('指名スタッフ')}else if(Number(customer.staffScores?.[staff.id]||0)>=2){score+=2;reasons.push('担当実績あり')}if((staff.trait==='接客上手'||String(profile.personality||'').includes('聞き上手'))&&/慎重|不安|口コミ/.test(personality)){score+=2;reasons.push('接客相性')}if((staff.trait==='技術派'||best.includes('痩身'))&&/痩身|体型|脚|ダイエット/.test(concern)){score+=3;reasons.push('悩みと得意技術が一致')}if(best.includes('フェイシャル')&&/毛穴|小顔|肌|フェイシャル/.test(concern)){score+=3;reasons.push('悩みと得意技術が一致')}if((best.includes('カウンセリング')||staff.trait==='営業上手')&&/慎重|迷|不安/.test(personality)){score+=2;reasons.push('提案相性')}if((best.includes('富裕層接客')||staff.trait==='VIP型')&&(rank==='VIP'||budget>=20000)){score+=3;reasons.push('VIP接客向き')}score=clamp(score,-3,6);const label=score>=5?'◎':score>=2?'○':score<0?'△':'標準';return{score,label,reasons,favorite}}\nfunction updateStaffCustomerRelation(customer,staff,score){if(!customer||!staff)return null;customer.staffRelations=customer.staffRelations||{};const r=customer.staffRelations[staff.id]||{visits:0,points:0,bestScore:0,lastScore:0,lastDay:0};r.visits++;r.points=clamp(Number(r.points||0)+(score>=90?2:score>=75?1:score<50?-1:0),-5,20);r.bestScore=Math.max(Number(r.bestScore||0),score);r.lastScore=score;r.lastDay=state.day;customer.staffRelations[staff.id]=r;return r}\n"""
+            if a not in s: raise SystemExit('anchor missing')
+            s=s.replace(a,a+b,1)
+          pat=r"function assignmentPageV6\(c\)\{.*?\}\nfunction treatmentDecisionPageV6"
+          rep="""function assignmentPageV6(c){const required=manualServiceRequired(c),roster=employedStaffRoster();return`${salonScene('waiting',c)}<div class=\"v6-assignment card\"><div><small>WHO WILL SERVE?</small><h2>${c.name}様を誰が担当しますか？</h2><p>${state.customerConditions[c.id]?.icon||'♡'} ${state.customerConditions[c.id]?.line||'今日もよろしくお願いします。'}</p>${required?'<span class=\"important-customer\">✦ このストーリーはオーナー対応</span>':''}</div><div class=\"v6-assign-actions\"><button class=\"primary\" data-action=\"manualService\">自分で接客する<small>信頼・ストーリー・満足度上限UP</small></button>${roster.map(member=>{const fit=staffCustomerAffinity(member,c),prefix=fit.favorite?'★ 指名 · ':fit.score>=5?'◎ おすすめ · ':'';return`<button class=\"soft\" data-assign-staff=\"${member.id}\" ${required?'disabled':''}>${member.name}に任せる<small>${prefix}相性${fit.label} ${fit.score>0?`+${fit.score}`:fit.score||''} · Energy ${member.energy}% · 技術 ${member.tech} · 接客 ${member.service}</small></button>`}).join('')}</div>${!roster.length?'<p class=\"important-customer\">担当できるスタッフがいません</p>':''}<button class=\"soft wide\" data-action=\"pauseTown\">顧客の合間に街へ出る</button></div>`}\nfunction treatmentDecisionPageV6"""
+          s,n=re.subn(pat,rep,s,count=1,flags=re.S)
+          if n!=1: raise SystemExit('assignment replace failed')
+          pairs=[
+          ("const conditionBonus=conditionServiceBonus(condition,s,c),dayModifier=Number(policy.effects.satisfaction||0)+Number(state.session.eventModifiers.satisfaction||0)+Number(state.session.treatmentBonus||0),planModifier=Number(plan.satisfactionModifier||0),autoModifier=auto?-6:2,specialty=staffSpecialtyAdjustment(state.staff,baseService,plan);","const conditionBonus=conditionServiceBonus(condition,s,c),dayModifier=Number(policy.effects.satisfaction||0)+Number(state.session.eventModifiers.satisfaction||0)+Number(state.session.treatmentBonus||0),planModifier=Number(plan.satisfactionModifier||0),autoModifier=auto?-6:2,specialty=staffSpecialtyAdjustment(state.staff,baseService,plan),customerFit=staffCustomerAffinity(state.staff,c);"),
+          ("+affinity+specialty+choice.satisfaction","+affinity+specialty+customerFit.score+choice.satisfaction"),
+          ("c.staffScores=c.staffScores||{};c.staffScores[state.staff.id]=(c.staffScores[state.staff.id]||0)+(score>=75?1:0);if(c.staffScores[state.staff.id]>=2)c.favoriteStaff=state.staff.name;","c.staffScores=c.staffScores||{};c.staffScores[state.staff.id]=(c.staffScores[state.staff.id]||0)+(score>=75?1:0);const staffRelation=updateStaffCustomerRelation(c,state.staff,score);if(c.staffScores[state.staff.id]>=2||staffRelation?.points>=4)c.favoriteStaff=state.staff.name;"),
+          ("c.visitHistory=c.visitHistory||[];c.visitHistory.push({day:state.day,service:s.name,score,sales:sale,staff:state.staff.name,nomination});","c.visitHistory=c.visitHistory||[];c.visitHistory.push({day:state.day,service:s.name,score,sales:sale,staff:state.staff.name,nomination,staffAffinity:customerFit.score,staffAffinityLabel:customerFit.label});"),
+          ("+(star-3)*3+Number(condition?.repeat||0)","+(star-3)*3+Math.max(0,customerFit.score)+Number(condition?.repeat||0)"),
+          ("treatmentEnergyCost,employedStaffRoster","treatmentEnergyCost,staffCustomerAffinity,updateStaffCustomerRelation,employedStaffRoster"),
+          ("startDay,manualServiceRequired,prepareAutoService","startDay,manualServiceRequired,assignmentPageV6,prepareAutoService")]
+          for old,new in pairs:
+            if old not in s: raise SystemExit('replace anchor missing: '+old[:40])
+            s=s.replace(old,new,1)
+          p.write_text(s)
+          t=Path('tests/v06-systems.test.mjs'); q=t.read_text(); a="assert.equal(api.assignedStaffForCurrentCustomer().id,staffTemplates[1].id,'現在顧客の担当スタッフを取得できる');\n"
+          x="""const cautiousCustomer={...assignmentState.customers[0],personality:'慎重',concern:'毛穴',budget:12000,favoriteStaff:staffTemplates[0].name,staffScores:{[staffTemplates[0].id]:2}};\nconst favoriteFit=api.staffCustomerAffinity(staffTemplates[0],cautiousCustomer),otherFit=api.staffCustomerAffinity(staffTemplates[1],cautiousCustomer);\nassert.ok(favoriteFit.score>otherFit.score,'指名スタッフは担当相性が高くなる');\nassert.equal(favoriteFit.favorite,true,'お気に入りスタッフを指名として判定');\nassert.match(api.assignmentPageV6(cautiousCustomer),/指名/,'担当選択UIに指名状態を表示');\nassert.match(api.assignmentPageV6(cautiousCustomer),/相性/,'担当選択UIにスタッフ相性を表示');\nconst minami=api.normalizeStaffMember({id:'minami'}),vipFit=api.staffCustomerAffinity(minami,{id:'vip-fit',visits:10,trust:95,budget:30000,personality:'結果重視',concern:'小顔'});\nassert.ok(vipFit.score>=3,'VIP型スタッフはVIP顧客との相性が上がる');\nconst relationCustomer={staffRelations:{}};api.setState({...assignmentState,day:12});const relation=api.updateStaffCustomerRelation(relationCustomer,staffTemplates[0],92);\nassert.equal(relation.points,2,'高満足度でスタッフ顧客関係が成長');\nassert.equal(relation.visits,1,'スタッフ別担当回数を記録');\n"""
+          if 'const cautiousCustomer=' not in q:
+            if a not in q: raise SystemExit('test anchor missing')
+            q=q.replace(a,a+x,1)
+          t.write_text(q)
+          PY
+      - name: Test
+        run: |
+          node tests/v06-systems.test.mjs
+          node tests/v62-systems.test.mjs
+          node tests/state.test.mjs
+          node tests/customer-encounters.test.mjs
+      - name: Commit
+        run: |
+          rm -f .github/workflows/apply-staff-phase3.yml .github/workflows/apply-staff-phase3-v2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: add staff customer affinity and nominations [staff-phase3-applied]"
+          git push origin HEAD:staff-phase3-affinity
