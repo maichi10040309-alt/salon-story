@@ -41,5 +41,5 @@ if 'saved HAIR_15' not in s and 'ownerAvatarSource' in s:s+=append
 p.write_text(s)
 
 p=Path('tests/v61-systems.test.mjs')
-s=p.read_text().replace('v=95','v=96')
+s=p.read_text().replace('v=95','v=96').replace('salon-story-v95','salon-story-v96')
 p.write_text(s)
