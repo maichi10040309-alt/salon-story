@@ -219,3 +219,9 @@ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/,'動きを減らす�
 assert.match(baseCss,/overflow-x:clip/,'横スクロールを防止');
 
 console.log(`Salon Story Ver.0.6 systems tests: OK (${businessEvents.length} events)`);
+
+
+// Regression: staff assignment stays available and stale owner-only flags are cleared per customer.
+const staffSelectSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.match(staffSelectSource,/state\.session\.ownerForced=false/,'顧客切替時にownerForcedを解除');
+assert.match(staffSelectSource,/state\.session\.phase='service';save\(\);render\(\)/,'スタッフ選択後に施術選択へ進む');

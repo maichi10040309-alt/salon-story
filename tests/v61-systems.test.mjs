@@ -96,7 +96,7 @@ assert.match(css,/\.fashion-thumb-viewport\{display:block;width:90%;height:90%/,
 assert.match(css,/\.home-stage-v56\{display:grid;grid-template-columns:/,'Home右下owner配置を維持');
 assert.match(baseCss,/env\(safe-area-inset-top\)/);
 assert.match(baseCss,/env\(safe-area-inset-bottom\)/);
-assert.match(index,/v=95/,'更新asset metadataをcache bust');
-assert.match(serviceWorker,/salon-story-v95/,'service worker cacheを更新');
+assert.match(index,/v=96/,'更新asset metadataをcache bust');
+assert.match(serviceWorker,/salon-story-v96/,'service worker cacheを更新');
 
 console.log('Salon Story v61 owner final-audit tests: OK');
