@@ -52,7 +52,7 @@ export function renderOwnerAvatar(appearance={},options={}){
  // A dedicated transparent crop containing only the initial up-do hair is placed
  // at the shared preview coordinates (x=407,y=8,w=175,h=252).
  if(a.outfit!=='OUTFIT_01'){
-  if(options.fashionPreview)layers.push(img(TRYON_HAIR_PATH,'owner-hair owner-hair-initial',TRYON_HAIR_STYLE));
+  if(options.fashionPreview||a.hairStyle==='HAIR_15')layers.push(img(TRYON_HAIR_PATH,'owner-hair owner-hair-initial',TRYON_HAIR_STYLE));
   else layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)));
  }
  return`<figure class="portrait portrait-owner portrait-${size} owner-layer-avatar ${options.home?'owner-home-avatar':''} ${options.mode?'owner-mode-'+options.mode:''}" data-owner-stage="shared" data-owner-outfit="${a.outfit}" data-owner-hair="${a.hairStyle}" data-owner-color="${a.hairColor}" data-owner-makeup="${a.makeup}"><div class="owner-avatar-canvas avatar-stage">${layers.join('')}</div>${options.caption===false?'':`<figcaption>${name}</figcaption>`}</figure>`;
