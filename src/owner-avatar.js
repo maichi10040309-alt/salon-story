@@ -3,7 +3,7 @@ import{OWNER_CANVAS,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=94';
 const ROOT='./assets/owner/';
 const OUTFIT_COUNT=13;
 const TRYON_HAIR_PATH='hair/INITIAL_TRYON_HAIR_ONLY.png';
-const TRYON_HAIR_STYLE='z-index:20;inset:auto;left:39.2578125%;top:.1302083%;width:18.5546875%;height:17.7734375%;max-width:none;max-height:none;object-fit:fill;object-position:0 0;transform:none;filter:none';
+const TRYON_HAIR_STYLE='z-index:20;inset:auto;left:39.74609375%;top:-.2604167%;width:17.08984375%;height:16.40625%;max-width:none;max-height:none;object-fit:fill;object-position:0 0;transform:none;filter:none';
 
 export const OWNER_HAIR_NAMES=['ショートボブ','ナチュラルボブ','ミディアムストレート','ミディアムウェーブ','エアリーミディアム','ロングストレート','ロングウェーブ','サイドポニー','ハーフアップ','ルーズアップ','ツインブレイド','サイドブレイド','レイヤーミディアム','スーパーロング','エレガントアップ','リボンブレイド','ソフトカール'];
 export const OWNER_HAIR_COLORS=[['ブラック','#2f2b2d','brightness(.55) saturate(.75)'],['ダークブラウン','#5b4636','brightness(.72) saturate(.9)'],['モカブラウン','#795c50','sepia(.2) brightness(.82)'],['チョコレートブラウン','#69463c','sepia(.28) brightness(.72) saturate(1.05)'],['チェスナット','#855f4d','sepia(.35) brightness(.86) saturate(1.08)'],['ミルクティーベージュ','#aa8d7e','sepia(.25) brightness(1.08) saturate(.72)'],['グレージュ','#857873','grayscale(.24) brightness(.91)'],['アッシュブラウン','#726561','grayscale(.18) brightness(.78)'],['ピンクブラウン','#9a6467','sepia(.22) hue-rotate(318deg) saturate(1.08)'],['ラベンダーブラウン','#765e70','sepia(.16) hue-rotate(280deg) saturate(.9)'],['ワインブラウン','#713f49','sepia(.2) hue-rotate(320deg) saturate(1.25) brightness(.76)'],['ハイトーンベージュ','#bea190','sepia(.18) brightness(1.18) saturate(.68)']];
@@ -50,7 +50,7 @@ export function renderOwnerAvatar(appearance={},options={}){
  layers.push(img(`outfits/${a.outfit}.png`,'owner-outfit'));
  // Fashion preview never replaces or moves the selected outfit's face/neck/body.
  // A dedicated transparent crop containing only the initial up-do hair is placed
- // at the source-canvas coordinates (x=402,y=2,w=190,h=273).
+ // at the shared preview coordinates (x=407,y=-4,w=175,h=252).
  if(a.outfit!=='OUTFIT_01'){
   if(options.fashionPreview)layers.push(img(TRYON_HAIR_PATH,'owner-hair owner-hair-initial',TRYON_HAIR_STYLE));
   else layers.push(img(`hair/styles/${a.hairStyle}.png`,'owner-hair owner-hair-generated',`filter:${filter}`,ownerLayerTransform('hair',a.hairStyle)));
