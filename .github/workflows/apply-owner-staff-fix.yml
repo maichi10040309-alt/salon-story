@@ -1,0 +1,30 @@
+name: apply-owner-staff-fix
+on:
+  push:
+    branches: [fix-owner-staff-regressions]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix-owner-staff-regressions
+          fetch-depth: 0
+      - name: Apply fixes
+        run: python .github/scripts/apply_owner_staff_fix.py
+      - name: Run focused tests
+        run: |
+          node tests/v06-systems.test.mjs
+          node tests/v61-systems.test.mjs
+          node tests/owner-assets.test.mjs
+          node tests/state.test.mjs
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/game-v03.js src/owner-avatar.js tests/v06-systems.test.mjs tests/owner-assets.test.mjs
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: restore staff selection and saved owner hair alignment"
+          git push origin HEAD:fix-owner-staff-regressions
