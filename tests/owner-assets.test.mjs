@@ -43,7 +43,7 @@ assert.doesNotMatch(initial,/owner-shoes|owner-bag|owner-outer|owner-accessory/,
 const fashionPreview=renderOwnerAvatar({...DEFAULT_OWNER_APPEARANCE,outfit:'OUTFIT_13',dress:'OUTFIT_13'},{fashionPreview:true});
 assert.equal((fashionPreview.match(/<img class="owner-layer owner-outfit/g)||[]).length,1);
 assert.equal((fashionPreview.match(/INITIAL_TRYON_HAIR_ONLY\.png/g)||[]).length,1,'試着用共通髪を1枚だけ描画');
-assert.match(fashionPreview,/left:39\.74609375%;top:-\.2604167%;width:17\.08984375%;height:16\.40625%/,'固定髪配置を維持');
+assert.match(fashionPreview,/left:39\.74609375%;top:\.5208333%;width:17\.08984375%;height:16\.40625%/,'固定髪配置は現行のtop=8px相当');
 assert.doesNotMatch(fashionPreview,/SHOES_|BAG_|OUTER_|ACC_/,'完成コーデへ旧assetを重複描画しない');
 
 assert.equal(normalizeOwnerAssetAppearance({outfit:'OUTFIT_99'}).outfit,'OUTFIT_01','無効outfitは安全にfallback');

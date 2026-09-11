@@ -63,9 +63,10 @@ assert.equal(migrated.autoServiceSettings.enabled,true);
 
 const play=api.freshState();
 play.staff={...staffTemplates[0],level:1,xp:0,energy:100,bond:0,role:'スタッフ',management:20,treatments:0,skills:[],nominations:0,monthlySales:0,monthlyPerfect:0};
+play.staffRoster=[play.staff,{...staffTemplates[1],level:1,xp:0,energy:88,bond:0,role:'スタッフ',management:20,treatments:0,skills:[],nominations:0,monthlySales:0,monthlyPerfect:0}];
 play.dailyPolicy=dailyPolicies.find(x=>x.id==='reviews');
 play.storeRank='C';
-api.setState(play);
+api.setState(api.migrate(play));
 api.startDay();
 const started=api.getState();
 assert.equal(started.screen,'play');
@@ -83,10 +84,50 @@ assert.equal(api.manualServiceRequired(ordinary),false,'通常の既存客はお
 started.session.phase='treatment';
 api.prepareAutoService();
 started.session.phase='treatment';
+const activeEnergyBefore=started.staff.energy,inactiveEnergyBefore=started.staffRoster.find(x=>x.id==='mizuki').energy;
 const autoResult=api.autoServeCurrent(true);
 assert.equal(autoResult.auto,true,'スタッフおまかせ結果として記録');
 assert.equal(started.session.results.length,1);
+assert.ok(started.staff.energy<activeEnergyBefore,'担当スタッフだけEnergyを消費');
+assert.equal(started.staffRoster.find(x=>x.id==='mizuki').energy,inactiveEnergyBefore,'非担当スタッフのEnergyは減らない');
 
+const payrollState={day:30,stores:[{rent:70000}],staffRoster:[
+ {...staffTemplates[0],energy:80},
+ {...staffTemplates[1],energy:90},
+ {...staffTemplates[2],retired:true},
+ {name:'invalid',salary:999999}
+]};
+assert.equal(api.monthlyStaffPayroll(payrollState),staffTemplates[0].salary+staffTemplates[1].salary,'在籍2名分の給与を合算');
+assert.equal(api.monthlyOperatingExpenses(payrollState),staffTemplates[0].salary+staffTemplates[1].salary+70000,'月次経費へ全スタッフ給与と家賃を反映');
+assert.equal(api.monthlyOperatingExpenses({...payrollState,day:29}),0,'月末以外は月次経費なし');
+const monthlyClose=api.migrate({...api.freshState(),day:30,money:1000000,staff:{...staffTemplates[0],energy:80},staffRoster:[{...staffTemplates[0],energy:80},{...staffTemplates[1],energy:90}],session:{queue:[],index:0,results:[],phase:'idleDay',xp:0,newCustomers:0,eventModifiers:{review:0}},activeBusinessSession:null});
+monthlyClose.dailyPolicy=dailyPolicies[1];api.setState(monthlyClose);api.closeDay();
+assert.equal(monthlyClose.history.at(-1).expenses,staffTemplates[0].salary+staffTemplates[1].salary,'closeDayで全スタッフ給与を控除');
+assert.equal(monthlyClose.staff.energy,80,'閉店後も担当スタッフ固有のEnergyを保持');
+assert.equal(monthlyClose.staffRoster.find(x=>x.id==='mizuki').energy,90,'閉店後も非担当スタッフのEnergyを保持');
+
+const highStamina=api.treatmentEnergyCost({stamina:90,speed:50},1,16),lowStamina=api.treatmentEnergyCost({stamina:20,speed:50},1,16);
+assert.ok(highStamina<lowStamina,'staminaが高いほどEnergy消費が少ない');
+assert.ok(api.treatmentEnergyCost({stamina:100,speed:100},.25,1)>=5,'Energy最低消費量を維持');
+assert.ok(api.treatmentEnergyCost({stamina:50,speed:90},1,16)<api.treatmentEnergyCost({stamina:50,speed:20},1,16),'speedが高いほど疲労消費が軽い');
+assert.equal(api.staffSpecialtyAdjustment(staffTemplates[0],{id:'facial',name:'フェイシャルケア',time:30},{id:'standard',time:30}),4,'best施術に小さなプラス補正');
+assert.equal(api.staffSpecialtyAdjustment(staffTemplates[1],{id:'facial',name:'フェイシャルケア',time:30},{id:'premium',time:40}),-3,'weak施術に小さなマイナス補正');
+
+const proposalService={id:'facial',name:'フェイシャルケア',price:4500,time:30,matches:['毛穴'],base:15},proposalCustomer={id:'proposal',visits:1,trust:20,budget:10000,concern:'毛穴'};
+const lowSalesPremium=api.createTreatmentPlans(proposalService,proposalCustomer,{customerConditions:{}},{sales:20,energy:100}).find(x=>x.id==='premium');
+const highSalesPremium=api.createTreatmentPlans(proposalService,proposalCustomer,{customerConditions:{}},{sales:90,energy:100}).find(x=>x.id==='premium');
+assert.ok(highSalesPremium.priceScore>lowSalesPremium.priceScore,'salesは高単価提案へ軽く作用');
+
+const oldSave=api.freshState();oldSave.staff={...staffTemplates[0]};delete oldSave.staff.energy;delete oldSave.staff.sales;delete oldSave.staff.speed;delete oldSave.staff.stamina;delete oldSave.staffRoster;
+const restoredStaff=api.migrate(oldSave);
+assert.equal(restoredStaff.staff.energy,100,'旧セーブの欠損Energyは100へfallback');
+assert.equal(restoredStaff.staff.sales,staffTemplates[0].sales);assert.equal(restoredStaff.staff.speed,staffTemplates[0].speed);assert.equal(restoredStaff.staff.stamina,staffTemplates[0].stamina);
+assert.equal(restoredStaff.staffRoster.length,1,'旧セーブのactive staffからrosterを復元');
+assert.equal(restoredStaff.staff,restoredStaff.staffRoster[0],'active staffとrosterは同じ個別Energyを参照');
+
+for(const day of [30,60]){const longPlay=api.freshState();longPlay.day=day;longPlay.staff={...staffTemplates[0],energy:70};longPlay.staffRoster=[longPlay.staff];longPlay.storeRank='C';api.setState(api.migrate(longPlay));api.startDay();assert.equal(api.getState().session!==null,true,`Day${day}でも営業開始できる`);assert.equal(api.getState().staff.energy,70,`Day${day}でもEnergyを保持`)}
+
+api.setState(started);
 const eventBefore=started.eventHistory.length,moneyBefore=started.money;
 started.session.eventCursor=0;started.session.afterEvent='batch';started.session.eventQueue=[businessEvents.find(x=>x.category==='lucky')];
 api.resolveBusinessEvent(2);

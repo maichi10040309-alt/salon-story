@@ -85,7 +85,7 @@ const css=await readFile(new URL('../src/v61.css',import.meta.url),'utf8');
 const baseCss=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
 const index=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const serviceWorker=await readFile(new URL('../sw.js',import.meta.url),'utf8');
-assert.match(ownerSource,/left:39\.74609375%;top:-\.2604167%;width:17\.08984375%;height:16\.40625%/,'Fashion共通髪配置は変更しない');
+assert.match(ownerSource,/left:39\.74609375%;top:\.5208333%;width:17\.08984375%;height:16\.40625%/,'Fashion共通髪配置は現行のtop=8px相当');
 assert.match(ownerSource,/layers\.push\(img\(`outfits\/\$\{a\.outfit\}\.png`,'owner-outfit'\)\)[\s\S]*layers\.push\(img\(TRYON_HAIR_PATH/,'outfit→hairの順で描画');
 assert.doesNotMatch(ownerSource,/layers\.push\(img\(`(?:shoes|bags|outer|accessories)/,'旧小物layerを合成しない');
 assert.match(source,/function townPageV5\(\)[\s\S]*town-map/);

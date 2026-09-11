@@ -24,6 +24,7 @@ export function createTreatmentPlans(service,customer,state,staff){
     if(spec.id==='premium'&&(['after-bonus','reward','birthday'].includes(condition.id)||rank==='VIP'))priceScore+=16;
     if(spec.id==='premium'&&condition.id==='sudden-plan')priceScore-=20;
     if(spec.id==='premium'&&Number(staff?.energy||100)<40)priceScore-=12;
+    if(spec.id==='premium')priceScore+=clamp(Math.round((Number(staff?.sales??50)-50)/15),-3,3);
     const affinity=treatmentAffinity(service,customer,condition),score=clamp(50+affinity.score+priceScore+spec.base,0,spec.cap);
     const budgetLabel=ratio<=.8?'◎ 余裕あり':ratio<=1.1?'○ 予算内':ratio<=1.3?'△ 少し高め':'！予算オーバー';
     const reaction=score>=86?'これなら今日の私にぴったりです！':ratio>1.3?'少し予算が心配です…。':spec.id==='light'?'これなら気軽にお願いできそうです。':'効果と価格のバランスが良さそうです。';
