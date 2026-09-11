@@ -91,6 +91,15 @@ assert.equal(started.session.results.length,1);
 assert.ok(started.staff.energy<activeEnergyBefore,'担当スタッフだけEnergyを消費');
 assert.equal(started.staffRoster.find(x=>x.id==='mizuki').energy,inactiveEnergyBefore,'非担当スタッフのEnergyは減らない');
 
+const assignmentState=api.migrate({...api.freshState(),staff:{...staffTemplates[0],energy:82},staffRoster:[{...staffTemplates[0],energy:82},{...staffTemplates[1],energy:67}]});
+assignmentState.session={queue:[assignmentState.customers[0].id],index:0,results:[],phase:'assign',staffAssignments:{}};api.setState(assignmentState);
+const assigned=api.assignStaffForCurrentCustomer(staffTemplates[1].id);
+assert.equal(assigned.id,staffTemplates[1].id,'顧客ごとに担当スタッフを選択できる');
+assert.equal(assignmentState.staff,assignmentState.staffRoster[1],'選択したスタッフをactive参照へ接続');
+assert.equal(assignmentState.session.assignedStaffId,staffTemplates[1].id,'現在顧客の担当スタッフIDを保持');
+assert.equal(assignmentState.session.staffAssignments[assignmentState.customers[0].id],staffTemplates[1].id,'顧客別担当履歴を保持');
+assert.equal(api.assignedStaffForCurrentCustomer().id,staffTemplates[1].id,'現在顧客の担当スタッフを取得できる');
+
 const payrollState={day:30,stores:[{rent:70000}],staffRoster:[
  {...staffTemplates[0],energy:80},
  {...staffTemplates[1],energy:90},
@@ -142,6 +151,7 @@ const baseCss=await readFile(new URL('../src/v05.css',import.meta.url),'utf8');
 assert.match(source,/function todayPageV6/,'TODAY画面');
 assert.match(source,/function policyPageV6/,'営業方針画面');
 assert.match(source,/function autoServeRemaining/,'残りをまとめて任せる');
+assert.match(source,/data-assign-staff/,'顧客ごとのスタッフ担当選択UI');
 assert.match(source,/function treatmentDecisionPageV6/,'施術中判断');
 assert.match(source,/function dayResultPageV6/,'営業結果演出');
 for(const stage of ['arrival','waiting','treatment','checkout','exit'])assert.match(css,new RegExp(`stage-${stage}`),`${stage}移動スタイル`);
