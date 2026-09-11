@@ -1,4 +1,4 @@
-import{OWNER_CANVAS,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=94';
+import{OWNER_CANVAS,ownerAlphaBounds,ownerLayerAnchorSpec}from'./owner-asset-metadata.js?v=95';
 
 const ROOT='./assets/owner/';
 const OUTFIT_COUNT=13;
@@ -37,12 +37,12 @@ export function normalizeOwnerAssetAppearance(raw={}){
 
 export function ownerAssetForItem(item){if(!item)return null;if(item.asset)return outfitId(item.asset);if(item.category==='dresses'||item.category==='outfits')return outfitId(item.id);return null}
 export function ownerAssetPathForItem(item){const asset=ownerAssetForItem(item);return asset?`outfits/${asset}.png`:null}
-export function ownerAssetBoundsForItem(item){const asset=ownerAssetForItem(item);return{canvas:OWNER_CANVAS,bounds:{x:0,y:0,width:OWNER_CANVAS.width,height:OWNER_CANVAS.height},asset}}
+export function ownerAssetBoundsForItem(item){const asset=ownerAssetForItem(item);return{canvas:OWNER_CANVAS,bounds:ownerAlphaBounds(asset)||{x:0,y:0,width:OWNER_CANVAS.width,height:OWNER_CANVAS.height},asset}}
 export function ownerHairLabel(value){const a=normalizeOwnerAssetAppearance({hairStyle:value});return OWNER_HAIR_NAMES[Number(a.hairStyle.slice(-2))-1]||OWNER_HAIR_NAMES[4]}
 export function ownerColorLabel(value){const a=normalizeOwnerAssetAppearance({hairColor:value});return OWNER_HAIR_COLORS[Number(a.hairColor.slice(-2))-1]?.[0]||OWNER_HAIR_COLORS[1][0]}
 
 export function ownerLayerTransform(slot,value){if(slot!=='hair')return{x:0,y:0,scaleX:1,scaleY:1,originX:.5,originY:.5};const fit=ownerLayerAnchorSpec('hair',value),{source,target}=fit;return{x:(target.x-source.x)/OWNER_CANVAS.width,y:(target.y-source.y)/OWNER_CANVAS.height,scaleX:fit.scaleX,scaleY:fit.scaleY,originX:source.x/OWNER_CANVAS.width,originY:source.y/OWNER_CANVAS.height}}
-const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}?v=94" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
+const img=(path,cls,style='',transform=null)=>{if(!path)return'';const c=transform?`--layer-x:${transform.x*100}%;--layer-y:${transform.y*100}%;--layer-scale-x:${transform.scaleX};--layer-scale-y:${transform.scaleY};--layer-origin-x:${transform.originX*100}%;--layer-origin-y:${transform.originY*100}%`:'',inline=[style,c].filter(Boolean).join(';');return`<img class="owner-layer ${cls}" src="${ROOT}${path}?v=95" alt="" draggable="false" ${inline?`style="${inline}"`:''} onerror="this.hidden=true">`};
 
 export function renderOwnerAvatar(appearance={},options={}){
  const a=normalizeOwnerAssetAppearance(appearance),n=Number(a.hairColor.slice(-2))-1,filter=OWNER_HAIR_COLORS[n]?.[2]||'';
