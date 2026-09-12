@@ -328,3 +328,18 @@ const sakuraCareer=api.staffCareerBonus({...staffTemplates[2],role:'主任'});
 assert.equal(sakuraCareer.socialMultiplier,1.25,'さくら主任はSNS効果25%増');
 const managerCareer=api.staffCareerBonus({...staffTemplates[0],role:'店長'});
 assert.equal(managerCareer.branchMultiplier,1.12,'店長は支店売上補正を持つ');
+
+
+// Treatment-specific minigames.
+const gameKinds={facial:'trace',smallface:'lift',slimming:'pressure',relax:'breath',bust:'balance',pore:'pore',headspa:'rhythm',luxurySlimming:'pressure'};
+for(const [id,kind] of Object.entries(gameKinds))assert.equal(api.treatmentGameSpecFor(id).kind,kind,`${id}は施術専用ミニゲーム`);
+assert.equal(new Set(Object.values(gameKinds)).size>=6,true,'施術ジャンルごとに6種類以上の操作を用意');
+const slimGame=api.createTreatmentGame('slimming',1000);assert.equal(slimGame.kind,'pressure');
+assert.equal(api.treatmentTimingPoints(slimGame,1900),3,'痩身は適正圧中央で高得点');
+const luxury=api.createTreatmentGame('luxurySlimming',1000);assert.equal(api.treatmentGameSpecFor('luxurySlimming').hard,true,'高級痩身は狭い適正圧');
+const facialGame=api.createTreatmentGame('facial',1000);assert.deepEqual(api.treatmentGameSpecFor('facial').sequence,['額','右頬','左頬','あご'],'フェイシャルは塗り込み順序');
+const headGame=api.createTreatmentGame('headspa',1000);assert.equal(api.treatmentGameSpecFor('headspa').sequence.length,5,'ヘッドスパは頭皮ポイント5手順');
+const gameSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.match(gameSource,/phase==='treatmentGame'/,'施術中に専用ミニゲーム画面へ遷移');
+assert.match(gameSource,/data-treatment-game/,'タッチ操作を実装');
+assert.match(gameSource,/最大 \+8/,'ミニゲーム結果を施術評価へ反映');
