@@ -233,3 +233,30 @@ assert.ok(nominationSource.includes('★ 指名スタッフ：<strong>${nominate
 assert.ok(nominationSource.includes('指名外 · PERFECT不可'),'指名外の注意を担当選択画面に表示');
 assert.ok(nominationSource.includes('nominationMiss=!!nominatedStaff&&servedBy!==nominatedStaff'),'指名外判定を実装');
 assert.ok(nominationSource.includes('effectiveCap=nominationMiss?Math.min(Number(plan.cap||100),89)'),'指名外はスコア上限89でPERFECT不可');
+
+
+// Rival story phase 2 regression coverage.
+{
+  const s=api.freshState();
+  s.rivalsUnlocked=true;
+  assert.equal(api.rivalStoryStats('luxe',s).battles,0,'ライバル別対戦数は0から開始');
+  assert.equal(api.nextRivalStory('luxe',s)?.id,'encounter','解放直後に固有導入ストーリーが出る');
+  const first=api.playRivalStory('luxe',s);
+  assert.equal(first?.id,'encounter','導入ストーリーを再生できる');
+  assert.equal(api.nextRivalStory('luxe',s),null,'未対戦では第2話は未解放');
+  s.rivalBattle.history.push({day:8,rivalId:'luxe',rivalName:'LUXE BEAUTY',result:'loss'});
+  assert.equal(api.nextRivalStory('luxe',s)?.id,'challenge','初対戦後に第2話が解放');
+  api.playRivalStory('luxe',s);
+  s.rivalBattle.history.push({day:15,rivalId:'luxe',rivalName:'LUXE BEAUTY',result:'win'});
+  assert.equal(api.nextRivalStory('luxe',s)?.id,'respect','初勝利後に第3話が解放');
+  api.playRivalStory('luxe',s);
+  s.rivalBattle.history.push({day:22,rivalId:'luxe',rivalName:'LUXE BEAUTY',result:'win'});
+  s.rivalBattle.history.push({day:29,rivalId:'luxe',rivalName:'LUXE BEAUTY',result:'win'});
+  assert.equal(api.nextRivalStory('luxe',s)?.id,'rival','3勝後に最終話が解放');
+  const beforeMoney=s.money,beforePopularity=s.popularity;
+  api.playRivalStory('luxe',s);
+  assert.equal(s.money,beforeMoney+30000,'最終話報酬の賞金を付与');
+  assert.equal(s.popularity,beforePopularity+30,'最終話報酬の人気を付与');
+  assert.equal(api.rivalStorySeenCount('luxe',s),4,'4話完読を記録');
+  assert.equal(api.nextRivalStory('luxe',s),null,'完読後は重複再生しない');
+}
