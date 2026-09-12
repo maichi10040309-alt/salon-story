@@ -302,3 +302,29 @@ assert.equal(api.referralGroupMembers(referrer.referralGroupId,referralState).le
 const migratedReferral=api.migrate(referralState);
 assert.equal(Array.isArray(migratedReferral.referralQueue),true,'紹介キューを旧セーブ互換で保持');
 assert.equal(migratedReferral.customers.find(c=>c.id===referralTarget.id).referredBy,referrer.id,'紹介関係をセーブ移行後も保持');
+
+
+// Staff career bonuses: promotions affect treatments, training, social, recovery and branch operations.
+const careerState=api.migrate({...api.freshState(),staff:{...staffTemplates[1],role:'主任',level:7,bond:50,treatments:30,energy:50},staffRoster:[{...staffTemplates[1],role:'主任',level:7,bond:50,treatments:30,energy:50},{...staffTemplates[0],role:'新人',energy:50}]});
+api.setState(careerState);
+const mizukiCareer=api.staffCareerBonus(careerState.staff,careerState);
+assert.equal(mizukiCareer.training>=3,true,'主任の美月は技術講師ボーナスを持つ');
+assert.equal(mizukiCareer.specialty,2,'主任は得意施術補正を得る');
+assert.equal(api.staffTrainingBonus(careerState.staffRoster[1],careerState)>=2,true,'美月主任が他スタッフの研修効率を上げる');
+careerState.day=2;api.recoverStaffForNewDay(careerState,false);
+assert.equal(careerState.staff.energy,64,'主任は通常回復12+キャリア回復2');
+
+const promotionState=api.migrate({...api.freshState(),staff:{...staffTemplates[0],role:'主任',level:8,bond:65,treatments:45,service:75,sales:60,management:30},staffRoster:[{...staffTemplates[0],role:'主任',level:8,bond:65,treatments:45,service:75,sales:60,management:30}]});
+api.setState(promotionState);
+assert.equal(api.canPromote(),true,'店長候補への昇格条件を満たす');
+api.promoteStaff();
+assert.equal(promotionState.staff.role,'店長候補');
+assert.equal(promotionState.staff.skills.includes('店舗運営'),true,'昇格で実利スキルを獲得');
+assert.equal(promotionState.staff.skills.includes('安心店長'),true,'あかりの夢がキャリアスキルになる');
+assert.equal(promotionState.staff.service,78,'店長候補で接客能力が上がる');
+assert.equal(api.staffCareerBonus(promotionState.staff).trust,1,'あかりの夢で信頼ボーナス');
+
+const sakuraCareer=api.staffCareerBonus({...staffTemplates[2],role:'主任'});
+assert.equal(sakuraCareer.socialMultiplier,1.25,'さくら主任はSNS効果25%増');
+const managerCareer=api.staffCareerBonus({...staffTemplates[0],role:'店長'});
+assert.equal(managerCareer.branchMultiplier,1.12,'店長は支店売上補正を持つ');
