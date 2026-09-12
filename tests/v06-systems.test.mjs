@@ -277,3 +277,28 @@ assert.match(hotfixSource,/主なお悩み/,'base concern label is explicit');
 const resumeBindingSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
 assert.match(resumeBindingSource,/querySelectorAll\(\'\[data-action="resumeBusiness"\]\'\)\.forEach/,'all resume buttons receive a click handler');
 assert.doesNotMatch(resumeBindingSource,/querySelector\(\'\[data-action="resumeBusiness"\]\'\)\?\.addEventListener/,'single-element resume binding is not used');
+
+
+// Customer referral chain: trusted regulars introduce new customers.
+const referralState=api.migrate({...api.freshState(),day:12});
+const referrer=referralState.customers[0];
+referralState.encounteredCustomers.push(referrer.id);referrer.visits=6;referrer.trust=92;referrer.referrals=0;
+const referralTarget=referralState.customers.find(c=>c.id!==referrer.id&&referralState.unlockedCustomers.includes(c.id)&&!referralState.encounteredCustomers.includes(c.id));
+assert.ok(referralTarget,'紹介候補の未遭遇顧客がいる');
+api.setState(referralState);
+const referral=api.createCustomerReferral(referrer,96,referralState,()=>0);
+assert.ok(referral,'高満足の常連から紹介が発生');
+assert.equal(referrer.referrals,1,'紹介人数を可視化');
+assert.equal(referral.customerId,referralTarget.id,'未遭遇の解禁済み顧客を紹介');
+referralState.day=13;
+assert.equal(api.pendingReferralForDay(referralState).customerId,referralTarget.id,'翌日に紹介客を優先来店させる');
+const trustBefore=referralTarget.trust;
+const arrived=api.applyReferralArrival(referralTarget,referralState);
+assert.ok(arrived,'紹介客の来店を処理');
+assert.equal(referralTarget.trust,Math.min(100,trustBefore+10),'紹介客は初期信頼度+10');
+assert.equal(referralTarget.referredBy,referrer.id,'紹介元を保存');
+assert.equal(referralTarget.referralGroupId,referrer.referralGroupId,'同じ紹介グループへ所属');
+assert.equal(api.referralGroupMembers(referrer.referralGroupId,referralState).length>=2,true,'紹介チェーンをグループとして可視化');
+const migratedReferral=api.migrate(referralState);
+assert.equal(Array.isArray(migratedReferral.referralQueue),true,'紹介キューを旧セーブ互換で保持');
+assert.equal(migratedReferral.customers.find(c=>c.id===referralTarget.id).referredBy,referrer.id,'紹介関係をセーブ移行後も保持');
