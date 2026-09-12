@@ -437,7 +437,7 @@ function bind(){
   document.querySelectorAll('[data-assign-staff]').forEach(b=>b.onclick=()=>{const member=assignStaffForCurrentCustomer(b.dataset.assignStaff);if(!member)return notify('担当スタッフを選べませんでした');const c=currentCustomer();state.session.autoMode=false;state.session.choice={response:`${member.name}が担当します。`,trust:0,satisfaction:Math.round(member.service/30),face:'normal',beforeTrust:c?.trust||0};state.session.phase='service';save();render()});
   document.querySelector('[data-action="autoRemaining"]')?.addEventListener('click',autoServeRemaining);
   document.querySelector('[data-action="pauseTown"]')?.addEventListener('click',()=>pauseBusiness('town'));
-  document.querySelector('[data-action="resumeBusiness"]')?.addEventListener('click',resumeBusiness);
+  document.querySelectorAll('[data-action="resumeBusiness"]').forEach(button=>button.addEventListener('click',resumeBusiness));
   document.querySelector('[data-action="closeBusinessEarly"]')?.addEventListener('click',closeBusinessEarly);
   document.querySelectorAll('[data-idle-action]').forEach(b=>b.onclick=()=>resolveIdleDay(b.dataset.idleAction));
   document.querySelector('[data-action="continueAuto"]')?.addEventListener('click',continueAutoSummary);

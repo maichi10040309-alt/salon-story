@@ -271,3 +271,9 @@ assert.match(hotfixSource,/delegated\|\|Math\.random\(\)<\.35/,'delegated treatm
 assert.match(hotfixSource,/スタッフ施術 · ミニ判断/,'delegated mini judgment is labelled');
 assert.match(hotfixSource,/今日のコンディション：/,'daily condition label is explicit');
 assert.match(hotfixSource,/主なお悩み/,'base concern label is explicit');
+
+
+// Resume button duplicate binding regression.
+const resumeBindingSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.match(resumeBindingSource,/querySelectorAll\(\'\[data-action="resumeBusiness"\]\'\)\.forEach/,'all resume buttons receive a click handler');
+assert.doesNotMatch(resumeBindingSource,/querySelector\(\'\[data-action="resumeBusiness"\]\'\)\?\.addEventListener/,'single-element resume binding is not used');
