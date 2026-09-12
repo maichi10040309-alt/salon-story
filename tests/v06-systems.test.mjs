@@ -260,3 +260,14 @@ assert.ok(nominationSource.includes('effectiveCap=nominationMiss?Math.min(Number
   assert.equal(api.rivalStorySeenCount('luxe',s),4,'4話完読を記録');
   assert.equal(api.nextRivalStory('luxe',s),null,'完読後は重複再生しない');
 }
+
+
+// Gameplay hotfix regressions: resume, quiet-day feedback, delegated judgment, condition labels.
+const hotfixSource=await readFile(new URL('../src/game-v03.js',import.meta.url),'utf8');
+assert.match(hotfixSource,/resumableSession\(state\.activeBusinessSession\)/,'paused active session can recover');
+assert.match(hotfixSource,/function startQuietDay\(\)/,'rest day opens an interactive quiet-day flow');
+assert.match(hotfixSource,/plannedRest:true/,'planned rest is persisted in the session');
+assert.match(hotfixSource,/delegated\|\|Math\.random\(\)<\.35/,'delegated treatment always gets one judgment event');
+assert.match(hotfixSource,/スタッフ施術 · ミニ判断/,'delegated mini judgment is labelled');
+assert.match(hotfixSource,/今日のコンディション：/,'daily condition label is explicit');
+assert.match(hotfixSource,/主なお悩み/,'base concern label is explicit');
